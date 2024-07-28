@@ -28,6 +28,11 @@ namespace WebApiExample
             builder.Services.AddDbContext<ApplicationDbContext>(
                 opt => opt.UseSqlServer(connectionString, builder => builder.MigrationsAssembly("WebApiExample")), ServiceLifetime.Transient);
 
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+                
             builder.Services.AddScoped<IRandomNumberService, RandomNumberService>();
 
             builder.Services.AddScoped<IPrimesService, PrimesService>();
@@ -46,6 +51,8 @@ namespace WebApiExample
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.MapIdentityApi<ApplicationUser>();
 
             app.UseHttpsRedirection();
 
