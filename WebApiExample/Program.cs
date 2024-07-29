@@ -3,9 +3,12 @@ using WebApiExample.Features.Divisors;
 using WebApiExample.Features.FilmDatabase;
 using WebApiExample.Features.NumberInWords;
 using WebApiExample.Features.Primes;
+using WebApiExample.Features.RailVehicles;
 using WebApiExample.Features.RandomSeriesEpisode;
 using WebApiExample.GeneralServices.RandomNumber;
-using WebApiExample.GenericRepositories;
+using WebApiExample.GeneralServices.User;
+using WebApiExample.GenericRepositories.SimpleModel;
+using WebApiExample.GenericRepositories.SimpleModelWithUser;
 
 namespace WebApiExample
 {
@@ -32,7 +35,8 @@ namespace WebApiExample
 
             builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-                
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRandomNumberService, RandomNumberService>();
 
             builder.Services.AddScoped<IPrimesService, PrimesService>();
@@ -42,6 +46,7 @@ namespace WebApiExample
             builder.Services.AddScoped<IAmountInWordsCzechService, AmountInWordsCzechService>();
             builder.Services.AddScoped<IRandomSeriesEpisodeService, RandomSeriesEpisodeService>();
             builder.Services.AddScoped<ISimpleModelRepository<FilmModel>, SimpleModelRepository<Film, FilmModel>>();
+            builder.Services.AddScoped<ISimpleModelWithUserRepository<RailVehicleModel>, SimpleModelWithUserRepository<RailVehicle, RailVehicleModel>>();
 
             var app = builder.Build();
 

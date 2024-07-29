@@ -4,7 +4,7 @@ namespace WebApiExample.Features.FilmDatabase
 {
     public class FilmModel : Model
     {
-        [StringLength(Constants.FilmMaxLength)]
+        [StringLength(Constants.FilmNameMaxLength)]
         public required string Name { get; set; }
 
         public required string Description { get; set; }

@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WebApiExample.Features.FilmDatabase;
 using WebApiExample.Features.NumberInWords;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using WebApiExample.Features.RailVehicles;
 
 namespace WebApiExample
 {
@@ -11,9 +12,16 @@ namespace WebApiExample
 
         public DbSet<Film> Films { get; set; }
 
+        public DbSet<RailVehicle> RailVehicles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<RailVehicle>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(e => e.UserId);
         }
     }
 }

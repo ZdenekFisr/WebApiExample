@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebApiExample.GenericRepositories;
+using WebApiExample.GenericRepositories.SimpleModel;
 
 namespace WebApiExample.GenericControllers
 {
@@ -9,7 +9,7 @@ namespace WebApiExample.GenericControllers
     /// <typeparam name="TModel">Type of model that is being handled.</typeparam>
     /// <param name="repository">Repository instance that is used for handling the model.</param>
     [ApiController]
-    public class SimpleController<TModel>(ISimpleModelRepository<TModel> repository) : ControllerBase
+    public class SimpleModelController<TModel>(ISimpleModelRepository<TModel> repository) : ControllerBase
         where TModel : Model
     {
         private readonly ISimpleModelRepository<TModel> _repository = repository;

@@ -1,9 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using WebApiExample.RepositoryInterfaces;
 
-namespace WebApiExample.GenericRepositories
+namespace WebApiExample.GenericRepositories.SimpleModel
 {
-    /// <inheritdoc cref="ISimpleModelRepository{TModel}"/>
+    /// <summary>
+    /// Contains CRUD operations for models mapped from database entities that have no foreign key to other database tables. It can be inherited by other services and its methods can be overridden to suit a more complex model.
+    /// </summary>
+    /// <typeparam name="TEntity">Type of entity.</typeparam>
+    /// <typeparam name="TModel">Type of corresponding model that is mapped to the entity with AutoMapper and vice-versa.</typeparam>
     public class SimpleModelRepository<TEntity, TModel> : ISimpleModelRepository<TModel>
         where TEntity : Entity
         where TModel : Model
@@ -21,11 +26,11 @@ namespace WebApiExample.GenericRepositories
             _entities = _context.Set<TEntity>();
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IGetOne{TModel}"/>
         public virtual async Task<TModel?> GetOneAsync(Guid id)
-            => _mapper.Map<TModel>(await _entities.FirstOrDefaultAsync(x => x.Id == id));
+            => _mapper.Map<TModel>(await FindEntity(id));
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ICreate{TModel}"/>
         public virtual async Task CreateAsync(TModel model)
         {
             TEntity entity = _mapper.Map<TEntity>(model);
@@ -33,7 +38,7 @@ namespace WebApiExample.GenericRepositories
             await _context.SaveChangesAsync();
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IUpdate{TModel}"/>
         public virtual async Task UpdateAsync(Guid id, TModel model)
         {
             TEntity entity = _mapper.Map<TEntity>(model);
@@ -42,15 +47,18 @@ namespace WebApiExample.GenericRepositories
             await _context.SaveChangesAsync();
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IDelete"/>
         public virtual async Task DeleteAsync(Guid id)
         {
-            TEntity? entity = await _entities.FindAsync(id);
+            TEntity? entity = await FindEntity(id);
             if (entity is not null)
             {
                 _entities.Remove(entity);
                 await _context.SaveChangesAsync();
             }
         }
+
+        protected virtual async Task<TEntity?> FindEntity(Guid id)
+            => await _entities.FirstOrDefaultAsync(x => x.Id == id);
     }
 }
