@@ -1,4 +1,4 @@
-This API serves as an example of my own feature-driven architecture, using generic controllers and repositories, Entity Framework, AutoMapper, Dependency Injection and SOLID principles. It also includes some of my old refactored work.
+This API serves as an example of my own feature-driven architecture, using authentication, generic controllers and repositories, Entity Framework, AutoMapper, Dependency Injection and SOLID principles. It also includes some of my old refactored work.
 
 
 Types of classes:
