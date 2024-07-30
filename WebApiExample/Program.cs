@@ -6,6 +6,7 @@ using WebApiExample.Features.Primes;
 using WebApiExample.Features.RailVehicles;
 using WebApiExample.Features.RandomSeriesEpisode;
 using WebApiExample.GeneralServices.RandomNumber;
+using WebApiExample.GeneralServices.RestoreItem;
 using WebApiExample.GeneralServices.User;
 using WebApiExample.GenericRepositories.SimpleModel;
 using WebApiExample.GenericRepositories.SimpleModelWithUser;
@@ -47,6 +48,7 @@ namespace WebApiExample
             builder.Services.AddScoped<IRandomSeriesEpisodeService, RandomSeriesEpisodeService>();
             builder.Services.AddScoped<ISimpleModelRepository<FilmModel>, SimpleModelRepository<Film, FilmModel>>();
             builder.Services.AddScoped<ISimpleModelWithUserRepository<RailVehicleModel>, SimpleModelWithUserRepository<RailVehicle, RailVehicleModel>>();
+            builder.Services.AddScoped<IRestoreItemService, RestoreItemService<RailVehicle>>();
 
             var app = builder.Build();
 

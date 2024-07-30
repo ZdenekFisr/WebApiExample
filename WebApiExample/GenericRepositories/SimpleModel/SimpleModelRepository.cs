@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using WebApiExample.Extensions;
 using WebApiExample.RepositoryInterfaces;
 
 namespace WebApiExample.GenericRepositories.SimpleModel
@@ -26,11 +27,11 @@ namespace WebApiExample.GenericRepositories.SimpleModel
             _entities = _context.Set<TEntity>();
         }
 
-        /// <inheritdoc cref="IGetOne{TModel}"/>
+        /// <inheritdoc cref="IGetOne{TModel}.GetOneAsync(Guid)"/>
         public virtual async Task<TModel?> GetOneAsync(Guid id)
             => _mapper.Map<TModel>(await FindEntity(id));
 
-        /// <inheritdoc cref="ICreate{TModel}"/>
+        /// <inheritdoc cref="ICreate{TModel}.CreateAsync(TModel)"/>
         public virtual async Task CreateAsync(TModel model)
         {
             TEntity entity = _mapper.Map<TEntity>(model);
@@ -38,7 +39,7 @@ namespace WebApiExample.GenericRepositories.SimpleModel
             await _context.SaveChangesAsync();
         }
 
-        /// <inheritdoc cref="IUpdate{TModel}"/>
+        /// <inheritdoc cref="IUpdate{TModel}.UpdateAsync(Guid, TModel)"/>
         public virtual async Task UpdateAsync(Guid id, TModel model)
         {
             TEntity entity = _mapper.Map<TEntity>(model);
@@ -47,18 +48,18 @@ namespace WebApiExample.GenericRepositories.SimpleModel
             await _context.SaveChangesAsync();
         }
 
-        /// <inheritdoc cref="IDelete"/>
+        /// <inheritdoc cref="IDelete.DeleteAsync(Guid)"/>
         public virtual async Task DeleteAsync(Guid id)
         {
             TEntity? entity = await FindEntity(id);
-            if (entity is not null)
-            {
-                _entities.Remove(entity);
-                await _context.SaveChangesAsync();
-            }
+            if (entity is null)
+                return;
+
+            _entities.SoftOrHardDelete(entity, true);
+            await _context.SaveChangesAsync();
         }
 
         protected virtual async Task<TEntity?> FindEntity(Guid id)
-            => await _entities.FirstOrDefaultAsync(x => x.Id == id);
+            => await _entities.FindActiveEntityByPredicate(e => e.Id == id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using WebApiExample.Extensions;
 using WebApiExample.RepositoryInterfaces;
 
 namespace WebApiExample.GenericRepositories.SimpleModelWithUser
@@ -26,11 +27,11 @@ namespace WebApiExample.GenericRepositories.SimpleModelWithUser
             _entities = _context.Set<TEntity>();
         }
 
-        /// <inheritdoc cref="IGetOneWithUser{TModel}"/>
+        /// <inheritdoc cref="IGetOneWithUser{TModel}.GetOneAsync(Guid, string)"/>
         public virtual async Task<TModel?> GetOneAsync(Guid id, string userId)
             => _mapper.Map<TModel>(await FindEntity(id, userId));
 
-        /// <inheritdoc cref="ICreateWithUser{TModel}"/>
+        /// <inheritdoc cref="ICreateWithUser{TModel}.CreateAsync(TModel, string)"/>
         public virtual async Task CreateAsync(TModel model, string userId)
         {
             TEntity entity = _mapper.Map<TEntity>(model);
@@ -39,7 +40,7 @@ namespace WebApiExample.GenericRepositories.SimpleModelWithUser
             await _context.SaveChangesAsync();
         }
 
-        /// <inheritdoc cref="IUpdateWithUser{TModel}"/>
+        /// <inheritdoc cref="IUpdateWithUser{TModel}.UpdateAsync(Guid, TModel, string)"/>
         public virtual async Task UpdateAsync(Guid id, TModel model, string userId)
         {
             TEntity entity = _mapper.Map<TEntity>(model);
@@ -49,18 +50,18 @@ namespace WebApiExample.GenericRepositories.SimpleModelWithUser
             await _context.SaveChangesAsync();
         }
 
-        /// <inheritdoc cref="IDelete"/>
+        /// <inheritdoc cref="IDeleteWithUser.DeleteAsync(Guid, string)"/>
         public virtual async Task DeleteAsync(Guid id, string userId)
         {
             TEntity? entity = await FindEntity(id, userId);
-            if (entity is not null)
-            {
-                _entities.Remove(entity);
-                await _context.SaveChangesAsync();
-            }
+            if (entity is null)
+                return;
+
+            _entities.SoftOrHardDelete(entity, true, userId);
+            await _context.SaveChangesAsync();
         }
 
         protected virtual async Task<TEntity?> FindEntity(Guid id, string userId)
-            => await _entities.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            => await _entities.FindActiveEntityByPredicate(e => e.Id == id && e.UserId == userId);
     }
 }

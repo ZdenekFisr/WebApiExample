@@ -22,6 +22,10 @@ namespace WebApiExample
                 .HasOne<ApplicationUser>()
                 .WithMany()
                 .HasForeignKey(e => e.UserId);
+            builder.Entity<RailVehicle>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(e => e.DeletedBy);
         }
     }
 }
