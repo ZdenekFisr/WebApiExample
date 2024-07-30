@@ -1,10 +1,10 @@
-This API serves as an example of my own feature-driven architecture, using authentication, generic controllers and repositories, Entity Framework, AutoMapper, Dependency Injection and SOLID principles. It also includes some of my old refactored work.
+This API serves as an example of my own feature-driven architecture, using authentication, generic controllers and repositories, Entity Framework (code first), AutoMapper, Dependency Injection and SOLID principles. It also includes some of my old refactored work.
 
 
 Types of classes:
 
 
-Entity: Corresponds to one or more DB tables and is used by Entity Framework. It inherits from the "Entity" class. If it doesn't have a corresponding model, it is used by the controller directly.
+Entity: Corresponds to one or more DB tables and is used by Entity Framework. It inherits from the "Entity" (or "EntityWithUser") class. If it doesn't have a corresponding model, it is used by the controller directly.
 
 Model: Can correspond to an entity. In that case, it is mapped to it with AutoMapper. If not, there is no relation to DB. It inherits from the "Model" class. It is used by the controller.
 
@@ -15,6 +15,10 @@ Repository: A specific service that contains CRUD operations (not necessarily al
 
 Folder structure:
 
+
+EntityInterfaces: Interfaces intended to be implemented by entities. They contain additional DB columns.
+
+Enums: Enumerations that can be shared across various features.
 
 Extensions: Extension methods.
 
@@ -28,4 +32,6 @@ GenericRepositories: Same as GenericControllers, but with repositories.
 
 Helpers: Static helper methods.
 
-RepositoryInterfaces: Interfaces with CRUD operations that can be used by repositories. Each interface has one method.
+Migrations: Entity Framework migrations.
+
+RepositoryInterfaces: Interfaces with CRUD operations that can be implemented by repositories. Each interface has one method.
