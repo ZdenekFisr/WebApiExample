@@ -22,7 +22,7 @@ Enums: Enumerations that can be shared across various features.
 
 Extensions: Extension methods.
 
-Features: Folders with features that are independent of each other. Each feature consists of one or more controllers and optionally entities, models, services and repositories.
+Features: Folders representing features. Each feature consists of one or more controllers and optionally entities, models, services and repositories and can be dependent on other features.
 
 GeneralServices: Services that can be used by one or more features.
 
