@@ -1,4 +1,4 @@
-﻿namespace WebApiExample.GeneralServices.User
+﻿namespace WebApiExample.SharedServices.User
 {
     /// <summary>
     /// Contains methods for finding a user in DB by user name.

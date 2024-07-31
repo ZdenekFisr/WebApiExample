@@ -1,6 +1,6 @@
 ﻿using WebApiExample.Enums;
 
-namespace WebApiExample.Features.NumberInWords
+namespace WebApiExample.SharedServices.NumberInWords
 {
     /// <summary>
     /// Contains a method for converting a whole number into a string representation in Czech.

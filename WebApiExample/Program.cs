@@ -2,15 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using WebApiExample.Features.AmountInWords;
 using WebApiExample.Features.Divisors;
 using WebApiExample.Features.FilmDatabase;
-using WebApiExample.Features.NumberInWords;
 using WebApiExample.Features.Primes;
 using WebApiExample.Features.RailVehicles;
 using WebApiExample.Features.RandomSeriesEpisode;
-using WebApiExample.GeneralServices.RandomNumber;
-using WebApiExample.GeneralServices.RestoreItem;
-using WebApiExample.GeneralServices.User;
 using WebApiExample.GenericRepositories.SimpleModel;
 using WebApiExample.GenericRepositories.SimpleModelWithUser;
+using WebApiExample.SharedServices.NumberInWords;
+using WebApiExample.SharedServices.RandomNumber;
+using WebApiExample.SharedServices.RestoreItem;
+using WebApiExample.SharedServices.User;
 
 namespace WebApiExample
 {

@@ -2,7 +2,7 @@
 using WebApiExample.Enums;
 using WebApiExample.Extensions;
 
-namespace WebApiExample.Features.NumberInWords
+namespace WebApiExample.SharedServices.NumberInWords
 {
     /// <inheritdoc cref="INumberInWordsCzechService"/>
     public class NumberInWordsCzechService : INumberInWordsCzechService

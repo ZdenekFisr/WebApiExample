@@ -1,4 +1,4 @@
-﻿namespace WebApiExample.GeneralServices.RandomNumber
+﻿namespace WebApiExample.SharedServices.RandomNumber
 {
     /// <summary>
     /// Contains a method for the generation of a random integer.

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using WebApiExample.Enums;
-using WebApiExample.Features.NumberInWords;
+using WebApiExample.SharedServices.NumberInWords;
 
 namespace UnitTests
 {

@@ -2,7 +2,7 @@
 using Moq;
 using WebApiExample.Enums;
 using WebApiExample.Features.AmountInWords;
-using WebApiExample.Features.NumberInWords;
+using WebApiExample.SharedServices.NumberInWords;
 
 namespace UnitTests
 {

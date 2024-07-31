@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using WebApiExample.Extensions;
-using WebApiExample.Features.NumberInWords;
+using WebApiExample.SharedServices.NumberInWords;
 
 namespace WebApiExample.Features.AmountInWords
 {

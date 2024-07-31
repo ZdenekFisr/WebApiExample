@@ -1,4 +1,4 @@
-﻿namespace WebApiExample.GeneralServices.RandomNumber
+﻿namespace WebApiExample.SharedServices.RandomNumber
 {
     /// <inheritdoc cref="IRandomNumberService"/>
     public class RandomNumberService : IRandomNumberService

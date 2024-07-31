@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApiExample.Enums;
+using WebApiExample.SharedServices.NumberInWords;
 
 namespace WebApiExample.Features.NumberInWords
 {

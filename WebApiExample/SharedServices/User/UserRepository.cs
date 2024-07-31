@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace WebApiExample.GeneralServices.User
+namespace WebApiExample.SharedServices.User
 {
     /// <inheritdoc cref="IUserRepository"/>
     public class UserRepository(

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApiExample.GeneralServices.User;
 using WebApiExample.GenericRepositories.SimpleModelWithUser;
+using WebApiExample.SharedServices.User;
 
 namespace WebApiExample.GenericControllers
 {

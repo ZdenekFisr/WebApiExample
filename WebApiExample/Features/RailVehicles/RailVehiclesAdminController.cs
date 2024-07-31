@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApiExample.GeneralServices.RestoreItem;
+using WebApiExample.SharedServices.RestoreItem;
 
 namespace WebApiExample.Features.RailVehicles
 {

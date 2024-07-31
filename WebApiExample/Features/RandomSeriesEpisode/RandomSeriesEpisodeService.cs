@@ -1,4 +1,4 @@
-﻿using WebApiExample.GeneralServices.RandomNumber;
+﻿using WebApiExample.SharedServices.RandomNumber;
 
 namespace WebApiExample.Features.RandomSeriesEpisode
 {

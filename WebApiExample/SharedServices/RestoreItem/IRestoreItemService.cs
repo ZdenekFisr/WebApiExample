@@ -1,4 +1,4 @@
-﻿namespace WebApiExample.GeneralServices.RestoreItem
+﻿namespace WebApiExample.SharedServices.RestoreItem
 {
     /// <summary>
     /// Contains a method for restoring a soft-deleted item.
