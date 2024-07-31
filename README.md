@@ -22,9 +22,7 @@ Enums: Enumerations that can be shared across various features.
 
 Extensions: Extension methods.
 
-Features: Folders representing features. Each feature consists of one or more controllers and optionally entities, models, services and repositories and can be dependent on other features.
-
-GeneralServices: Services that can be used by one or more features.
+Features: Folders that represent features. Each feature consists of one or more controllers and optionally entities, models, services or repositories, and is independent of other features.
 
 GenericControllers: Controllers that can be inherited from by other controllers and contain CRUD operations for the type parameter.
 
@@ -35,3 +33,5 @@ Helpers: Static helper methods.
 Migrations: Entity Framework migrations.
 
 RepositoryInterfaces: Interfaces with CRUD operations that can be implemented by repositories. Each interface has one method.
+
+SharedServices: Services that can be used by one or more features.
