@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WebApiExample.Features.AmountInWords;
 using WebApiExample.Features.Divisors;
 using WebApiExample.Features.FilmDatabase;
 using WebApiExample.Features.NumberInWords;

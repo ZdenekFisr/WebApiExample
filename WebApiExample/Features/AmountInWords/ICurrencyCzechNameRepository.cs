@@ -1,4 +1,4 @@
-﻿namespace WebApiExample.Features.NumberInWords
+﻿namespace WebApiExample.Features.AmountInWords
 {
     /// <summary>
     /// Repository that retrieves Czech names of currencies from a DB.

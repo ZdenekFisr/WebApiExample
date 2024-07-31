@@ -1,6 +1,6 @@
 ﻿using WebApiExample.Enums;
 
-namespace WebApiExample.Features.NumberInWords
+namespace WebApiExample.Features.AmountInWords
 {
     public class CurrencyCzechName : Entity
     {

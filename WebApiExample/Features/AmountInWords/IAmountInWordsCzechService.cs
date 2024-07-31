@@ -1,4 +1,4 @@
-﻿namespace WebApiExample.Features.NumberInWords
+﻿namespace WebApiExample.Features.AmountInWords
 {
     /// <summary>
     /// Contains a method for converting a financial amount into a string representation in Czech.

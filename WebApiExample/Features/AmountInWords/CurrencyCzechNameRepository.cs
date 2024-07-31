@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace WebApiExample.Features.NumberInWords
+namespace WebApiExample.Features.AmountInWords
 {
     /// <inheritdoc cref="ICurrencyCzechNameRepository"/>
     public class CurrencyCzechNameRepository(ApplicationDbContext dbContext) : ICurrencyCzechNameRepository

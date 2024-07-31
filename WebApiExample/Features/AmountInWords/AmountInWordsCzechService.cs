@@ -1,7 +1,8 @@
 ﻿using System.Text;
 using WebApiExample.Extensions;
+using WebApiExample.Features.NumberInWords;
 
-namespace WebApiExample.Features.NumberInWords
+namespace WebApiExample.Features.AmountInWords
 {
     /// <inheritdoc cref="IAmountInWordsCzechService"/>
     public class AmountInWordsCzechService(

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using WebApiExample.Enums;
+using WebApiExample.Features.AmountInWords;
 using WebApiExample.Features.NumberInWords;
 
 namespace UnitTests

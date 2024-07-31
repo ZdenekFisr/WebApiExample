@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace WebApiExample.Features.NumberInWords
+namespace WebApiExample.Features.AmountInWords
 {
     [Route("api/[controller]")]
     [ApiController]
