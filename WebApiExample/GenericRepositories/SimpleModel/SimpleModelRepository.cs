@@ -35,6 +35,8 @@ namespace WebApiExample.GenericRepositories.SimpleModel
         public virtual async Task CreateAsync(TModel model)
         {
             TEntity entity = _mapper.Map<TEntity>(model);
+            entity.SetCreateHistory();
+
             _entities.Add(entity);
             await _context.SaveChangesAsync();
         }
@@ -42,8 +44,13 @@ namespace WebApiExample.GenericRepositories.SimpleModel
         /// <inheritdoc cref="IUpdate{TModel}.UpdateAsync(Guid, TModel)"/>
         public virtual async Task UpdateAsync(Guid id, TModel model)
         {
-            TEntity entity = _mapper.Map<TEntity>(model);
-            entity.Id = id;
+            TEntity? entity = await FindEntity(id);
+            if (entity is null)
+                return;
+
+            _mapper.Map(model, entity);
+            entity.SetUpdateHistory();
+
             _entities.Update(entity);
             await _context.SaveChangesAsync();
         }

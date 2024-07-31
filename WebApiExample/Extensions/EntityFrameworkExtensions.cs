@@ -61,5 +61,37 @@ namespace WebApiExample.Extensions
                 softDeletableEntity.IsDeleted = false;
             }
         }
+
+        /// <summary>
+        /// If the entity implements <see cref="ICreateHistory"/>, this method sets the properties about the history of creating the item.
+        /// </summary>
+        /// <typeparam name="TEntity">Type of entity.</typeparam>
+        /// <param name="entity">Instance of entity to be modified.</param>
+        /// <param name="userId">User ID. If the entity is not bound to a user, keep default.</param>
+        public static void SetCreateHistory<TEntity>(this TEntity entity, string? userId = null)
+            where TEntity : Entity
+        {
+            if (entity is ICreateHistory entityCreateHistory)
+            {
+                entityCreateHistory.CreatedAt = DateTimeHelpers.GetCurrentDateTimeUtc();
+                entityCreateHistory.CreatedBy = userId;
+            }
+        }
+
+        /// <summary>
+        /// If the entity implements <see cref="IUpdateHistory"/>, this method sets the properties about the history of updating the item.
+        /// </summary>
+        /// <typeparam name="TEntity">Type of entity.</typeparam>
+        /// <param name="entity">Instance of entity to be modified.</param>
+        /// <param name="userId">User ID. If the entity is not bound to a user, keep default.</param>
+        public static void SetUpdateHistory<TEntity>(this TEntity entity, string? userId = null)
+            where TEntity : Entity
+        {
+            if (entity is IUpdateHistory entityUpdateHistory)
+            {
+                entityUpdateHistory.UpdatedAt = DateTimeHelpers.GetCurrentDateTimeUtc();
+                entityUpdateHistory.UpdatedBy = userId;
+            }
+        }
     }
 }

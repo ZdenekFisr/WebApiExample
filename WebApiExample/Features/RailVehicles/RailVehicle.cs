@@ -3,7 +3,7 @@ using WebApiExample.EntityInterfaces;
 
 namespace WebApiExample.Features.RailVehicles
 {
-    public class RailVehicle : EntityWithUser, ISoftDeletable
+    public class RailVehicle : EntityWithUser, ICreateHistory, IUpdateHistory, ISoftDeletable
     {
         [StringLength(Constants.VehicleNameMaxLength)]
         public required string Name { get; set; }
@@ -15,6 +15,14 @@ namespace WebApiExample.Features.RailVehicles
         public double Performance { get; set; }
 
         public short MaxSpeed { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public string? CreatedBy { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
+
+        public string? UpdatedBy { get; set; }
 
         public bool IsDeleted { get; set; }
 
