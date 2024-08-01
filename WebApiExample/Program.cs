@@ -48,6 +48,7 @@ namespace WebApiExample
             builder.Services.AddScoped<IAmountInWordsCzechService, AmountInWordsCzechService>();
             builder.Services.AddScoped<IRandomSeriesEpisodeService, RandomSeriesEpisodeService>();
             builder.Services.AddScoped<ISimpleModelRepository<FilmModel>, SimpleModelRepository<Film, FilmModel>>();
+            builder.Services.AddScoped<IFilteredFilmsRepository, FilteredFilmsRepository>();
             builder.Services.AddScoped<ISimpleModelWithUserRepository<RailVehicleModel>, SimpleModelWithUserRepository<RailVehicle, RailVehicleModel>>();
             builder.Services.AddScoped<IRestoreItemService, RestoreItemService<RailVehicle>>();
 
