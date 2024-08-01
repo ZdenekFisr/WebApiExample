@@ -14,17 +14,17 @@ namespace WebApiExample.GenericRepositories.SimpleModelWithUser
         where TEntity : EntityWithUser
         where TModel : Model
     {
-        protected readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _dbContext;
         protected readonly IMapper _mapper;
 
         protected readonly DbSet<TEntity> _entities;
 
         public SimpleModelWithUserRepository(ApplicationDbContext dbContext, IMapper mapper)
         {
-            _context = dbContext;
+            _dbContext = dbContext;
             _mapper = mapper;
 
-            _entities = _context.Set<TEntity>();
+            _entities = _dbContext.Set<TEntity>();
         }
 
         /// <inheritdoc cref="IGetOneWithUser{TModel}.GetOneAsync(Guid, string)"/>
@@ -39,7 +39,7 @@ namespace WebApiExample.GenericRepositories.SimpleModelWithUser
             entity.SetCreateHistory(userId);
 
             _entities.Add(entity);
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <inheritdoc cref="IUpdateWithUser{TModel}.UpdateAsync(Guid, TModel, string)"/>
@@ -53,7 +53,7 @@ namespace WebApiExample.GenericRepositories.SimpleModelWithUser
             entity.SetUpdateHistory(userId);
 
             _entities.Update(entity);
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <inheritdoc cref="IDeleteWithUser.DeleteAsync(Guid, string)"/>
@@ -64,7 +64,7 @@ namespace WebApiExample.GenericRepositories.SimpleModelWithUser
                 return;
 
             _entities.SoftOrHardDelete(entity, true, userId);
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         protected virtual async Task<TEntity?> FindEntity(Guid id, string userId)

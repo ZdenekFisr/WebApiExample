@@ -14,17 +14,17 @@ namespace WebApiExample.GenericRepositories.SimpleModel
         where TEntity : Entity
         where TModel : Model
     {
-        protected readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _dbContext;
         protected readonly IMapper _mapper;
 
         protected readonly DbSet<TEntity> _entities;
 
         public SimpleModelRepository(ApplicationDbContext dbContext, IMapper mapper)
         {
-            _context = dbContext;
+            _dbContext = dbContext;
             _mapper = mapper;
 
-            _entities = _context.Set<TEntity>();
+            _entities = _dbContext.Set<TEntity>();
         }
 
         /// <inheritdoc cref="IGetOne{TModel}.GetOneAsync(Guid)"/>
@@ -38,7 +38,7 @@ namespace WebApiExample.GenericRepositories.SimpleModel
             entity.SetCreateHistory();
 
             _entities.Add(entity);
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <inheritdoc cref="IUpdate{TModel}.UpdateAsync(Guid, TModel)"/>
@@ -52,7 +52,7 @@ namespace WebApiExample.GenericRepositories.SimpleModel
             entity.SetUpdateHistory();
 
             _entities.Update(entity);
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <inheritdoc cref="IDelete.DeleteAsync(Guid)"/>
@@ -63,7 +63,7 @@ namespace WebApiExample.GenericRepositories.SimpleModel
                 return;
 
             _entities.SoftOrHardDelete(entity, true);
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         protected virtual async Task<TEntity?> FindEntity(Guid id)
