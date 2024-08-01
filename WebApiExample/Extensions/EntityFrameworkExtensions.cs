@@ -17,7 +17,7 @@ namespace WebApiExample.Extensions
         public static async Task<TEntity?> FindActiveEntityByPredicate<TEntity>(this DbSet<TEntity> entities, Expression<Func<TEntity, bool>> firstOrDefaultCondition)
             where TEntity : Entity
         {
-            var result = await entities.FirstOrDefaultAsync(predicate: firstOrDefaultCondition);
+            var result = await entities.FirstOrDefaultAsync(firstOrDefaultCondition);
 
             if (result is null || (result is ISoftDeletable softDeletableEntity && softDeletableEntity.IsDeleted))
                 return null;
