@@ -71,14 +71,14 @@ namespace UnitTests
 
         [TestMethod]
         public async Task AmountToWords_InvalidCurrencyCode()
-            => Assert.IsTrue((await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(50, "cz")).Equals(string.Empty));
+            => Assert.IsTrue((await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(50, "cz")).Equals(string.Empty));
 
         [TestMethod]
         public async Task AmountToWords_CurrencyCodeCaps()
         {
             string currencyCode = "CZK";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("jedna koruna", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(1, currencyCode));
+            Assert.AreEqual("jedna koruna", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(1, currencyCode));
         }
 
         [TestMethod]
@@ -86,7 +86,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("jedna koruna", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(1, currencyCode));
+            Assert.AreEqual("jedna koruna", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(1, currencyCode));
         }
 
         [TestMethod]
@@ -94,7 +94,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("dvě koruny", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(2, currencyCode));
+            Assert.AreEqual("dvě koruny", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(2, currencyCode));
         }
 
         [TestMethod]
@@ -102,7 +102,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("pět korun", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(5, currencyCode));
+            Assert.AreEqual("pět korun", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(5, currencyCode));
         }
 
         [TestMethod]
@@ -110,7 +110,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("jedenáct korun", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(11, currencyCode));
+            Assert.AreEqual("jedenáct korun", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(11, currencyCode));
         }
 
         [TestMethod]
@@ -118,7 +118,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("dvanáct korun", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(12, currencyCode));
+            Assert.AreEqual("dvanáct korun", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(12, currencyCode));
         }
 
         [TestMethod]
@@ -126,7 +126,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("dvacet jedna koruna", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(21, currencyCode));
+            Assert.AreEqual("dvacet jedna koruna", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(21, currencyCode));
         }
 
         [TestMethod]
@@ -134,7 +134,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("dvacet dvě koruny", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(22, currencyCode));
+            Assert.AreEqual("dvacet dvě koruny", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(22, currencyCode));
         }
 
         [TestMethod]
@@ -142,7 +142,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("sto třicet pět korun jeden haléř", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(135.01m, currencyCode));
+            Assert.AreEqual("sto třicet pět korun jeden haléř", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(135.01m, currencyCode));
         }
 
         [TestMethod]
@@ -150,7 +150,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("sto třicet pět korun dva haléře", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(135.02m, currencyCode));
+            Assert.AreEqual("sto třicet pět korun dva haléře", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(135.02m, currencyCode));
         }
 
         [TestMethod]
@@ -158,7 +158,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("sto třicet pět korun devadesát devět haléřů", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(135.99m, currencyCode));
+            Assert.AreEqual("sto třicet pět korun devadesát devět haléřů", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(135.99m, currencyCode));
         }
 
         [TestMethod]
@@ -166,7 +166,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("stotřicetpět korun devadesátdevět haléřů", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(135.99m, currencyCode, false));
+            Assert.AreEqual("stotřicetpět korun devadesátdevět haléřů", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(135.99m, currencyCode, false));
         }
 
         [TestMethod]
@@ -174,7 +174,7 @@ namespace UnitTests
         {
             string currencyCode = "czk";
             SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("minus čtyřicet dvě koruny osmdesát čtyři haléře", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(-42.84m, currencyCode));
+            Assert.AreEqual("minus čtyřicet dvě koruny osmdesát čtyři haléře", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(-42.84m, currencyCode));
         }
 
         [TestMethod]
@@ -182,7 +182,7 @@ namespace UnitTests
         {
             string currencyCode = "eur";
             SetupMockRepository(currencyCode, mockEur);
-            Assert.AreEqual("jedno euro jeden cent", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(1.01m, currencyCode));
+            Assert.AreEqual("jedno euro jeden cent", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(1.01m, currencyCode));
         }
 
         [TestMethod]
@@ -190,7 +190,7 @@ namespace UnitTests
         {
             string currencyCode = "eur";
             SetupMockRepository(currencyCode, mockEur);
-            Assert.AreEqual("třicet dvě eura čtyřicet tři centy", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(32.43m, currencyCode));
+            Assert.AreEqual("třicet dvě eura čtyřicet tři centy", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(32.43m, currencyCode));
         }
 
         [TestMethod]
@@ -198,7 +198,7 @@ namespace UnitTests
         {
             string currencyCode = "eur";
             SetupMockRepository(currencyCode, mockEur);
-            Assert.AreEqual("sto devadesát devět eur devadesát devět centů", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(199.99m, currencyCode));
+            Assert.AreEqual("sto devadesát devět eur devadesát devět centů", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(199.99m, currencyCode));
         }
 
         [TestMethod]
@@ -206,7 +206,7 @@ namespace UnitTests
         {
             string currencyCode = "usd";
             SetupMockRepository(currencyCode, mockUsd);
-            Assert.AreEqual("jeden dolar jeden cent", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(1.01m, currencyCode));
+            Assert.AreEqual("jeden dolar jeden cent", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(1.01m, currencyCode));
         }
 
         [TestMethod]
@@ -214,7 +214,7 @@ namespace UnitTests
         {
             string currencyCode = "usd";
             SetupMockRepository(currencyCode, mockUsd);
-            Assert.AreEqual("třicet dva dolary čtyřicet tři centy", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(32.43m, currencyCode));
+            Assert.AreEqual("třicet dva dolary čtyřicet tři centy", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(32.43m, currencyCode));
         }
 
         [TestMethod]
@@ -222,7 +222,7 @@ namespace UnitTests
         {
             string currencyCode = "usd";
             SetupMockRepository(currencyCode, mockUsd);
-            Assert.AreEqual("sto devadesát devět dolarů devadesát devět centů", await _serviceProvider.GetService<IAmountInWordsCzechService>().AmountToWordsAsync(199.99m, currencyCode));
+            Assert.AreEqual("sto devadesát devět dolarů devadesát devět centů", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(199.99m, currencyCode));
         }
     }
 }
