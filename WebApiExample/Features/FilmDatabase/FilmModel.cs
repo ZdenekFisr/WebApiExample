@@ -11,8 +11,10 @@ namespace WebApiExample.Features.FilmDatabase
 
         public required short YearOfRelease { get; set; }
 
+        [Range(1, short.MaxValue)]
         public required short LengthInMinutes { get; set; }
 
+        [Range(0, 100)]
         public required byte Rating { get; set; }
 
         public required string ImageUrl { get; set; }
