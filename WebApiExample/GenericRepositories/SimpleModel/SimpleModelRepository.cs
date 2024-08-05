@@ -29,7 +29,7 @@ namespace WebApiExample.GenericRepositories.SimpleModel
 
         /// <inheritdoc cref="IGetOne{TModel}.GetOneAsync(Guid)"/>
         public virtual async Task<TModel?> GetOneAsync(Guid id)
-            => _mapper.Map<TModel>(await FindEntity(id));
+            => _mapper.Map<TModel>(await FindEntityAsync(id));
 
         /// <inheritdoc cref="ICreate{TModel}.CreateAsync(TModel)"/>
         public virtual async Task CreateAsync(TModel model)
@@ -44,7 +44,7 @@ namespace WebApiExample.GenericRepositories.SimpleModel
         /// <inheritdoc cref="IUpdate{TModel}.UpdateAsync(Guid, TModel)"/>
         public virtual async Task UpdateAsync(Guid id, TModel model)
         {
-            TEntity? entity = await FindEntity(id);
+            TEntity? entity = await FindEntityAsync(id);
             if (entity is null)
                 return;
 
@@ -58,7 +58,7 @@ namespace WebApiExample.GenericRepositories.SimpleModel
         /// <inheritdoc cref="IDelete.DeleteAsync(Guid)"/>
         public virtual async Task DeleteAsync(Guid id)
         {
-            TEntity? entity = await FindEntity(id);
+            TEntity? entity = await FindEntityAsync(id);
             if (entity is null)
                 return;
 
@@ -66,7 +66,7 @@ namespace WebApiExample.GenericRepositories.SimpleModel
             await _dbContext.SaveChangesAsync();
         }
 
-        protected virtual async Task<TEntity?> FindEntity(Guid id)
+        protected virtual async Task<TEntity?> FindEntityAsync(Guid id)
             => await _entities.FindActiveEntityByPredicate(e => e.Id == id);
     }
 }

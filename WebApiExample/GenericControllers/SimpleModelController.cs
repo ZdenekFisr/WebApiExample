@@ -7,17 +7,17 @@ namespace WebApiExample.GenericControllers
     /// Generic controller that uses registered implementation of <see cref="ISimpleModelRepository{TModel}"/> for CRUD operations. It can be inherited and expanded by some other controller.
     /// </summary>
     /// <typeparam name="TModel">Type of model that is being handled.</typeparam>
-    /// <param name="repository">Repository instance that is used for handling the model.</param>
+    /// <param name="modelRepository">Repository instance that is used for handling the model.</param>
     [ApiController]
-    public class SimpleModelController<TModel>(ISimpleModelRepository<TModel> repository) : ControllerBase
+    public class SimpleModelController<TModel>(ISimpleModelRepository<TModel> modelRepository) : ControllerBase
         where TModel : Model
     {
-        private readonly ISimpleModelRepository<TModel> _repository = repository;
+        protected readonly ISimpleModelRepository<TModel> _modelRepository = modelRepository;
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOneByIdAsync(Guid id)
+        public virtual async Task<IActionResult> GetOneByIdAsync(Guid id)
         {
-            TModel? result = await _repository.GetOneAsync(id);
+            TModel? result = await _modelRepository.GetOneAsync(id);
 
             if (result is null)
                 return NotFound();
@@ -26,15 +26,15 @@ namespace WebApiExample.GenericControllers
         }
 
         [HttpPost]
-        public async Task CreateAsync(TModel model)
-            => await _repository.CreateAsync(model);
+        public virtual async Task CreateAsync(TModel model)
+            => await _modelRepository.CreateAsync(model);
 
         [HttpPut]
-        public async Task UpdateAsync(Guid id, TModel model)
-            => await _repository.UpdateAsync(id, model);
+        public virtual async Task UpdateAsync(Guid id, TModel model)
+            => await _modelRepository.UpdateAsync(id, model);
 
         [HttpDelete]
-        public async Task DeleteAsync(Guid id)
-            => await _repository.DeleteAsync(id);
+        public virtual async Task DeleteAsync(Guid id)
+            => await _modelRepository.DeleteAsync(id);
     }
 }
