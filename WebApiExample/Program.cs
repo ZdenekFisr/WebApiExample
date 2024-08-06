@@ -1,10 +1,11 @@
+using Asp.Versioning;
 using Microsoft.EntityFrameworkCore;
-using WebApiExample.Features.AmountInWords;
-using WebApiExample.Features.Divisors;
-using WebApiExample.Features.FilmDatabase;
-using WebApiExample.Features.Primes;
-using WebApiExample.Features.RailVehicles;
-using WebApiExample.Features.RandomSeriesEpisode;
+using WebApiExample.Features.AmountInWords.V1;
+using WebApiExample.Features.Divisors.V1;
+using WebApiExample.Features.FilmDatabase.V1;
+using WebApiExample.Features.Primes.V1;
+using WebApiExample.Features.RailVehicles.V1;
+using WebApiExample.Features.RandomSeriesEpisode.V1;
 using WebApiExample.GenericRepositories.SimpleModel;
 using WebApiExample.GenericRepositories.SimpleModelWithUser;
 using WebApiExample.SharedServices.NumberInWords;
@@ -26,6 +27,17 @@ namespace WebApiExample
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = ApiVersion.Default;
+                options.ReportApiVersions = true;
+            }).AddApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'V";
+                options.SubstituteApiVersionInUrl = true;
+            });
 
             builder.Services.AddAutoMapper(typeof(Program), typeof(AutoMapperProfile));
 

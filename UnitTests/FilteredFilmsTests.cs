@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WebApiExample;
-using WebApiExample.Features.FilmDatabase;
+using WebApiExample.Features.FilmDatabase.V1;
 
 namespace UnitTests
 {

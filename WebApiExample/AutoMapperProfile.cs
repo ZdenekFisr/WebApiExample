@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using WebApiExample.Features.FilmDatabase;
-using WebApiExample.Features.RailVehicles;
+using WebApiExample.Features.FilmDatabase.V1;
+using WebApiExample.Features.RailVehicles.V1;
 
 namespace WebApiExample
 {

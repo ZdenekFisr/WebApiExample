@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using WebApiExample.Features.AmountInWords;
-using WebApiExample.Features.FilmDatabase;
-using WebApiExample.Features.RailVehicles;
+using WebApiExample.Features.AmountInWords.V1;
+using WebApiExample.Features.FilmDatabase.V1;
+using WebApiExample.Features.RailVehicles.V1;
 
 namespace WebApiExample
 {
