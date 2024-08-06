@@ -1,4 +1,4 @@
-This API serves as an example of my own feature-driven architecture, using authentication, generic controllers and repositories, Entity Framework (code first), AutoMapper, Dependency Injection and SOLID principles. It also includes some of my old refactored work. Features are tested with unit tests (MSTest) using mock objects (Moq) and EF's in-memory database.
+This API serves as an example of my own feature-driven architecture, using versioning, authentication, generic controllers and repositories, Entity Framework (code first), AutoMapper, Dependency Injection and SOLID principles. It also includes some of my old refactored work. Features are tested with unit tests (MSTest) using mock objects (Moq) and EF's in-memory database.
 
 
 Types of classes:
@@ -22,7 +22,7 @@ Enums: Enumerations that can be shared across various features.
 
 Extensions: Extension methods.
 
-Features: Folders that represent features. Each feature consists of one or more controllers and optionally entities, models, services or repositories, and is independent of other features.
+Features: Folders that represent features. Each feature consists of one or more controllers and optionally entities, models, services or repositories, and is independent of other features. Features are versioned, other parts of the API can be versioned as well if needed.
 
 GenericControllers: Controllers that can be inherited from by other controllers and contain CRUD operations for the type parameter.
 
