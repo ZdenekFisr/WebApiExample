@@ -1,22 +1,24 @@
-﻿namespace WebApiExample.SharedServices.User
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace WebApiExample.SharedServices.User
 {
     /// <summary>
-    /// Contains methods for finding a user in DB by user name.
+    /// Contains methods for finding a user in DB by current user's name.
     /// </summary>
     public interface IUserRepository
     {
         /// <summary>
-        /// Finds a user in DB by user name.
+        /// Finds the current user in DB using <see cref="ControllerBase.HttpContext"/>.
         /// </summary>
-        /// <param name="userName">User name.</param>
-        /// <returns>User info if the user is found; otherwise, null.</returns>
-        public Task<ApplicationUser?> GetUserByNameAsync(string? userName);
+        /// <param name="controller">Controller where the HTTP request is defined.</param>
+        /// <returns>User info if the user is found; otherwise, null. If the HTTP request is unauthorized, returns <see cref="ControllerBase.Unauthorized()"/>.</returns>
+        Task<object?> GetUserOrReturnErrorAsync(ControllerBase controller);
 
         /// <summary>
-        /// Finds a user ID in DB by user name.
+        /// Finds the current user's ID in DB using <see cref="ControllerBase.HttpContext"/>.
         /// </summary>
-        /// <param name="userName">User name.</param>
-        /// <returns>User ID if the user is found; otherwise, null.</returns>
-        public Task<string?> GetUserIdByNameAsync(string? userName);
+        /// <param name="controller">Controller where the HTTP request is defined.</param>
+        /// <returns>User's ID. If the HTTP request is unauthorized, returns <see cref="ControllerBase.Unauthorized()"/>. If the user is not found, returns <see cref="ControllerBase.NotFound()"/>.</returns>
+        Task<object> GetUserIdOrReturnErrorAsync(ControllerBase controller);
     }
 }

@@ -25,15 +25,11 @@ namespace WebApiExample.GenericControllers
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> GetOneByIdAsync(Guid id)
         {
-            string? currentUserName = HttpContext.User.Identity?.Name;
-            if (currentUserName is null)
-                return Unauthorized();
+            var currentUserId = await _userRepository.GetUserIdOrReturnErrorAsync(this);
+            if (currentUserId is IActionResult actionResult)
+                return actionResult;
 
-            string? currentUserId = await _userRepository.GetUserIdByNameAsync(currentUserName);
-            if (currentUserId is null)
-                return NotFound();
-
-            TModel? result = await _modelRepository.GetOneAsync(id, currentUserId);
+            TModel? result = await _modelRepository.GetOneAsync(id, (string)currentUserId);
 
             if (result is null)
                 return NotFound();
@@ -44,45 +40,33 @@ namespace WebApiExample.GenericControllers
         [HttpPost]
         public virtual async Task<IActionResult> CreateAsync(TModel model)
         {
-            string? currentUserName = HttpContext.User.Identity?.Name;
-            if (currentUserName is null)
-                return Unauthorized();
+            var currentUserId = await _userRepository.GetUserIdOrReturnErrorAsync(this);
+            if (currentUserId is IActionResult actionResult)
+                return actionResult;
 
-            string? currentUserId = await _userRepository.GetUserIdByNameAsync(currentUserName);
-            if (currentUserId is null)
-                return NotFound();
-
-            await _modelRepository.CreateAsync(model, currentUserId);
+            await _modelRepository.CreateAsync(model, (string)currentUserId);
             return Ok();
         }
 
         [HttpPut]
         public virtual async Task<IActionResult> UpdateAsync(Guid id, TModel model)
         {
-            string? currentUserName = HttpContext.User.Identity?.Name;
-            if (currentUserName is null)
-                return Unauthorized();
+            var currentUserId = await _userRepository.GetUserIdOrReturnErrorAsync(this);
+            if (currentUserId is IActionResult actionResult)
+                return actionResult;
 
-            string? currentUserId = await _userRepository.GetUserIdByNameAsync(currentUserName);
-            if (currentUserId is null)
-                return NotFound();
-
-            await _modelRepository.UpdateAsync(id, model, currentUserId);
+            await _modelRepository.UpdateAsync(id, model, (string)currentUserId);
             return Ok();
         }
 
         [HttpDelete]
         public virtual async Task<IActionResult> DeleteAsync(Guid id)
         {
-            string? currentUserName = HttpContext.User.Identity?.Name;
-            if (currentUserName is null)
-                return Unauthorized();
+            var currentUserId = await _userRepository.GetUserIdOrReturnErrorAsync(this);
+            if (currentUserId is IActionResult actionResult)
+                return actionResult;
 
-            string? currentUserId = await _userRepository.GetUserIdByNameAsync(currentUserName);
-            if (currentUserId is null)
-                return NotFound();
-
-            await _modelRepository.DeleteAsync(id, currentUserId);
+            await _modelRepository.DeleteAsync(id, (string)currentUserId);
             return Ok();
         }
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApiExample.SharedServices.User
 {
@@ -10,17 +11,26 @@ namespace WebApiExample.SharedServices.User
         private readonly ApplicationDbContext _context = context;
 
         /// <inheritdoc />
-        public async Task<ApplicationUser?> GetUserByNameAsync(string? userName)
-            => await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+        public async Task<object?> GetUserOrReturnErrorAsync(ControllerBase controller)
+        {
+            string? userName = controller.HttpContext.User.Identity?.Name;
+            if (userName is null)
+                return controller.Unauthorized();
+
+            return await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+        }
 
         /// <inheritdoc />
-        public async Task<string?> GetUserIdByNameAsync(string? userName)
+        public async Task<object> GetUserIdOrReturnErrorAsync(ControllerBase controller)
         {
-            var user = await GetUserByNameAsync(userName);
-            if (user is null)
-                return null;
+            var result = await GetUserOrReturnErrorAsync(controller);
+            if (result is null)
+                return controller.NotFound();
 
-            return user.Id;
+            if (result is IActionResult actionResult)
+                return actionResult;
+
+            return ((ApplicationUser)result).Id;
         }
     }
 }
