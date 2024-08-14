@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebApiExample.Features.AmountInWords.V1;
 using WebApiExample.Features.Divisors.V1;
@@ -45,9 +46,10 @@ namespace WebApiExample
             builder.Services.AddDbContext<ApplicationDbContext>(
                 opt => opt.UseSqlServer(connectionString, builder => builder.MigrationsAssembly("WebApiExample")), ServiceLifetime.Transient);
 
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthentication();
 
             builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();

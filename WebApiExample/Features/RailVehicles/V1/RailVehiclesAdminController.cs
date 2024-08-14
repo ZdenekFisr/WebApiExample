@@ -5,7 +5,7 @@ using WebApiExample.SharedServices.RestoreItem;
 
 namespace WebApiExample.Features.RailVehicles.V1
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [ApiVersion(1)]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
