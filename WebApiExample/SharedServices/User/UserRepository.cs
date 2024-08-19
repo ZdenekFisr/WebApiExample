@@ -11,26 +11,32 @@ namespace WebApiExample.SharedServices.User
         private readonly ApplicationDbContext _context = context;
 
         /// <inheritdoc />
-        public async Task<object?> GetUserOrReturnErrorAsync(ControllerBase controller)
+        public async Task<object> GetUserOrReturnErrorAsync(ControllerBase controller)
         {
             string? userName = controller.HttpContext.User.Identity?.Name;
             if (userName is null)
                 return controller.Unauthorized();
 
-            return await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+            ApplicationUser? user = await GetUserAsync(userName);
+            if (user is null)
+                return controller.NotFound();
+
+            return user;
         }
 
         /// <inheritdoc />
         public async Task<object> GetUserIdOrReturnErrorAsync(ControllerBase controller)
         {
-            var result = await GetUserOrReturnErrorAsync(controller);
-            if (result is null)
-                return controller.NotFound();
+            object result = await GetUserOrReturnErrorAsync(controller);
 
             if (result is IActionResult actionResult)
                 return actionResult;
 
             return ((ApplicationUser)result).Id;
         }
+
+        /// <inheritdoc />
+        public async Task<ApplicationUser?> GetUserAsync(string userName)
+            => await _context.Users.FirstOrDefaultAsync(x => x.UserName == userName);
     }
 }

@@ -8,17 +8,32 @@ namespace WebApiExample.SharedServices.User
     public interface IUserRepository
     {
         /// <summary>
-        /// Finds the current user in DB using <see cref="ControllerBase.HttpContext"/>.
+        /// Finds the current user in DB using <see cref="ControllerBase.HttpContext"/>
         /// </summary>
         /// <param name="controller">Controller where the HTTP request is defined.</param>
-        /// <returns>User info if the user is found; otherwise, null. If the HTTP request is unauthorized, returns <see cref="ControllerBase.Unauthorized()"/>.</returns>
-        Task<object?> GetUserOrReturnErrorAsync(ControllerBase controller);
+        /// <returns>
+        /// <para>An object representing the user.</para>
+        /// <para>If the HTTP request is unauthorized, returns <see cref="ControllerBase.Unauthorized()"/>.</para>
+        /// <para>If the user is not found in the DB, returns <see cref="ControllerBase.NotFound()"/>.</para>
+        /// </returns>
+        Task<object> GetUserOrReturnErrorAsync(ControllerBase controller);
 
         /// <summary>
         /// Finds the current user's ID in DB using <see cref="ControllerBase.HttpContext"/>.
         /// </summary>
         /// <param name="controller">Controller where the HTTP request is defined.</param>
-        /// <returns>User's ID. If the HTTP request is unauthorized, returns <see cref="ControllerBase.Unauthorized()"/>. If the user is not found, returns <see cref="ControllerBase.NotFound()"/>.</returns>
+        /// <returns>
+        /// <para>User's ID.</para>
+        /// <para>If the HTTP request is unauthorized, returns <see cref="ControllerBase.Unauthorized()"/>.</para>
+        /// <para>If the user is not found in the DB, returns <see cref="ControllerBase.NotFound()"/>.</para>
+        /// </returns>
         Task<object> GetUserIdOrReturnErrorAsync(ControllerBase controller);
+
+        /// <summary>
+        /// Finds a user in DB based on user name.
+        /// </summary>
+        /// <param name="userName">User name.</param>
+        /// <returns>An object representing the user if the user is found in the DB; otherwise, null.</returns>
+        Task<ApplicationUser?> GetUserAsync(string userName);
     }
 }
