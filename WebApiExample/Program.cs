@@ -64,7 +64,7 @@ namespace WebApiExample
             builder.Services.AddScoped<ISimpleModelRepository<FilmModel>, SimpleModelRepository<Film, FilmModel>>();
             builder.Services.AddScoped<IFilteredFilmsRepository, FilteredFilmsRepository>();
             builder.Services.AddScoped<ISimpleModelWithUserRepository<RailVehicleModel>, SimpleModelWithUserRepository<RailVehicle, RailVehicleModel>>();
-            builder.Services.AddScoped<IRestoreItemService, RestoreItemService<RailVehicle>>();
+            builder.Services.AddScoped<IRestoreItemService<RailVehicle>, RestoreItemService<RailVehicle>>();
 
             var app = builder.Build();
 

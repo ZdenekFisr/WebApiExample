@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WebApiExample.Extensions;
+using WebApiExample.EntityInterfaces;
 
 namespace WebApiExample.SharedServices.RestoreItem
 {
@@ -7,8 +7,8 @@ namespace WebApiExample.SharedServices.RestoreItem
     /// Contains a method for restoring a soft-deleted item.
     /// </summary>
     /// <typeparam name="TEntity">Type of entity.</typeparam>
-    public class RestoreItemService<TEntity> : IRestoreItemService
-        where TEntity : Entity
+    public class RestoreItemService<TEntity> : IRestoreItemService<TEntity>
+        where TEntity : EntityWithUser
     {
         private readonly ApplicationDbContext _context;
 
@@ -21,15 +21,18 @@ namespace WebApiExample.SharedServices.RestoreItem
             _entities = _context.Set<TEntity>();
         }
 
-        /// <inheritdoc cref="IRestoreItemService.Restore(Guid)"/>
-        public async Task Restore(Guid id)
+        /// <inheritdoc cref="IRestoreItemService{TEntity}.RestoreAsync(Guid, string)"/>
+        public async Task RestoreAsync(Guid id, string userId)
         {
-            var item = await _entities.FirstOrDefaultAsync(rv => rv.Id == id);
+            TEntity? entity = await _entities.FirstOrDefaultAsync(e => e.Id == id && e.UserId == userId);
 
-            if (item is null)
+            if (entity is null)
                 return;
 
-            item.Restore();
+            if (entity is not ISoftDeletable softDeletableEntity)
+                return;
+
+            softDeletableEntity.IsDeleted = false;
             await _context.SaveChangesAsync();
         }
     }

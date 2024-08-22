@@ -49,20 +49,6 @@ namespace WebApiExample.Extensions
         }
 
         /// <summary>
-        /// Restores a soft-deleted row by setting <see cref="ISoftDeletable.IsDeleted"/> to false. Warning: the context changes are not saved.
-        /// </summary>
-        /// <typeparam name="TEntity">Type of entity.</typeparam>
-        /// <param name="entity">Instance of entity to be restored.</param>
-        public static void Restore<TEntity>(this TEntity entity)
-            where TEntity : Entity
-        {
-            if (entity is ISoftDeletable softDeletableEntity)
-            {
-                softDeletableEntity.IsDeleted = false;
-            }
-        }
-
-        /// <summary>
         /// If the entity implements <see cref="ICreateHistory"/>, this method sets the properties about the history of creating the item.
         /// </summary>
         /// <typeparam name="TEntity">Type of entity.</typeparam>
