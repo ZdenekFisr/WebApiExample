@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace WebApiExample
+namespace WebApiExample.Authentication
 {
     public class ApplicationUser : IdentityUser
     {

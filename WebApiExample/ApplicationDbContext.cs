@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebApiExample.Authentication;
 using WebApiExample.Features.AmountInWords.V1;
 using WebApiExample.Features.FilmDatabase.V1;
 using WebApiExample.Features.RailVehicles.V1;

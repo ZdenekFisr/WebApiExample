@@ -1,6 +1,8 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using WebApiExample.Authentication;
 using WebApiExample.Features.AmountInWords.V1;
 using WebApiExample.Features.Divisors.V1;
 using WebApiExample.Features.FilmDatabase.V1;
@@ -46,13 +48,14 @@ namespace WebApiExample
             builder.Services.AddDbContext<ApplicationDbContext>(
                 opt => opt.UseSqlServer(connectionString, builder => builder.MigrationsAssembly("WebApiExample")), ServiceLifetime.Transient);
 
-            builder.Services.AddAuthentication();
-
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddAuthentication("BasicAuthentication")
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+            builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformationService>();
             builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRandomNumberService, RandomNumberService>();
 
             builder.Services.AddScoped<IPrimesService, PrimesService>();

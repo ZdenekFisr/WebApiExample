@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebApiExample.Authentication;
 
 namespace WebApiExample.SharedServices.User
 {

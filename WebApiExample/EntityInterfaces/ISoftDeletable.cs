@@ -1,4 +1,6 @@
-﻿namespace WebApiExample.EntityInterfaces
+﻿using WebApiExample.Authentication;
+
+namespace WebApiExample.EntityInterfaces
 {
     /// <summary>
     /// States that entity must have a soft-delete option and corresponding columns in the DB. Warning: add foreign key from <see cref="DeletedBy"/> to <see cref="ApplicationUser"/>.

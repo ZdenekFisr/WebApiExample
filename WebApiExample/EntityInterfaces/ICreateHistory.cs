@@ -1,4 +1,6 @@
-﻿namespace WebApiExample.EntityInterfaces
+﻿using WebApiExample.Authentication;
+
+namespace WebApiExample.EntityInterfaces
 {
     /// <summary>
     /// States that entity must have properties about the history of inserting rows. Warning: add foreign key from <see cref="CreatedBy"/> to <see cref="ApplicationUser"/>.

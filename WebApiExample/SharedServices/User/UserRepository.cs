@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApiExample.Authentication;
 
 namespace WebApiExample.SharedServices.User
 {
