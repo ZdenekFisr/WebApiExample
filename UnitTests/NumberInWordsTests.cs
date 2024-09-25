@@ -7,14 +7,24 @@ namespace UnitTests
     [TestClass]
     public class NumberInWordsTests
     {
-        private readonly ServiceProvider _serviceProvider;
+        private ServiceProvider _serviceProvider;
+        private IServiceScope _serviceScope;
 
-        public NumberInWordsTests()
+        [TestInitialize]
+        public void Setup()
         {
             var services = new ServiceCollection();
             services.AddTransient<INumberInWordsCzechService, NumberInWordsCzechService>();
 
             _serviceProvider = services.BuildServiceProvider();
+            _serviceScope = _serviceProvider.CreateScope();
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _serviceScope.Dispose();
+            _serviceProvider.Dispose();
         }
 
         [TestMethod]

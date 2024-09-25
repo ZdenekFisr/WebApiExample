@@ -9,8 +9,11 @@ namespace UnitTests
     [TestClass]
     public class AmountInWordsTests
     {
-        private readonly ServiceProvider _serviceProvider;
-        private readonly Mock<ICurrencyCzechNameRepository> _currencyCzechNameRepository;
+        private ServiceProvider _serviceProvider;
+        private IServiceScope _serviceScope;
+
+        private Mock<ICurrencyCzechNameRepository> _currencyCzechNameRepository;
+        private Mock<INumberInWordsCzechService> _numberInWordsCzechService;
 
         private readonly CurrencyCzechName mockCzk = new()
         {
@@ -49,24 +52,53 @@ namespace UnitTests
             SubunitGrammaticalGender = GrammaticalGender.Masculine
         };
 
-        public AmountInWordsTests()
+        [TestInitialize]
+        public void Setup()
         {
             var services = new ServiceCollection();
 
             _currencyCzechNameRepository = new();
             services.AddSingleton(_currencyCzechNameRepository.Object);
+            _numberInWordsCzechService = new();
+            services.AddSingleton(_numberInWordsCzechService.Object);
 
-            services.AddTransient<INumberInWordsCzechService, NumberInWordsCzechService>();
             services.AddTransient<IAmountInWordsCzechService, AmountInWordsCzechService>();
 
             _serviceProvider = services.BuildServiceProvider();
+            _serviceScope = _serviceProvider.CreateScope();
         }
 
-        private void SetupMockRepository(string currencyCode, CurrencyCzechName mockObject)
+        [TestCleanup]
+        public void Cleanup()
         {
+            _serviceScope.Dispose();
+            _serviceProvider.Dispose();
+        }
+
+        private async Task PerformTestAsync(
+            decimal input, string expected,
+            string currencyCode, CurrencyCzechName mockCurrencyCzechName,
+            GrammaticalGender genderWholePart, string mockWholePart,
+            GrammaticalGender? genderFractionPart = null, string? mockFractionPart = null)
+        {
+            long wholePart = (long)Math.Truncate(input);
+
             _currencyCzechNameRepository
                 .Setup(repo => repo.GetCurrencyCzechNameByCodeAsync(currencyCode))
-                .ReturnsAsync(mockObject);
+                .ReturnsAsync(mockCurrencyCzechName);
+            _numberInWordsCzechService
+                .Setup(service => service.NumberToWords(wholePart, genderWholePart, true))
+                .Returns(mockWholePart);
+            if (genderFractionPart is not null && mockFractionPart is not null)
+            {
+                _numberInWordsCzechService
+                    .Setup(service => service.NumberToWords(Math.Abs((long)((input - wholePart) * 100)), genderFractionPart.Value, true))
+                    .Returns(mockFractionPart);
+            }
+
+            string actual = await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(input, currencyCode);
+
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
@@ -75,154 +107,78 @@ namespace UnitTests
 
         [TestMethod]
         public async Task AmountToWords_CurrencyCodeCaps()
-        {
-            string currencyCode = "CZK";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("jedna koruna", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(1, currencyCode));
-        }
+            => await PerformTestAsync(1, "jedna koruna", "CZK", mockCzk, GrammaticalGender.Feminine, "jedna");
 
         [TestMethod]
         public async Task AmountToWords_OneCZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("jedna koruna", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(1, currencyCode));
-        }
+            => await PerformTestAsync(1, "jedna koruna", "czk", mockCzk, GrammaticalGender.Feminine, "jedna");
 
         [TestMethod]
         public async Task AmountToWords_TwoCZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("dvě koruny", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(2, currencyCode));
-        }
+            => await PerformTestAsync(2, "dvě koruny", "czk", mockCzk, GrammaticalGender.Feminine, "dvě");
 
         [TestMethod]
         public async Task AmountToWords_FiveCZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("pět korun", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(5, currencyCode));
-        }
+            => await PerformTestAsync(5, "pět korun", "czk", mockCzk, GrammaticalGender.Feminine, "pět");
 
         [TestMethod]
         public async Task AmountToWords_ElevenCZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("jedenáct korun", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(11, currencyCode));
-        }
+            => await PerformTestAsync(11, "jedenáct korun", "czk", mockCzk, GrammaticalGender.Feminine, "jedenáct");
 
         [TestMethod]
         public async Task AmountToWords_TwelveCZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("dvanáct korun", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(12, currencyCode));
-        }
+            => await PerformTestAsync(12, "dvanáct korun", "czk", mockCzk, GrammaticalGender.Feminine, "dvanáct");
 
         [TestMethod]
         public async Task AmountToWords_TwentyOneCZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("dvacet jedna koruna", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(21, currencyCode));
-        }
+            => await PerformTestAsync(21, "dvacet jedna koruna", "czk", mockCzk, GrammaticalGender.Feminine, "dvacet jedna");
 
         [TestMethod]
         public async Task AmountToWords_TwentyTwoCZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("dvacet dvě koruny", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(22, currencyCode));
-        }
+            => await PerformTestAsync(22, "dvacet dvě koruny", "czk", mockCzk, GrammaticalGender.Feminine, "dvacet dvě");
 
         [TestMethod]
         public async Task AmountToWords_Fraction1CZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("sto třicet pět korun jeden haléř", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(135.01m, currencyCode));
-        }
+            => await PerformTestAsync(135.01m, "sto třicet pět korun jeden haléř", "czk", mockCzk, GrammaticalGender.Feminine, "sto třicet pět", GrammaticalGender.Masculine, "jeden");
 
         [TestMethod]
         public async Task AmountToWords_Fraction2CZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("sto třicet pět korun dva haléře", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(135.02m, currencyCode));
-        }
+            => await PerformTestAsync(135.02m, "sto třicet pět korun dva haléře", "czk", mockCzk, GrammaticalGender.Feminine, "sto třicet pět", GrammaticalGender.Masculine, "dva");
 
         [TestMethod]
         public async Task AmountToWords_Fraction3CZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("sto třicet pět korun devadesát devět haléřů", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(135.99m, currencyCode));
-        }
+            => await PerformTestAsync(135.99m, "sto třicet pět korun devadesát devět haléřů", "czk", mockCzk, GrammaticalGender.Feminine, "sto třicet pět", GrammaticalGender.Masculine, "devadesát devět");
 
         [TestMethod]
         public async Task AmountToWords_Fraction3CZKNoSpaces()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("stotřicetpět korun devadesátdevět haléřů", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(135.99m, currencyCode, false));
-        }
+            => await PerformTestAsync(135.99m, "stotřicetpět korun devadesátdevět haléřů", "czk", mockCzk, GrammaticalGender.Feminine, "stotřicetpět", GrammaticalGender.Masculine, "devadesátdevět");
 
         [TestMethod]
         public async Task AmountToWords_NegativeCZK()
-        {
-            string currencyCode = "czk";
-            SetupMockRepository(currencyCode, mockCzk);
-            Assert.AreEqual("minus čtyřicet dvě koruny osmdesát čtyři haléře", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(-42.84m, currencyCode));
-        }
+            => await PerformTestAsync(-42.84m, "minus čtyřicet dvě koruny osmdesát čtyři haléře", "czk", mockCzk, GrammaticalGender.Feminine, "minus čtyřicet dvě", GrammaticalGender.Masculine, "osmdesát čtyři");
 
         [TestMethod]
         public async Task AmountToWords_Fraction1EUR()
-        {
-            string currencyCode = "eur";
-            SetupMockRepository(currencyCode, mockEur);
-            Assert.AreEqual("jedno euro jeden cent", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(1.01m, currencyCode));
-        }
+            => await PerformTestAsync(1.01m, "jedno euro jeden cent", "eur", mockEur, GrammaticalGender.Neuter, "jedno", GrammaticalGender.Masculine, "jeden");
 
         [TestMethod]
         public async Task AmountToWords_Fraction2EUR()
-        {
-            string currencyCode = "eur";
-            SetupMockRepository(currencyCode, mockEur);
-            Assert.AreEqual("třicet dvě eura čtyřicet tři centy", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(32.43m, currencyCode));
-        }
+            => await PerformTestAsync(32.43m, "třicet dvě eura čtyřicet tři centy", "eur", mockEur, GrammaticalGender.Neuter, "třicet dvě", GrammaticalGender.Masculine, "čtyřicet tři");
 
         [TestMethod]
         public async Task AmountToWords_Fraction3EUR()
-        {
-            string currencyCode = "eur";
-            SetupMockRepository(currencyCode, mockEur);
-            Assert.AreEqual("sto devadesát devět eur devadesát devět centů", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(199.99m, currencyCode));
-        }
+            => await PerformTestAsync(199.99m, "sto devadesát devět eur devadesát devět centů", "eur", mockEur, GrammaticalGender.Neuter, "sto devadesát devět", GrammaticalGender.Masculine, "devadesát devět");
 
         [TestMethod]
         public async Task AmountToWords_Fraction1USD()
-        {
-            string currencyCode = "usd";
-            SetupMockRepository(currencyCode, mockUsd);
-            Assert.AreEqual("jeden dolar jeden cent", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(1.01m, currencyCode));
-        }
+            => await PerformTestAsync(1.01m, "jeden dolar jeden cent", "usd", mockUsd, GrammaticalGender.Masculine, "jeden", GrammaticalGender.Masculine, "jeden");
 
         [TestMethod]
         public async Task AmountToWords_Fraction2USD()
-        {
-            string currencyCode = "usd";
-            SetupMockRepository(currencyCode, mockUsd);
-            Assert.AreEqual("třicet dva dolary čtyřicet tři centy", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(32.43m, currencyCode));
-        }
+            => await PerformTestAsync(32.43m, "třicet dva dolary čtyřicet tři centy", "usd", mockUsd, GrammaticalGender.Masculine, "třicet dva", GrammaticalGender.Masculine, "čtyřicet tři");
 
         [TestMethod]
         public async Task AmountToWords_Fraction3USD()
-        {
-            string currencyCode = "usd";
-            SetupMockRepository(currencyCode, mockUsd);
-            Assert.AreEqual("sto devadesát devět dolarů devadesát devět centů", await _serviceProvider.GetRequiredService<IAmountInWordsCzechService>().AmountToWordsAsync(199.99m, currencyCode));
-        }
+            => await PerformTestAsync(199.99m, "sto devadesát devět dolarů devadesát devět centů", "usd", mockUsd, GrammaticalGender.Masculine, "sto devadesát devět", GrammaticalGender.Masculine, "devadesát devět");
     }
 }

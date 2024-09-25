@@ -9,6 +9,7 @@ namespace UnitTests
     public class FilteredFilmsTests
     {
         private ServiceProvider _serviceProvider;
+        private IServiceScope _serviceScope;
 
         private readonly List<Film> _inMemoryDbFilms =
         [
@@ -70,6 +71,7 @@ namespace UnitTests
             services.AddScoped<IFilteredFilmsRepository, FilteredFilmsRepository>();
 
             _serviceProvider = services.BuildServiceProvider();
+            _serviceScope = _serviceProvider.CreateScope();
 
             var context = _serviceProvider.GetRequiredService<ApplicationDbContext>();
             context.Films.AddRange(_inMemoryDbFilms);
@@ -82,6 +84,9 @@ namespace UnitTests
             var dbContext = _serviceProvider.GetRequiredService<ApplicationDbContext>();
 
             dbContext.Database.EnsureDeleted();
+
+            _serviceScope.Dispose();
+            _serviceProvider.Dispose();
         }
 
         private async Task<List<string>> GetFilteredNames(string? nameContains = null, short? minYearOfRelease = null, short? maxYearOfRelease = null, short? minLength = null, short? maxLength = null, byte? minRating = null, byte? maxRating = null)
