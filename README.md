@@ -1,4 +1,4 @@
-This API serves as an example of my own feature-driven architecture, using versioning, role-based authorization, generic controllers and repositories, Entity Framework (code first), AutoMapper, Dependency Injection and SOLID principles. It also includes some of my old refactored work. Features are tested with unit tests (MSTest) using mock objects (Moq) and EF's in-memory database.
+This API serves as an example of my own feature-driven architecture, using versioning, role-based authorization, generic controllers and repositories, Entity Framework (code first), AutoMapper, Dependency Injection and SOLID principles. It also includes some of my old refactored work. Features are tested with unit tests (MSTest) using mock objects (Moq) and EF's in-memory database. Data for this database are stored in CSV files.
 
 ## Types of classes
 
