@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,6 +8,18 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="AmountInWordsTests\CurrencyCzechNames.csv" />
+    <None Remove="CsvServiceTests\TestCsvRecords.csv" />
+    <None Remove="FilteredFilmsTests\Films.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="AmountInWordsTests\CurrencyCzechNames.csv" />
+    <EmbeddedResource Include="CsvServiceTests\TestCsvRecords.csv" />
+    <EmbeddedResource Include="FilteredFilmsTests\Films.csv" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2">

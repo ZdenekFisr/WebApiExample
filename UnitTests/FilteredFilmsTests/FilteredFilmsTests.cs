@@ -2,63 +2,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using WebApiExample;
 using WebApiExample.Features.FilmDatabase.V1;
+using WebApiExample.SharedServices.Csv;
 
-namespace UnitTests
+namespace UnitTests.FilteredFilmsTests
 {
     [TestClass]
     public class FilteredFilmsTests
     {
         private ServiceProvider _serviceProvider;
         private IServiceScope _serviceScope;
-
-        private readonly List<Film> _inMemoryDbFilms =
-        [
-            new()
-            {
-                Name = "Gladiator",
-                Description = "American film directed by Ridley Scott.",
-                YearOfRelease = 2000,
-                LengthInMinutes = 155,
-                Rating = 89,
-                ImagePath = string.Empty
-            },
-            new()
-            {
-                Name = "Der Untergang",
-                Description = "German film about the last days of WW2 in Berlin. English name: \"Downfall\"",
-                YearOfRelease = 2004,
-                LengthInMinutes = 156,
-                Rating = 82,
-                ImagePath = string.Empty
-            },
-            new()
-            {
-                Name = "Bod obnovy",
-                Description = "Czech sci-fi film. English name: \"Restore point\".",
-                YearOfRelease = 2023,
-                LengthInMinutes = 116,
-                Rating = 70,
-                ImagePath = string.Empty
-            },
-            new()
-            {
-                Name = "Interstellar",
-                Description = "American sci-fi film directed by Christopher Nolan.",
-                YearOfRelease = 2014,
-                LengthInMinutes = 169,
-                Rating = 85,
-                ImagePath = string.Empty
-            },
-            new()
-            {
-                Name = "The Shawshank Redemption",
-                Description = "American film taking place in prison.",
-                YearOfRelease = 1994,
-                LengthInMinutes = 142,
-                Rating = 95,
-                ImagePath = string.Empty
-            }
-        ];
 
         [TestInitialize]
         public void Setup()
@@ -68,22 +20,26 @@ namespace UnitTests
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseInMemoryDatabase("TestDb"));
 
+            services.AddScoped<ICsvService, CsvService>();
             services.AddScoped<IFilteredFilmsRepository, FilteredFilmsRepository>();
 
             _serviceProvider = services.BuildServiceProvider();
             _serviceScope = _serviceProvider.CreateScope();
 
+            var films = _serviceProvider
+                .GetRequiredService<ICsvService>()
+                .ReadEmbeddedCsv<Film>("UnitTests.FilteredFilmsTests.Films.csv");
+
             var context = _serviceProvider.GetRequiredService<ApplicationDbContext>();
-            context.Films.AddRange(_inMemoryDbFilms);
+            context.Films.AddRange(films);
             context.SaveChanges();
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            var dbContext = _serviceProvider.GetRequiredService<ApplicationDbContext>();
-
-            dbContext.Database.EnsureDeleted();
+            var context = _serviceProvider.GetRequiredService<ApplicationDbContext>();
+            context.Database.EnsureDeleted();
 
             _serviceScope.Dispose();
             _serviceProvider.Dispose();
@@ -91,10 +47,8 @@ namespace UnitTests
 
         private async Task<List<string>> GetFilteredNames(string? nameContains = null, short? minYearOfRelease = null, short? maxYearOfRelease = null, short? minLength = null, short? maxLength = null, byte? minRating = null, byte? maxRating = null)
         {
-            using var scope = _serviceProvider.CreateScope();
-
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var repository = scope.ServiceProvider.GetRequiredService<IFilteredFilmsRepository>();
+            var context = _serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var repository = _serviceScope.ServiceProvider.GetRequiredService<IFilteredFilmsRepository>();
 
             return (await repository
                 .GetFilteredFilms(nameContains, minYearOfRelease, maxYearOfRelease, minLength, maxLength, minRating, maxRating))
