@@ -5,14 +5,11 @@ using WebApiExample.RepositoryInterfaces;
 
 namespace WebApiExample.GenericRepositories.SimpleModel
 {
-    /// <summary>
-    /// Contains CRUD operations for models mapped from database entities that have no foreign key to other database tables. It can be inherited by other services and its methods can be overridden to suit a more complex model.
-    /// </summary>
-    /// <typeparam name="TEntity">Type of entity.</typeparam>
-    /// <typeparam name="TModel">Type of corresponding model that is mapped to the entity with AutoMapper and vice-versa.</typeparam>
-    public class SimpleModelRepository<TEntity, TModel> : ISimpleModelRepository<TModel>
+    /// <inheritdoc cref="ISimpleModelRepository{TInputModel, TOutputModel}"/>
+    public class SimpleModelRepository<TEntity, TInputModel, TOutputModel> : ISimpleModelRepository<TInputModel, TOutputModel>
         where TEntity : Entity
-        where TModel : Model
+        where TInputModel : Model
+        where TOutputModel : Model
     {
         protected readonly ApplicationDbContext _dbContext;
         protected readonly IMapper _mapper;
@@ -27,12 +24,12 @@ namespace WebApiExample.GenericRepositories.SimpleModel
             _entities = _dbContext.Set<TEntity>();
         }
 
-        /// <inheritdoc cref="IGetOne{TModel}.GetOneAsync(Guid)"/>
-        public virtual async Task<TModel?> GetOneAsync(Guid id)
-            => _mapper.Map<TModel>(await FindEntityAsync(id));
+        /// <inheritdoc cref="IGetOne{TOutputModel}.GetOneAsync(Guid)"/>
+        public virtual async Task<TOutputModel?> GetOneAsync(Guid id)
+            => _mapper.Map<TOutputModel>(await FindEntityAsync(id));
 
-        /// <inheritdoc cref="ICreate{TModel}.CreateAsync(TModel)"/>
-        public virtual async Task CreateAsync(TModel model)
+        /// <inheritdoc cref="ICreate{TInputModel}.CreateAsync(TInputModel)"/>
+        public virtual async Task CreateAsync(TInputModel model)
         {
             TEntity entity = _mapper.Map<TEntity>(model);
             entity.SetCreateHistory();
@@ -41,8 +38,8 @@ namespace WebApiExample.GenericRepositories.SimpleModel
             await _dbContext.SaveChangesAsync();
         }
 
-        /// <inheritdoc cref="IUpdate{TModel}.UpdateAsync(Guid, TModel)"/>
-        public virtual async Task UpdateAsync(Guid id, TModel model)
+        /// <inheritdoc cref="IUpdate{TInputModel}.UpdateAsync(Guid, TInputModel)"/>
+        public virtual async Task UpdateAsync(Guid id, TInputModel model)
         {
             TEntity? entity = await FindEntityAsync(id);
             if (entity is null)
@@ -68,5 +65,15 @@ namespace WebApiExample.GenericRepositories.SimpleModel
 
         protected virtual async Task<TEntity?> FindEntityAsync(Guid id)
             => await _entities.FindActiveEntityByPredicate(e => e.Id == id);
+    }
+
+    /// <inheritdoc cref="ISimpleModelRepository{TModel}"/>
+    public class SimpleModelRepository<TEntity, TModel>(
+        ApplicationDbContext dbContext,
+        IMapper mapper)
+        : SimpleModelRepository<TEntity, TModel, TModel>(dbContext, mapper), ISimpleModelRepository<TModel>
+        where TEntity : Entity
+        where TModel : Model
+    {
     }
 }
