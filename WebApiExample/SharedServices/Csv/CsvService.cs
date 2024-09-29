@@ -5,12 +5,14 @@ using System.Reflection;
 
 namespace WebApiExample.SharedServices.Csv
 {
+    /// <inheritdoc cref="ICsvService"/>
     public class CsvService : ICsvService
     {
+        /// <inheritdoc />
         public List<T> ReadEmbeddedCsv<T>(string resourceName)
         {
             var assembly = Assembly.GetCallingAssembly();
-            var config = new CsvConfiguration(CultureInfo.CurrentCulture)
+            var config = new CsvConfiguration(new CultureInfo("cs-CZ"))
             {
                 Delimiter = ";",
                 HasHeaderRecord = false,
