@@ -1,10 +1,10 @@
-This API serves as an example of my own feature-driven architecture, using versioning, role-based authorization, generic controllers and repositories, Entity Framework (code first), AutoMapper, Dependency Injection and SOLID principles. It also includes some of my old refactored work. Features are tested with unit tests (MSTest) using mock objects (Moq) and EF's in-memory database with data stored in CSV files.
+This API serves as an example of my own feature-driven architecture, using versioning, role-based authorization, generic controllers and repositories, Entity Framework (code first), `AutoMapper`, Dependency Injection and SOLID principles. It also includes some of my old refactored work. Features are tested with unit tests (`MSTest`, `FluentAssertions`) using mock objects (`Moq`) and EF's in-memory database with data stored in CSV files.
 
 ## Types of classes
 
-**Entity:** Corresponds to one or more DB tables and is used by Entity Framework. It inherits from the "Entity" (or "EntityWithUser") class. If it doesn't have a corresponding model, it is used by the controller directly.
+**Entity:** Corresponds to one or more DB tables and is used by Entity Framework. It inherits from the `Entity` (or `EntityWithUser`) class. If it doesn't have a corresponding model, it is used by the controller directly.
 
-**Model:** Can correspond to an entity. In that case, it is mapped to it with AutoMapper. If not, there is no relation to DB. It inherits from the "Model" class. It is used by the controller. For entity-related models, there are three types of models:
+**Model:** Can correspond to an entity. In that case, it is mapped to it with `AutoMapper`. If not, there is no relation to DB. It inherits from the `Model` class. It is used by the controller. For entity-related models, there are three types of models:
 
 - Input model: Model used to create or update a DB item. Its name ends with `InputModel`.
 - Output model: Model used to get a DB item. Its name ends with `OutputModel`.
