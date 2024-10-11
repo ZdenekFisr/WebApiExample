@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics.CodeAnalysis;
+﻿using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using WebApiExample.SharedServices.Csv;
 
 namespace UnitTests.CsvServiceTests
@@ -39,7 +39,9 @@ namespace UnitTests.CsvServiceTests
 
             List<CsvRecord> actual = _serviceProvider.GetRequiredService<ICsvService>().ReadEmbeddedCsv<CsvRecord>("UnitTests.CsvServiceTests.TestCsvRecords.csv");
 
-            Assert.IsTrue(expected.SequenceEqual(actual, new CsvRecordEqualityComparer()));
+            actual.Should().BeEquivalentTo(expected, options => options
+                .WithStrictOrdering()
+                .IncludingAllDeclaredProperties());
         }
     }
 
@@ -50,27 +52,5 @@ namespace UnitTests.CsvServiceTests
         public required string Name { get; set; }
 
         public double Value { get; set; }
-    }
-
-    file class CsvRecordEqualityComparer : IEqualityComparer<CsvRecord>
-    {
-        public bool Equals(CsvRecord? x, CsvRecord? y)
-        {
-            if (ReferenceEquals(x, y))
-                return true;
-
-            if (x is null || y is null)
-                return false;
-
-            return x.Id == y.Id && x.Name == y.Name && x.Value == y.Value;
-        }
-
-        public int GetHashCode([DisallowNull] CsvRecord obj)
-        {
-            if (obj is null)
-                return 0;
-
-            return obj.Id.GetHashCode() ^ obj.Name.GetHashCode() ^ obj.Value.GetHashCode();
-        }
     }
 }

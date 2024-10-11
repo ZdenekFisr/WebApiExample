@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WebApiExample;
 using WebApiExample.Features.FilmDatabase.V1;
@@ -45,67 +46,69 @@ namespace UnitTests.FilteredFilmsTests
             _serviceProvider.Dispose();
         }
 
-        private async Task<List<string>> GetFilteredNames(string? nameContains = null, short? minYearOfRelease = null, short? maxYearOfRelease = null, short? minLength = null, short? maxLength = null, byte? minRating = null, byte? maxRating = null)
+        private async Task PerformFilmFilterTest(IEnumerable<string> expected, string? nameContains = null, short? minYearOfRelease = null, short? maxYearOfRelease = null, short? minLength = null, short? maxLength = null, byte? minRating = null, byte? maxRating = null)
         {
             var context = _serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var repository = _serviceScope.ServiceProvider.GetRequiredService<IFilteredFilmsRepository>();
 
-            return (await repository
+            string[] actual = (await repository
                 .GetFilteredFilms(nameContains, minYearOfRelease, maxYearOfRelease, minLength, maxLength, minRating, maxRating))
                 .Select(f => f.Name)
-                .ToList();
+                .ToArray();
+
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [TestMethod]
         public async Task NoFilters()
-            => CollectionAssert.AreEquivalent(new List<string> { "Bod obnovy", "Der Untergang", "Gladiator", "Interstellar", "The Shawshank Redemption" }, await GetFilteredNames());
+            => await PerformFilmFilterTest(["Bod obnovy", "Der Untergang", "Gladiator", "Interstellar", "The Shawshank Redemption"]);
 
         [TestMethod]
         public async Task FilterByName()
-            => CollectionAssert.AreEquivalent(new List<string> { "Der Untergang" }, await GetFilteredNames(nameContains: "unter"));
+            => await PerformFilmFilterTest(["Der Untergang"], nameContains: "unter");
 
         [TestMethod]
         public async Task FilterByMinYearOfRelease()
-            => CollectionAssert.AreEquivalent(new List<string> { "Bod obnovy", "Interstellar" }, await GetFilteredNames(minYearOfRelease: 2014));
+            => await PerformFilmFilterTest(["Bod obnovy", "Interstellar"], minYearOfRelease: 2014);
 
         [TestMethod]
         public async Task FilterByMaxYearOfRelease()
-            => CollectionAssert.AreEquivalent(new List<string> { "Gladiator", "The Shawshank Redemption" }, await GetFilteredNames(maxYearOfRelease: 2000));
+            => await PerformFilmFilterTest(["Gladiator", "The Shawshank Redemption"], maxYearOfRelease: 2000);
 
         [TestMethod]
         public async Task FilterByYearOfRelease()
-            => CollectionAssert.AreEquivalent(new List<string> { "Der Untergang", "Gladiator" }, await GetFilteredNames(minYearOfRelease: 2000, maxYearOfRelease: 2010));
+            => await PerformFilmFilterTest(["Der Untergang", "Gladiator"], minYearOfRelease: 2000, maxYearOfRelease: 2010);
 
         [TestMethod]
         public async Task FilterByYearOfReleaseBadInput()
-            => CollectionAssert.AreEquivalent(new List<string>(), await GetFilteredNames(minYearOfRelease: 2010, maxYearOfRelease: 2000));
+            => await PerformFilmFilterTest([], minYearOfRelease: 2010, maxYearOfRelease: 2000);
 
         [TestMethod]
         public async Task FilterByMinLength()
-            => CollectionAssert.AreEquivalent(new List<string> { "Der Untergang", "Gladiator", "Interstellar" }, await GetFilteredNames(minLength: 155));
+            => await PerformFilmFilterTest(["Der Untergang", "Gladiator", "Interstellar"], minLength: 155);
 
         [TestMethod]
         public async Task FilterByMaxLength()
-            => CollectionAssert.AreEquivalent(new List<string> { "Bod obnovy", "The Shawshank Redemption" }, await GetFilteredNames(maxLength: 142));
+            => await PerformFilmFilterTest(["Bod obnovy", "The Shawshank Redemption"], maxLength: 142);
 
         [TestMethod]
         public async Task FilterByLength()
-            => CollectionAssert.AreEquivalent(new List<string> { "The Shawshank Redemption" }, await GetFilteredNames(minLength: 140, maxLength: 150));
+            => await PerformFilmFilterTest(["The Shawshank Redemption"], minLength: 140, maxLength: 150);
 
         [TestMethod]
         public async Task FilterByMinRating()
-            => CollectionAssert.AreEquivalent(new List<string> { "Gladiator", "The Shawshank Redemption" }, await GetFilteredNames(minRating: 89));
+            => await PerformFilmFilterTest(["Gladiator", "The Shawshank Redemption"], minRating: 89);
 
         [TestMethod]
         public async Task FilterByMaxRating()
-            => CollectionAssert.AreEquivalent(new List<string> { "Bod obnovy", "Der Untergang" }, await GetFilteredNames(maxRating: 82));
+            => await PerformFilmFilterTest(["Bod obnovy", "Der Untergang"], maxRating: 82);
 
         [TestMethod]
         public async Task FilterByRating()
-            => CollectionAssert.AreEquivalent(new List<string> { "Der Untergang", "Gladiator", "Interstellar" }, await GetFilteredNames(minRating: 80, maxRating: 90));
+            => await PerformFilmFilterTest(["Der Untergang", "Gladiator", "Interstellar"], minRating: 80, maxRating: 90);
 
         [TestMethod]
         public async Task AllFilters()
-            => CollectionAssert.AreEquivalent(new List<string> { "Bod obnovy" }, await GetFilteredNames(nameContains: "d", minYearOfRelease: 2000, maxYearOfRelease: 2024, minLength: 90, maxLength: 150, minRating: 70, maxRating: 85));
+            => await PerformFilmFilterTest(["Bod obnovy"], nameContains: "d", minYearOfRelease: 2000, maxYearOfRelease: 2024, minLength: 90, maxLength: 150, minRating: 70, maxRating: 85);
     }
 }
