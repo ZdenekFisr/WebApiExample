@@ -1,6 +1,7 @@
-﻿using Asp.Versioning;
+﻿using Application.Extensions;
+using Application.Features.RandomSeriesEpisode;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using WebApiExample.Extensions;
 
 namespace WebApiExample.Features.RandomSeriesEpisode.V1
 {

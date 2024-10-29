@@ -1,7 +1,7 @@
+using Application.Features.NumberToWords;
+using Domain.Enums;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using WebApiExample.Enums;
-using WebApiExample.SharedServices.NumberInWords;
 
 namespace UnitTests
 {
@@ -15,7 +15,7 @@ namespace UnitTests
         public void Setup()
         {
             var services = new ServiceCollection();
-            services.AddTransient<INumberInWordsCzechService, NumberInWordsCzechService>();
+            services.AddTransient<INumberToWordsCzechService, NumberToWordsCzechService>();
 
             _serviceProvider = services.BuildServiceProvider();
             _serviceScope = _serviceProvider.CreateScope();
@@ -30,7 +30,7 @@ namespace UnitTests
 
         private void PerformNumberToWordsTest(string expected, long number, GrammaticalGender grammaticalGender, bool insertSpaces = true)
         {
-            string actual = _serviceProvider.GetRequiredService<INumberInWordsCzechService>().NumberToWords(number, grammaticalGender, insertSpaces);
+            string actual = _serviceProvider.GetRequiredService<INumberToWordsCzechService>().NumberToWords(number, grammaticalGender, insertSpaces);
 
             actual.Should().BeEquivalentTo(expected);
         }

@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+﻿using Application.Features.Divisors;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiExample.Features.Divisors.V1

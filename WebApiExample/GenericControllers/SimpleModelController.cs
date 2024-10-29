@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WebApiExample.GenericRepositories.SimpleModel;
+﻿using Application.Common;
+using Application.GenericRepositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiExample.GenericControllers
 {

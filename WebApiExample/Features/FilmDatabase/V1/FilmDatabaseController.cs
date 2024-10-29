@@ -1,7 +1,8 @@
-﻿using Asp.Versioning;
+﻿using Application.Features.FilmDatabase;
+using Application.GenericRepositories;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using WebApiExample.GenericControllers;
-using WebApiExample.GenericRepositories.SimpleModel;
 
 namespace WebApiExample.Features.FilmDatabase.V1
 {

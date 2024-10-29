@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Application.Common;
+using Application.GenericRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApiExample.GenericRepositories.SimpleModelWithUser;
-using WebApiExample.SharedServices.User;
+using WebApiExample.Services.VerifyUser;
 
 namespace WebApiExample.GenericControllers
 {
@@ -11,18 +12,18 @@ namespace WebApiExample.GenericControllers
     /// <typeparam name="TInputModel">Type of input model that is being handled. It is used to create or update a DB item.</typeparam>
     /// <typeparam name="TOutputModel">Type of output model that is being handled. It is used to get a DB item.</typeparam>
     /// <param name="modelRepository">Repository instance that is used for handling the model.</param>
-    /// <param name="userRepository">Instance of registered implementation of <see cref="IUserRepository"/>.</param>
+    /// <param name="userRepository">Instance of registered implementation of <see cref="IVerifyUserService"/>.</param>
     [Authorize]
     [ApiController]
     public class SimpleModelWithUserController<TInputModel, TOutputModel>(
         ISimpleModelWithUserRepository<TInputModel, TOutputModel> modelRepository,
-        IUserRepository userRepository)
+        IVerifyUserService userRepository)
         : ControllerBase
         where TInputModel : Model
         where TOutputModel : Model
     {
         protected readonly ISimpleModelWithUserRepository<TInputModel, TOutputModel> _modelRepository = modelRepository;
-        protected readonly IUserRepository _userRepository = userRepository;
+        protected readonly IVerifyUserService _userRepository = userRepository;
 
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> GetOneByIdAsync(Guid id)
@@ -78,10 +79,10 @@ namespace WebApiExample.GenericControllers
     /// </summary>
     /// <typeparam name="TModel">Type of model that is being handled.</typeparam>
     /// <param name="modelRepository">Repository instance that is used for handling the model.</param>
-    /// <param name="userRepository">Instance of registered implementation of <see cref="IUserRepository"/>.</param>
+    /// <param name="userRepository">Instance of registered implementation of <see cref="IVerifyUserService"/>.</param>
     public class SimpleModelWithUserController<TModel>(
         ISimpleModelWithUserRepository<TModel, TModel> modelRepository,
-        IUserRepository userRepository)
+        IVerifyUserService userRepository)
         : SimpleModelWithUserController<TModel, TModel>(modelRepository, userRepository)
         where TModel : Model
     {

@@ -1,6 +1,7 @@
-﻿using FluentAssertions;
+﻿using Application.Services;
+using FluentAssertions;
+using Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
-using WebApiExample.SharedServices.Csv;
 
 namespace UnitTests.CsvServiceTests
 {
@@ -15,7 +16,7 @@ namespace UnitTests.CsvServiceTests
         {
             var services = new ServiceCollection();
 
-            services.AddScoped<ICsvService, CsvService>();
+            services.AddScoped<IEmbeddedCsvService, EmbeddedCsvService>();
 
             _serviceProvider = services.BuildServiceProvider();
             _serviceScope = _serviceProvider.CreateScope();
@@ -37,7 +38,7 @@ namespace UnitTests.CsvServiceTests
                 new() { Id = 2, Name = "C", Value = 1 }
             ];
 
-            List<CsvRecord> actual = _serviceProvider.GetRequiredService<ICsvService>().ReadEmbeddedCsv<CsvRecord>("UnitTests.CsvServiceTests.TestCsvRecords.csv");
+            List<CsvRecord> actual = _serviceProvider.GetRequiredService<IEmbeddedCsvService>().ReadEmbeddedCsv<CsvRecord>("UnitTests.CsvServiceTests.TestCsvRecords.csv");
 
             actual.Should().BeEquivalentTo(expected, options => options
                 .WithStrictOrdering()

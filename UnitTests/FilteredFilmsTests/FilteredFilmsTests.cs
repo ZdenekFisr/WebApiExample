@@ -1,9 +1,12 @@
-﻿using FluentAssertions;
+﻿using Application.Features.FilmDatabase;
+using Application.Services;
+using Domain.Entities;
+using FluentAssertions;
+using Infrastructure;
+using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using WebApiExample;
-using WebApiExample.Features.FilmDatabase.V1;
-using WebApiExample.SharedServices.Csv;
 
 namespace UnitTests.FilteredFilmsTests
 {
@@ -21,14 +24,14 @@ namespace UnitTests.FilteredFilmsTests
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseInMemoryDatabase("TestDb"));
 
-            services.AddScoped<ICsvService, CsvService>();
+            services.AddScoped<IEmbeddedCsvService, EmbeddedCsvService>();
             services.AddScoped<IFilteredFilmsRepository, FilteredFilmsRepository>();
 
             _serviceProvider = services.BuildServiceProvider();
             _serviceScope = _serviceProvider.CreateScope();
 
             var films = _serviceProvider
-                .GetRequiredService<ICsvService>()
+                .GetRequiredService<IEmbeddedCsvService>()
                 .ReadEmbeddedCsv<Film>("UnitTests.FilteredFilmsTests.Films.csv");
 
             var context = _serviceProvider.GetRequiredService<ApplicationDbContext>();

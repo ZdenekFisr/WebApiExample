@@ -1,8 +1,9 @@
-﻿using Asp.Versioning;
+﻿using Application.Features.RailVehicles;
+using Application.GenericRepositories;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using WebApiExample.GenericControllers;
-using WebApiExample.GenericRepositories.SimpleModelWithUser;
-using WebApiExample.SharedServices.User;
+using WebApiExample.Services.VerifyUser;
 
 namespace WebApiExample.Features.RailVehicles.V1
 {
@@ -10,7 +11,7 @@ namespace WebApiExample.Features.RailVehicles.V1
     [Route("api/v{version:apiVersion}/[controller]")]
     public class RailVehiclesController(
         ISimpleModelWithUserRepository<RailVehicleModel> modelRepository,
-        IUserRepository userRepository)
+        IVerifyUserService userRepository)
         : SimpleModelWithUserController<RailVehicleModel>(modelRepository, userRepository)
     {
     }

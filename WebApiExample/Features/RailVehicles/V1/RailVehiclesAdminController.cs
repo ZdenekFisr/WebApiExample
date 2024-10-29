@@ -1,8 +1,9 @@
-﻿using Asp.Versioning;
+﻿using Application.Services;
+using Asp.Versioning;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApiExample.SharedServices.RestoreItem;
-using WebApiExample.SharedServices.User;
+using WebApiExample.Services.VerifyUser;
 
 namespace WebApiExample.Features.RailVehicles.V1
 {
@@ -11,11 +12,11 @@ namespace WebApiExample.Features.RailVehicles.V1
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class RailVehiclesAdminController(
-        IUserRepository userRepository,
+        IVerifyUserService userRepository,
         IRestoreItemService<RailVehicle> restoreItemService)
         : ControllerBase
     {
-        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IVerifyUserService _userRepository = userRepository;
         private readonly IRestoreItemService<RailVehicle> _restoreItemService = restoreItemService;
 
         [HttpPut("restore")]

@@ -1,20 +1,23 @@
+using Application.Features.AmountToWords;
+using Application.Features.Divisors;
+using Application.Features.FilmDatabase;
+using Application.Features.NumberToWords;
+using Application.Features.PrimeNumbers;
+using Application.Features.RailVehicles;
+using Application.Features.RandomSeriesEpisode;
+using Application.GenericRepositories;
+using Application.Services;
 using Asp.Versioning;
+using Domain.Entities;
+using Infrastructure;
+using Infrastructure.GenericRepositories;
+using Infrastructure.Identity;
+using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using WebApiExample.Authentication;
-using WebApiExample.Features.AmountInWords.V1;
-using WebApiExample.Features.Divisors.V1;
-using WebApiExample.Features.FilmDatabase.V1;
-using WebApiExample.Features.Primes.V1;
-using WebApiExample.Features.RailVehicles.V1;
-using WebApiExample.Features.RandomSeriesEpisode.V1;
-using WebApiExample.GenericRepositories.SimpleModel;
-using WebApiExample.GenericRepositories.SimpleModelWithUser;
-using WebApiExample.SharedServices.NumberInWords;
-using WebApiExample.SharedServices.RandomNumber;
-using WebApiExample.SharedServices.RestoreItem;
-using WebApiExample.SharedServices.User;
+using WebApiExample.Services.VerifyUser;
 
 namespace WebApiExample
 {
@@ -44,11 +47,12 @@ namespace WebApiExample
 
             builder.Services.AddAutoMapper(typeof(Program), typeof(AutoMapperProfile));
 
-            var connectionString = builder.Configuration.GetConnectionString(Constants.ConnectionStringName) ?? throw new InvalidOperationException($"Connection string '{Constants.ConnectionStringName}' not found.");
+            const string connectionStringName = "DefaultConnection";
+            var connectionString = builder.Configuration.GetConnectionString(connectionStringName) ?? throw new InvalidOperationException($"Connection string '{connectionStringName}' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(
-                opt => opt.UseSqlServer(connectionString, builder => builder.MigrationsAssembly("WebApiExample")), ServiceLifetime.Transient);
+                opt => opt.UseSqlServer(connectionString, builder => builder.MigrationsAssembly("Infrastructure")), ServiceLifetime.Transient);
 
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IVerifyUserService, VerifyUserService>();
             builder.Services.AddAuthentication("BasicAuthentication")
                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
             builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformationService>();
@@ -56,11 +60,12 @@ namespace WebApiExample
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            builder.Services.AddScoped<Random>();
             builder.Services.AddScoped<IRandomNumberService, RandomNumberService>();
 
-            builder.Services.AddScoped<IPrimesService, PrimesService>();
+            builder.Services.AddScoped<IPrimeNumbersService, PrimeNumbersService>();
             builder.Services.AddScoped<IDivisorsService, DivisorsService>();
-            builder.Services.AddScoped<INumberInWordsCzechService, NumberInWordsCzechService>();
+            builder.Services.AddScoped<INumberToWordsCzechService, NumberToWordsCzechService>();
             builder.Services.AddScoped<ICurrencyCzechNameRepository, CurrencyCzechNameRepository>();
             builder.Services.AddScoped<IAmountInWordsCzechService, AmountInWordsCzechService>();
             builder.Services.AddScoped<IRandomSeriesEpisodeService, RandomSeriesEpisodeService>();

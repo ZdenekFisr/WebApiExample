@@ -1,12 +1,15 @@
-﻿using FluentAssertions;
+﻿using Application.Features.AmountToWords;
+using Application.Features.NumberToWords;
+using Application.Services;
+using Domain.Entities;
+using Domain.Enums;
+using FluentAssertions;
+using Infrastructure;
+using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using WebApiExample;
-using WebApiExample.Enums;
-using WebApiExample.Features.AmountInWords.V1;
-using WebApiExample.SharedServices.Csv;
-using WebApiExample.SharedServices.NumberInWords;
 
 namespace UnitTests.AmountInWordsTests
 {
@@ -16,7 +19,7 @@ namespace UnitTests.AmountInWordsTests
         private ServiceProvider _serviceProvider;
         private IServiceScope _serviceScope;
 
-        private Mock<INumberInWordsCzechService> _numberInWordsCzechService;
+        private Mock<INumberToWordsCzechService> _numberInWordsCzechService;
 
         [TestInitialize]
         public void Setup()
@@ -29,7 +32,8 @@ namespace UnitTests.AmountInWordsTests
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseInMemoryDatabase("TestDb"));
 
-            services.AddScoped<ICsvService, CsvService>();
+            services.AddAutoMapper(typeof(AmountInWordsTests), typeof(AutoMapperProfile));
+            services.AddScoped<IEmbeddedCsvService, EmbeddedCsvService>();
             services.AddScoped<ICurrencyCzechNameRepository, CurrencyCzechNameRepository>();
             services.AddScoped<IAmountInWordsCzechService, AmountInWordsCzechService>();
 
@@ -37,7 +41,7 @@ namespace UnitTests.AmountInWordsTests
             _serviceScope = _serviceProvider.CreateScope();
 
             var currencyCzechNames = _serviceProvider
-                .GetRequiredService<ICsvService>()
+                .GetRequiredService<IEmbeddedCsvService>()
                 .ReadEmbeddedCsv<CurrencyCzechName>("UnitTests.AmountInWordsTests.CurrencyCzechNames.csv");
 
             var context = _serviceProvider.GetRequiredService<ApplicationDbContext>();
