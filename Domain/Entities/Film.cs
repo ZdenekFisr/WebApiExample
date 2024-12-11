@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
-    public class Film : Entity
+    public class Film : EntityBase
     {
         [StringLength(Constants.FilmNameMaxLength)]
         public required string Name { get; set; }

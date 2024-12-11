@@ -9,7 +9,7 @@ namespace Infrastructure.GenericRepositories
 {
     /// <inheritdoc cref="ISimpleModelWithUserRepository{TInputModel, TOutputModel}"/>
     public class SimpleModelWithUserRepository<TEntity, TInputModel, TOutputModel> : ISimpleModelWithUserRepository<TInputModel, TOutputModel>
-        where TEntity : EntityWithUser
+        where TEntity : EntityWithUserBase
         where TInputModel : Model
         where TOutputModel : Model
     {
@@ -75,7 +75,7 @@ namespace Infrastructure.GenericRepositories
         ApplicationDbContext dbContext,
         IMapper mapper)
         : SimpleModelWithUserRepository<TEntity, TModel, TModel>(dbContext, mapper), ISimpleModelWithUserRepository<TModel>
-        where TEntity : EntityWithUser
+        where TEntity : EntityWithUserBase
         where TModel : Model
     {
     }

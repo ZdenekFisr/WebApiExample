@@ -15,7 +15,7 @@ namespace Infrastructure.Extensions
         /// <param name="firstOrDefaultCondition">A condition that the row must meet.</param>
         /// <returns>An object that meets the condition and is active; otherwise, null.</returns>
         public static async Task<TEntity?> FindActiveEntityByPredicate<TEntity>(this DbSet<TEntity> entities, Expression<Func<TEntity, bool>> firstOrDefaultCondition)
-            where TEntity : Entity
+            where TEntity : EntityBase
         {
             var result = await entities.FirstOrDefaultAsync(firstOrDefaultCondition);
 
@@ -34,7 +34,7 @@ namespace Infrastructure.Extensions
         /// <param name="includeSoftDelete">True if soft-delete is preferred over hard-delete; otherwise, false.</param>
         /// <param name="userId">User ID. If the entity is not bound to a user, keep default.</param>
         public static void SoftOrHardDelete<TEntity>(this DbSet<TEntity> entities, TEntity entity, bool includeSoftDelete, string? userId = null)
-            where TEntity : Entity
+            where TEntity : EntityBase
         {
             if (includeSoftDelete && entity is ISoftDeletable softDeletableEntity)
             {
@@ -55,7 +55,7 @@ namespace Infrastructure.Extensions
         /// <param name="entity">Instance of entity to be modified.</param>
         /// <param name="userId">User ID. If the entity is not bound to a user, keep default.</param>
         public static void SetCreateHistory<TEntity>(this TEntity entity, string? userId = null)
-            where TEntity : Entity
+            where TEntity : EntityBase
         {
             if (entity is ICreateHistory entityCreateHistory)
             {
@@ -71,7 +71,7 @@ namespace Infrastructure.Extensions
         /// <param name="entity">Instance of entity to be modified.</param>
         /// <param name="userId">User ID. If the entity is not bound to a user, keep default.</param>
         public static void SetUpdateHistory<TEntity>(this TEntity entity, string? userId = null)
-            where TEntity : Entity
+            where TEntity : EntityBase
         {
             if (entity is IUpdateHistory entityUpdateHistory)
             {

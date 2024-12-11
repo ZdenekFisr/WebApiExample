@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
-    public class RailVehicle : EntityWithUser, ICreateHistory, IUpdateHistory, ISoftDeletable
+    public class RailVehicle : EntityWithUserBase, ICreateHistory, IUpdateHistory, ISoftDeletable
     {
         [StringLength(Constants.VehicleNameMaxLength)]
         public required string Name { get; set; }
@@ -16,17 +16,17 @@ namespace Domain.Entities
 
         public short MaxSpeed { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         public string? CreatedBy { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         public string? UpdatedBy { get; set; }
 
         public bool IsDeleted { get; set; }
 
-        public DateTime? DeletedAt { get; set; }
+        public DateTimeOffset? DeletedAt { get; set; }
 
         public string? DeletedBy { get; set; }
     }

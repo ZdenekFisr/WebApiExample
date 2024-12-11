@@ -3,7 +3,7 @@ using Domain.Enums;
 
 namespace Domain.Entities
 {
-    public class CurrencyCzechName : Entity
+    public class CurrencyCzechName : EntityBase
     {
         public required string Code { get; set; }
 

@@ -13,7 +13,7 @@
         /// <summary>
         /// Time as UTC when the row was last soft-deleted.
         /// </summary>
-        public DateTime? DeletedAt { get; set; }
+        public DateTimeOffset? DeletedAt { get; set; }
 
         /// <summary>
         /// ID of the user who last soft-deleted the row. Warning: add foreign key to the user table.

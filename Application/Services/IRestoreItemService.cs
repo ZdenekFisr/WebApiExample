@@ -6,7 +6,7 @@ namespace Application.Services
     /// Contains a method for restoring a soft-deleted item.
     /// </summary>
     public interface IRestoreItemService<TEntity>
-        where TEntity : EntityWithUser
+        where TEntity : EntityWithUserBase
     {
         /// <summary>
         /// Finds an item in a DB table by ID and if it is soft-deletable, restores it.

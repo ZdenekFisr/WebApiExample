@@ -9,7 +9,7 @@ namespace Infrastructure.Services
     /// </summary>
     /// <typeparam name="TEntity">Type of entity.</typeparam>
     public class RestoreItemService<TEntity> : IRestoreItemService<TEntity>
-        where TEntity : EntityWithUser
+        where TEntity : EntityWithUserBase
     {
         private readonly ApplicationDbContext _context;
 

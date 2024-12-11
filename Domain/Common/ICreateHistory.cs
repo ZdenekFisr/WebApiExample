@@ -8,7 +8,7 @@
         /// <summary>
         /// Time as UTC when the item (entity) was created.
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         /// <summary>
         /// ID of the user who inserted the row. Warning: add foreign key to the user table.
