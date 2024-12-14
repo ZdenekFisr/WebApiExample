@@ -122,18 +122,51 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte>("DrivingWheelsets")
+                        .HasColumnType("tinyint");
+
+                    b.Property<double?>("EfficiencyDependent")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("EfficiencyIndependent")
+                        .HasColumnType("float");
+
+                    b.Property<double>("EquivalentRotatingWeight")
+                        .HasColumnType("float");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<double>("Length")
+                        .HasColumnType("float");
+
+                    b.Property<short>("MaxPullForce")
+                        .HasColumnType("smallint");
 
                     b.Property<short>("MaxSpeed")
                         .HasColumnType("smallint");
 
+                    b.Property<short?>("MaxSpeedHybrid")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
-                    b.Property<double>("Performance")
+                    b.Property<short>("Performance")
+                        .HasColumnType("smallint");
+
+                    b.Property<short?>("PerformanceHybrid")
+                        .HasColumnType("smallint");
+
+                    b.Property<double>("ResistanceConstant")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ResistanceLinear")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ResistanceQuadratic")
                         .HasColumnType("float");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
@@ -149,6 +182,9 @@ namespace Infrastructure.Migrations
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
+                    b.Property<byte>("Wheelsets")
+                        .HasColumnType("tinyint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedBy");
@@ -160,6 +196,28 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RailVehicles");
+                });
+
+            modelBuilder.Entity("Domain.Entities.TractionDiagramPoint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("PullForce")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("RailVehicleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Speed")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RailVehicleId");
+
+                    b.ToTable("TractionDiagramPoint");
                 });
 
             modelBuilder.Entity("Infrastructure.Identity.ApplicationUser", b =>
@@ -381,6 +439,15 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Entities.TractionDiagramPoint", b =>
+                {
+                    b.HasOne("Domain.Entities.RailVehicle", null)
+                        .WithMany("TractionDiagram")
+                        .HasForeignKey("RailVehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -430,6 +497,11 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.RailVehicle", b =>
+                {
+                    b.Navigation("TractionDiagram");
                 });
 #pragma warning restore 612, 618
         }

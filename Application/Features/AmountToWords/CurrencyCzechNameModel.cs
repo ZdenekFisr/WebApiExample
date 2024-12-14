@@ -3,7 +3,7 @@ using Domain.Enums;
 
 namespace Application.Features.AmountToWords
 {
-    public class CurrencyCzechNameModel : Model
+    public class CurrencyCzechNameModel : ModelBase
     {
         public required string Code { get; set; }
 

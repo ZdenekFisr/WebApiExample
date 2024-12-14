@@ -4,7 +4,7 @@
     /// Contains a method to update a row in DB from a model instance, the ID and the user ID.
     /// </summary>
     /// <typeparam name="T">Type of entity.</typeparam>
-    public interface IUpdateWithUser<T> where T : Model
+    public interface IUpdateWithUser<T> where T : ModelBase
     {
         /// <summary>
         /// Updates a row in DB from a model instance, the ID and the user ID.

@@ -4,7 +4,7 @@
     /// Contains a method to insert a row into DB from a model instance and the user ID.
     /// </summary>
     /// <typeparam name="T">Type of model.</typeparam>
-    public interface ICreateWithUser<T> where T : Model
+    public interface ICreateWithUser<T> where T : ModelBase
     {
         /// <summary>
         /// Inserts a row into DB from a model instance that is mapped to an entity instance and the user ID.

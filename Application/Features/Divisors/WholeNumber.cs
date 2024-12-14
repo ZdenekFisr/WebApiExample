@@ -2,7 +2,7 @@
 
 namespace Application.Features.Divisors
 {
-    public class WholeNumber : Model
+    public class WholeNumber : ModelBase
     {
         public long Value { get; init; }
 

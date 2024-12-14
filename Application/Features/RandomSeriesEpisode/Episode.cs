@@ -2,7 +2,7 @@
 
 namespace Application.Features.RandomSeriesEpisode
 {
-    public class Episode : Model
+    public class Episode : ModelBase
     {
         public int SeasonNumber { get; init; }
 

@@ -3,7 +3,7 @@
     /// <summary>
     /// Contains a method to delete a row from DB.
     /// </summary>
-    public interface IDelete
+    public interface ISoftDelete
     {
         /// <summary>
         /// Deletes a row with a specified ID from DB.

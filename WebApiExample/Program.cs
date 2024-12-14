@@ -3,7 +3,7 @@ using Application.Features.Divisors;
 using Application.Features.FilmDatabase;
 using Application.Features.NumberToWords;
 using Application.Features.PrimeNumbers;
-using Application.Features.RailVehicles;
+using Application.Features.RailVehicles.Model;
 using Application.Features.RandomSeriesEpisode;
 using Application.GenericRepositories;
 using Application.Services;
@@ -71,7 +71,7 @@ namespace WebApiExample
             builder.Services.AddScoped<IRandomSeriesEpisodeService, RandomSeriesEpisodeService>();
             builder.Services.AddScoped<ISimpleModelRepository<FilmModel>, SimpleModelRepository<Film, FilmModel>>();
             builder.Services.AddScoped<IFilteredFilmsRepository, FilteredFilmsRepository>();
-            builder.Services.AddScoped<ISimpleModelWithUserRepository<RailVehicleModel>, SimpleModelWithUserRepository<RailVehicle, RailVehicleModel>>();
+            builder.Services.AddScoped<ISimpleModelWithUserRepository<RailVehicleModelBase>, SimpleModelWithUserRepository<RailVehicle, RailVehicleModelBase>>();
             builder.Services.AddScoped<IRestoreItemService<RailVehicle>, RestoreItemService<RailVehicle>>();
 
             var app = builder.Build();

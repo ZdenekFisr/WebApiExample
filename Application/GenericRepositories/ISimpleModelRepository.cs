@@ -8,9 +8,9 @@ namespace Application.GenericRepositories
     /// </summary>
     /// <typeparam name="TInputModel">Model used to create or update a DB item.</typeparam>
     /// <typeparam name="TOutputModel">Model used to get a DB item.</typeparam>
-    public interface ISimpleModelRepository<TInputModel, TOutputModel> : IGetOne<TOutputModel>, ICreate<TInputModel>, IUpdate<TInputModel>, IDelete
-        where TInputModel : Model
-        where TOutputModel : Model
+    public interface ISimpleModelRepository<TInputModel, TOutputModel> : IGetOne<TOutputModel>, ICreate<TInputModel>, IUpdate<TInputModel>, ISoftDelete
+        where TInputModel : ModelBase
+        where TOutputModel : ModelBase
     {
     }
 
@@ -19,7 +19,7 @@ namespace Application.GenericRepositories
     /// </summary>
     /// <typeparam name="TModel">Model used to create, update or get a DB item.</typeparam>
     public interface ISimpleModelRepository<TModel> : ISimpleModelRepository<TModel, TModel>
-        where TModel : Model
+        where TModel : ModelBase
     {
     }
 }

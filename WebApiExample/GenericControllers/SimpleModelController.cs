@@ -14,8 +14,8 @@ namespace WebApiExample.GenericControllers
     public class SimpleModelController<TInputModel, TOutputModel>(
         ISimpleModelRepository<TInputModel, TOutputModel> modelRepository)
         : ControllerBase
-        where TInputModel : Model
-        where TOutputModel : Model
+        where TInputModel : ModelBase
+        where TOutputModel : ModelBase
     {
         protected readonly ISimpleModelRepository<TInputModel, TOutputModel> _modelRepository = modelRepository;
 
@@ -51,7 +51,7 @@ namespace WebApiExample.GenericControllers
     public class SimpleModelController<TModel>(
         ISimpleModelRepository<TModel, TModel> modelRepository)
         : SimpleModelController<TModel, TModel>(modelRepository)
-        where TModel : Model
+        where TModel : ModelBase
     {
     }
 }

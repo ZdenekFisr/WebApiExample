@@ -5,7 +5,7 @@ namespace Application.Features.PrimeNumbers
     /// <summary>
     /// Result of finding gaps between primes.
     /// </summary>
-    public class PrimeGapsResult : Model
+    public class PrimeGapsResult : ModelBase
     {
         /// <summary>
         /// List of primes.

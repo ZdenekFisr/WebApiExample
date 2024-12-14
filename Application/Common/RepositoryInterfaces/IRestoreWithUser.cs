@@ -1,16 +1,16 @@
 ﻿namespace Application.Common.RepositoryInterfaces
 {
     /// <summary>
-    /// Contains a method to delete a row from DB. For better security, user ID is also required.
+    /// Represents a restore operation for soft-deletable entities.
     /// </summary>
-    public interface IDeleteWithUser
+    public interface IRestoreWithUser
     {
         /// <summary>
-        /// Deletes a row with a specified ID from DB. For better security, user ID is also required.
+        /// Sets 'IsDeleted' of a row with a specified ID to 0. For better security, user ID is also required.
         /// </summary>
         /// <param name="id">ID of the entity.</param>
         /// <param name="userId">ID of the user.</param>
         /// <returns></returns>
-        Task DeleteAsync(Guid id, string userId);
+        Task RestoreAsync(Guid id, string userId);
     }
 }

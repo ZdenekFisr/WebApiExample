@@ -4,7 +4,7 @@
     /// Contains a method to select one row from a DB table specified by <see cref="T"/>. For better security, user ID is also required.
     /// </summary>
     /// <typeparam name="T">Type of model.</typeparam>
-    public interface IGetOneWithUser<T> where T : Model
+    public interface IGetOneWithUser<T> where T : ModelBase
     {
         /// <summary>
         /// Selects one row from a DB table specified by <see cref="T"/> based on the ID. For better security, user ID is also required.

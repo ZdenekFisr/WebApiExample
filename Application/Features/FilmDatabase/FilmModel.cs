@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Application.Features.FilmDatabase
 {
-    public class FilmModel : Model
+    public class FilmModel : ModelBase
     {
         [StringLength(Constants.FilmNameMaxLength)]
         public required string Name { get; set; }

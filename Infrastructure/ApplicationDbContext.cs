@@ -18,6 +18,11 @@ namespace Infrastructure
             base.OnModelCreating(builder);
 
             builder.Entity<RailVehicle>()
+                .HasMany(e => e.TractionDiagram)
+                .WithOne()
+                .HasForeignKey(e => e.RailVehicleId)
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<RailVehicle>()
                 .HasOne<ApplicationUser>()
                 .WithMany()
                 .HasForeignKey(e => e.UserId);

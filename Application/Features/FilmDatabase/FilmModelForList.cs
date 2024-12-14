@@ -2,7 +2,7 @@
 
 namespace Application.Features.FilmDatabase
 {
-    public class FilmModelForList : Model
+    public class FilmModelForList : ModelBase
     {
         public Guid Id { get; set; }
 

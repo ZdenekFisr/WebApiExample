@@ -10,8 +10,8 @@ namespace Infrastructure.GenericRepositories
     /// <inheritdoc cref="ISimpleModelWithUserRepository{TInputModel, TOutputModel}"/>
     public class SimpleModelWithUserRepository<TEntity, TInputModel, TOutputModel> : ISimpleModelWithUserRepository<TInputModel, TOutputModel>
         where TEntity : EntityWithUserBase
-        where TInputModel : Model
-        where TOutputModel : Model
+        where TInputModel : ModelBase
+        where TOutputModel : ModelBase
     {
         protected readonly ApplicationDbContext _dbContext;
         protected readonly IMapper _mapper;
@@ -56,7 +56,7 @@ namespace Infrastructure.GenericRepositories
         }
 
         /// <inheritdoc cref="IDeleteWithUser.DeleteAsync(Guid, string)"/>
-        public virtual async Task DeleteAsync(Guid id, string userId)
+        public virtual async Task SoftDeleteAsync(Guid id, string userId)
         {
             TEntity? entity = await FindEntityAsync(id, userId);
             if (entity is null)
@@ -76,7 +76,7 @@ namespace Infrastructure.GenericRepositories
         IMapper mapper)
         : SimpleModelWithUserRepository<TEntity, TModel, TModel>(dbContext, mapper), ISimpleModelWithUserRepository<TModel>
         where TEntity : EntityWithUserBase
-        where TModel : Model
+        where TModel : ModelBase
     {
     }
 }

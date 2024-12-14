@@ -1,15 +1,15 @@
 ﻿namespace Application.Common.RepositoryInterfaces
 {
     /// <summary>
-    /// Contains a method to select all rows from a DB table specified by <see cref="T"/>.
+    /// Contains a method to select multiple rows from a DB table specified by <see cref="T"/>.
     /// </summary>
     /// <typeparam name="T">Type of model.</typeparam>
-    public interface IGetMany<T> where T : Model
+    public interface IGetMany<T> where T : ModelBase
     {
         /// <summary>
-        /// Selects all rows from a DB table specified by <see cref="T"/>
+        /// Selects multiple rows from a DB table specified by <see cref="T"/>
         /// </summary>
         /// <returns>IEnumerable collection of models.</returns>
-        Task<List<T>> GetAllAsync();
+        Task<ICollection<T>> GetManyAsync();
     }
 }

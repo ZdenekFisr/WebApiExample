@@ -19,8 +19,8 @@ namespace WebApiExample.GenericControllers
         ISimpleModelWithUserRepository<TInputModel, TOutputModel> modelRepository,
         IVerifyUserService userRepository)
         : ControllerBase
-        where TInputModel : Model
-        where TOutputModel : Model
+        where TInputModel : ModelBase
+        where TOutputModel : ModelBase
     {
         protected readonly ISimpleModelWithUserRepository<TInputModel, TOutputModel> _modelRepository = modelRepository;
         protected readonly IVerifyUserService _userRepository = userRepository;
@@ -69,7 +69,7 @@ namespace WebApiExample.GenericControllers
             if (currentUserId is IActionResult actionResult)
                 return actionResult;
 
-            await _modelRepository.DeleteAsync(id, (string)currentUserId);
+            await _modelRepository.SoftDeleteAsync(id, (string)currentUserId);
             return Ok();
         }
     }
@@ -84,7 +84,7 @@ namespace WebApiExample.GenericControllers
         ISimpleModelWithUserRepository<TModel, TModel> modelRepository,
         IVerifyUserService userRepository)
         : SimpleModelWithUserController<TModel, TModel>(modelRepository, userRepository)
-        where TModel : Model
+        where TModel : ModelBase
     {
     }
 }
