@@ -1,7 +1,7 @@
 ﻿using Application.Features.FilmDatabase;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Features.FilmDatabase.Repository
 {
     /// <inheritdoc cref="IFilteredFilmsRepository"/>
     public class FilteredFilmsRepository(ApplicationDbContext dbContext) : IFilteredFilmsRepository

@@ -7,7 +7,6 @@ using Application.Features.RailVehicles.ListModel;
 using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
 using Application.Features.RandomSeriesEpisode;
-using Application.GenericRepositories;
 using Application.Services;
 using Asp.Versioning;
 using Domain.Entities;
@@ -16,10 +15,10 @@ using Infrastructure.DatabaseOperations.Insert;
 using Infrastructure.DatabaseOperations.Restore;
 using Infrastructure.DatabaseOperations.SoftDelete;
 using Infrastructure.DatabaseOperations.Update;
+using Infrastructure.Features.AmountToWords.Repository;
+using Infrastructure.Features.FilmDatabase.Repository;
 using Infrastructure.Features.RailVehicles.Repository;
-using Infrastructure.GenericRepositories;
 using Infrastructure.Identity;
-using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -79,9 +78,8 @@ namespace WebApiExample
             builder.Services.AddScoped<ICurrencyCzechNameRepository, CurrencyCzechNameRepository>();
             builder.Services.AddScoped<IAmountInWordsCzechService, AmountInWordsCzechService>();
             builder.Services.AddScoped<IRandomSeriesEpisodeService, RandomSeriesEpisodeService>();
-            builder.Services.AddScoped<ISimpleModelRepository<FilmModel>, SimpleModelRepository<Film, FilmModel>>();
             builder.Services.AddScoped<IFilteredFilmsRepository, FilteredFilmsRepository>();
-            
+
             builder.Services.AddScoped<IInsertOperation<RailVehicleModelBase>, InsertOperation<RailVehicle, RailVehicleModelBase>>();
             builder.Services.AddScoped<IUpdateOperation<RailVehicle, RailVehicleModelBase>, UpdateOperation<RailVehicle, RailVehicleModelBase>>();
             builder.Services.AddScoped<ISoftDeleteOperation, SoftDeleteOperation<RailVehicle>>();

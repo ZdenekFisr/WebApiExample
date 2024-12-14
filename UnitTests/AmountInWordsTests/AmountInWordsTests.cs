@@ -5,7 +5,7 @@ using Domain.Entities;
 using Domain.Enums;
 using FluentAssertions;
 using Infrastructure;
-using Infrastructure.Repositories;
+using Infrastructure.Features.AmountToWords.Repository;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

@@ -3,7 +3,7 @@ using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Features.AmountToWords.Repository
 {
     /// <inheritdoc cref="ICurrencyCzechNameRepository"/>
     public class CurrencyCzechNameRepository(

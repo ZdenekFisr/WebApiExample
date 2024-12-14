@@ -1,12 +1,8 @@
 ﻿using Application.Features.RailVehicles.ListModel;
-using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
-using Application.GenericRepositories;
 using Asp.Versioning;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Mvc;
-using WebApiExample.GenericControllers;
-using WebApiExample.Services.VerifyUser;
 
 namespace WebApiExample.Features.RailVehicles.V1
 {

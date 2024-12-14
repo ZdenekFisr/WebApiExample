@@ -3,7 +3,7 @@ using Application.Services;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure;
-using Infrastructure.Repositories;
+using Infrastructure.Features.FilmDatabase.Repository;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
