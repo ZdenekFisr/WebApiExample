@@ -13,7 +13,7 @@ namespace Infrastructure.Features.RailVehicles.Repository
     /// <summary>
     /// Repository class for managing Vehicle entities.
     /// </summary>
-    /// <param name="mapper">The mapper to map between entities and DTOs.</param>
+    /// <param name="mapper">The mapper to map between model and entity.</param>
     /// <param name="dbContext">The application's database context.</param>
     /// <param name="insertRowOperation">The operation to insert a row into the database.</param>
     /// <param name="updateOperation">The operation to update an entity.</param>
@@ -60,12 +60,12 @@ namespace Infrastructure.Features.RailVehicles.Repository
         }
 
         /// <inheritdoc />
-        public async Task CreateAsync(RailVehicleModelBase dto, string userId)
-            => await _insertRowOperation.InsertAsync(_dbContext, dto, userId);
+        public async Task CreateAsync(RailVehicleModelBase model, string userId)
+            => await _insertRowOperation.InsertAsync(_dbContext, model, userId);
 
         /// <inheritdoc />
-        public async Task UpdateAsync(Guid id, RailVehicleModelBase newDto, string userId)
-            => await _updateOperation.UpdateAsync(_dbContext, FindEntityByIdAsync, id, newDto, userId);
+        public async Task UpdateAsync(Guid id, RailVehicleModelBase newmodel, string userId)
+            => await _updateOperation.UpdateAsync(_dbContext, FindEntityByIdAsync, id, newmodel, userId);
 
         /// <inheritdoc />
         public async Task SoftDeleteAsync(Guid id, string userId)

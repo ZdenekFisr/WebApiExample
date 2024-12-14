@@ -7,7 +7,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
 {
     public class ValidTractionDiagramAttributeTests
     {
-        private class TestVehicleDrivingDto : RailVehicleDrivingModelBase
+        private class TestVehicleDrivingModel : RailVehicleDrivingModelBase
         {
         }
 
@@ -21,7 +21,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
                 new() { Speed = 50, PullForce = 250 },
                 new() { Speed = 100, PullForce = 150 }
             ];
-            TestVehicleDrivingDto vehicle = new()
+            TestVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
                 Description = string.Empty,
@@ -48,7 +48,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
                 new() { Speed = 50, PullForce = 250 },
                 new() { Speed = 100, PullForce = 150 }
             ];
-            TestVehicleDrivingDto vehicle = new()
+            TestVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
                 Description = string.Empty,
@@ -75,7 +75,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
                 new() { Speed = 50, PullForce = 250 },
                 new() { Speed = 101, PullForce = 150 }
             ];
-            TestVehicleDrivingDto vehicle = new()
+            TestVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
                 Description = string.Empty,
@@ -102,7 +102,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
                 new() { Speed = 50, PullForce = 250 },
                 new() { Speed = 100, PullForce = -50 }
             ];
-            TestVehicleDrivingDto vehicle = new()
+            TestVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
                 Description = string.Empty,
@@ -129,7 +129,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
                 new() { Speed = 50, PullForce = 250 },
                 new() { Speed = 100, PullForce = 150 }
             ];
-            TestVehicleDrivingDto vehicle = new()
+            TestVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
                 Description = string.Empty,
@@ -156,7 +156,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
                 new() { Speed = 100, PullForce = 250 },
                 new() { Speed = 100, PullForce = 150 }
             ];
-            TestVehicleDrivingDto vehicle = new()
+            TestVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
                 Description = string.Empty,
@@ -183,7 +183,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
                 new() { Speed = 50, PullForce = 250 },
                 new() { Speed = 90, PullForce = 150 }
             ];
-            TestVehicleDrivingDto vehicle = new()
+            TestVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
                 Description = string.Empty,

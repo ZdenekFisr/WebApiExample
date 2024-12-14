@@ -8,7 +8,7 @@ namespace Infrastructure.Features.RailVehicles.Repository
     /// <summary>
     /// Repository for listing rail vehicles.
     /// </summary>
-    /// <param name="mapper">The mapper to map between entities and DTOs.</param>
+    /// <param name="mapper">The mapper to map between model and entity.</param>
     /// <param name="dbContext">The application's database context.</param>
     public class RailVehicleListRepository(
         IMapper mapper,

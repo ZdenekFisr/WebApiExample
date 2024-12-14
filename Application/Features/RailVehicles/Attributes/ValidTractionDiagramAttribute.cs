@@ -17,10 +17,10 @@ namespace Application.Features.RailVehicles.Attributes
         /// Ensures that the traction diagram points are within the valid speed and pull force range,
         /// have unique speed values, and start and end with the correct speed values.
         /// </summary>
-        /// <param name="value">The object to validate, expected to be of type <see cref="VehicleDrivingDtoBase"/>.</param>
+        /// <param name="value">The object to validate, expected to be of type <see cref="RailVehicleDrivingModelBase"/>.</param>
         /// <param name="validationContext">The context information about the validation operation.</param>
         /// <returns>A <see cref="ValidationResult"/> indicating whether the traction diagram is valid or not.</returns>
-        /// <exception cref="InvalidOperationException">Thrown when the attribute is applied to a type other than <see cref="VehicleDrivingDtoBase"/>.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the attribute is applied to a type other than <see cref="RailVehicleDrivingModelBase"/>.</exception>
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             if (value is not RailVehicleDrivingModelBase model)

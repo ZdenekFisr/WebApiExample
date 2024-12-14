@@ -32,11 +32,11 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
         }
 
         [Fact]
-        public async Task InsertAsync_Should_MapDtoToEntity_And_SaveToDatabase()
+        public async Task InsertAsync_Should_MapModelToEntity_And_SaveToDatabase()
         {
             // Arrange
             var userId = "test-user-id";
-            var dto = new TestInsertModel
+            var model = new TestInsertModel
             {
                 Name = "Test Rail Line"
             };
@@ -44,12 +44,12 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             _currentUtcTimeProviderMock.Setup(p => p.GetCurrentUtcTime()).Returns(DateTimeOffset.UtcNow);
 
             // Act
-            await _insertOperation.InsertAsync(_dbContext, dto, userId);
+            await _insertOperation.InsertAsync(_dbContext, model, userId);
 
             // Assert
-            var savedEntity = await _dbContext.Set<TestInsertEntity>().FirstOrDefaultAsync(e => e.Name == dto.Name);
+            var savedEntity = await _dbContext.Set<TestInsertEntity>().FirstOrDefaultAsync(e => e.Name == model.Name);
             savedEntity.Should().NotBeNull();
-            savedEntity?.Name.Should().Be(dto.Name);
+            savedEntity?.Name.Should().Be(model.Name);
             savedEntity?.UserId.Should().Be(userId);
             savedEntity?.CreatedBy.Should().Be(userId);
             savedEntity?.CreatedAt.Should().BeCloseTo(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(5));
