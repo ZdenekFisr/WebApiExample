@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.Services.CurrentUtcTime
+﻿using Application.Services;
+
+namespace Infrastructure.Services
 {
     /// <inheritdoc />
     public class CurrentUtcTimeProvider : ICurrentUtcTimeProvider

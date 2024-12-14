@@ -1,7 +1,7 @@
 ﻿using Application.Common;
+using Application.Services;
 using AutoMapper;
 using Domain.Common;
-using Infrastructure.Services.CurrentUtcTime;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DatabaseOperations.Update

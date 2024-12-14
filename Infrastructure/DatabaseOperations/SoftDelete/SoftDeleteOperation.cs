@@ -1,5 +1,5 @@
-﻿using Domain.Common;
-using Infrastructure.Services.CurrentUtcTime;
+﻿using Application.Services;
+using Domain.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DatabaseOperations.SoftDelete

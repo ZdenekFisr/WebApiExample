@@ -1,6 +1,6 @@
-﻿using FluentAssertions;
+﻿using Application.Services;
+using FluentAssertions;
 using Infrastructure.DatabaseOperations.SoftDelete;
-using Infrastructure.Services.CurrentUtcTime;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 

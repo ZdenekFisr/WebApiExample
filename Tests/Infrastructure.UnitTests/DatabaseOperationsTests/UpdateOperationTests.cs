@@ -1,9 +1,9 @@
 ﻿using Application.Common;
+using Application.Services;
 using AutoMapper;
 using Domain.Common;
 using FluentAssertions;
 using Infrastructure.DatabaseOperations.Update;
-using Infrastructure.Services.CurrentUtcTime;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 

@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Services.CurrentUtcTime
+﻿namespace Application.Services
 {
     /// <summary>
     /// Provides the current Coordinated Universal Time (UTC).

@@ -1,6 +1,7 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
 using Application.Helpers;
+using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using FluentAssertions;
@@ -9,7 +10,7 @@ using Infrastructure.DatabaseOperations.Restore;
 using Infrastructure.DatabaseOperations.SoftDelete;
 using Infrastructure.DatabaseOperations.Update;
 using Infrastructure.Features.RailVehicles.Repository;
-using Infrastructure.Services.CurrentUtcTime;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.IntegrationTests
