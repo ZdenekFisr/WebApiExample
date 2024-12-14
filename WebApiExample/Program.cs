@@ -3,13 +3,20 @@ using Application.Features.Divisors;
 using Application.Features.FilmDatabase;
 using Application.Features.NumberToWords;
 using Application.Features.PrimeNumbers;
+using Application.Features.RailVehicles.ListModel;
 using Application.Features.RailVehicles.Model;
+using Application.Features.RailVehicles.Repository;
 using Application.Features.RandomSeriesEpisode;
 using Application.GenericRepositories;
 using Application.Services;
 using Asp.Versioning;
 using Domain.Entities;
 using Infrastructure;
+using Infrastructure.DatabaseOperations.Insert;
+using Infrastructure.DatabaseOperations.Restore;
+using Infrastructure.DatabaseOperations.SoftDelete;
+using Infrastructure.DatabaseOperations.Update;
+using Infrastructure.Features.RailVehicles.Repository;
 using Infrastructure.GenericRepositories;
 using Infrastructure.Identity;
 using Infrastructure.Repositories;
@@ -59,7 +66,10 @@ namespace WebApiExample
             builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddScoped<ICurrentUserIdProvider, CurrentUserIdProvider>();
+            builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
+            builder.Services.AddScoped<ICurrentUtcTimeProvider, CurrentUtcTimeProvider>();
             builder.Services.AddScoped<Random>();
             builder.Services.AddScoped<IRandomNumberService, RandomNumberService>();
 
@@ -71,8 +81,13 @@ namespace WebApiExample
             builder.Services.AddScoped<IRandomSeriesEpisodeService, RandomSeriesEpisodeService>();
             builder.Services.AddScoped<ISimpleModelRepository<FilmModel>, SimpleModelRepository<Film, FilmModel>>();
             builder.Services.AddScoped<IFilteredFilmsRepository, FilteredFilmsRepository>();
-            builder.Services.AddScoped<ISimpleModelWithUserRepository<RailVehicleModelBase>, SimpleModelWithUserRepository<RailVehicle, RailVehicleModelBase>>();
-            builder.Services.AddScoped<IRestoreItemService<RailVehicle>, RestoreItemService<RailVehicle>>();
+            
+            builder.Services.AddScoped<IInsertOperation<RailVehicleModelBase>, InsertOperation<RailVehicle, RailVehicleModelBase>>();
+            builder.Services.AddScoped<IUpdateOperation<RailVehicle, RailVehicleModelBase>, UpdateOperation<RailVehicle, RailVehicleModelBase>>();
+            builder.Services.AddScoped<ISoftDeleteOperation, SoftDeleteOperation<RailVehicle>>();
+            builder.Services.AddScoped<IRestoreOperation, RestoreOperation<RailVehicle>>();
+            builder.Services.AddScoped<IRailVehicleRepository<RailVehicleModelBase>, RailVehicleRepository>();
+            builder.Services.AddScoped<IRailVehicleListRepository<RailVehicleListModel>, RailVehicleListRepository>();
 
             var app = builder.Build();
 
