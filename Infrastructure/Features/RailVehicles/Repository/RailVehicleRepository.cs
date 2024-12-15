@@ -3,8 +3,6 @@ using Application.Features.RailVehicles.Repository;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.DatabaseOperations.Insert;
-using Infrastructure.DatabaseOperations.Restore;
-using Infrastructure.DatabaseOperations.SoftDelete;
 using Infrastructure.DatabaseOperations.Update;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,23 +15,17 @@ namespace Infrastructure.Features.RailVehicles.Repository
     /// <param name="dbContext">The application's database context.</param>
     /// <param name="insertRowOperation">The operation to insert a row into the database.</param>
     /// <param name="updateOperation">The operation to update an entity.</param>
-    /// <param name="softDeleteOperation">The operation to perform soft delete on an entity.</param>
-    /// <param name="restoreOperation">The operation to restore an entity.</param>
     public class RailVehicleRepository(
         IMapper mapper,
         ApplicationDbContext dbContext,
         IInsertOperation<RailVehicleModelBase> insertRowOperation,
-        IUpdateOperation<RailVehicle, RailVehicleModelBase> updateOperation,
-        ISoftDeleteOperation softDeleteOperation,
-        IRestoreOperation restoreOperation)
+        IUpdateOperation<RailVehicle, RailVehicleModelBase> updateOperation)
         : IRailVehicleRepository<RailVehicleModelBase>
     {
         private readonly IMapper _mapper = mapper;
         private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly IInsertOperation<RailVehicleModelBase> _insertRowOperation = insertRowOperation;
         private readonly IUpdateOperation<RailVehicle, RailVehicleModelBase> _updateOperation = updateOperation;
-        private readonly ISoftDeleteOperation _softDeleteOperation = softDeleteOperation;
-        private readonly IRestoreOperation _restoreOperation = restoreOperation;
 
         /// <inheritdoc />
         public async Task<RailVehicleModelBase?> GetOneAsync(Guid id, string userId)
@@ -66,14 +58,6 @@ namespace Infrastructure.Features.RailVehicles.Repository
         /// <inheritdoc />
         public async Task UpdateAsync(Guid id, RailVehicleModelBase newmodel, string userId)
             => await _updateOperation.UpdateAsync(_dbContext, FindEntityByIdAsync, id, newmodel, userId);
-
-        /// <inheritdoc />
-        public async Task SoftDeleteAsync(Guid id, string userId)
-            => await _softDeleteOperation.SoftDeleteAsync(_dbContext, id, userId);
-
-        /// <inheritdoc />
-        public async Task RestoreAsync(Guid id, string userId)
-            => await _restoreOperation.RestoreAsync(_dbContext, id, userId);
 
         ///<summary>
         /// Asynchronously finds a Vehicle entity by its identifier and user ID.

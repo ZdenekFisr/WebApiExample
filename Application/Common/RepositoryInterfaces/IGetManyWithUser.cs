@@ -10,7 +10,7 @@
         /// Selects multiple rows from a DB table with a given user ID specified by <see cref="T"/>
         /// </summary>
         /// <param name="userId">ID of the user.</param>
-        /// <returns>IEnumerable collection of models.</returns>
+        /// <returns>A collection of models.</returns>
         Task<ICollection<T>> GetManyAsync(string userId);
     }
 }

@@ -1,75 +1,32 @@
 ﻿using Application.Features.RailVehicles.Model;
-using Application.Features.RailVehicles.Repository;
-using Application.Helpers;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.DatabaseOperations.Insert;
-using Infrastructure.DatabaseOperations.Restore;
 using Infrastructure.DatabaseOperations.SoftDelete;
 using Infrastructure.DatabaseOperations.Update;
 using Infrastructure.Features.RailVehicles.Repository;
 using Infrastructure.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.IntegrationTests
 {
-    [Collection("Database")]
-    public class RailVehicleRepositoryTests : IAsyncLifetime
+    public class RailVehicleRepositoryTests : RailVehicleIntegrationTestsBase
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly Func<Task> _resetDatabase;
-
         private readonly IMapper _mapper;
         private readonly ICurrentUtcTimeProvider _currentUtcTimeProvider;
         private readonly IInsertOperation<RailVehicleModelBase> _insertOperation;
         private readonly IUpdateOperation<RailVehicle, RailVehicleModelBase> _updateOperation;
-        private readonly ISoftDeleteOperation _softDeleteOperation;
-        private readonly IRestoreOperation _restoreOperation;
-        private readonly IRailVehicleRepository<RailVehicleModelBase> _repository;
-
-        private readonly EntityProvider _entityProvider = new();
-
-        private readonly TimeSpan offset = new(0);
-        private readonly TimeSpan timeDelta = TimeSpan.FromSeconds(5);
+        private readonly RailVehicleRepository _repository;
 
         public RailVehicleRepositoryTests(DatabaseFixture databaseFixture)
+            : base(databaseFixture)
         {
-            _resetDatabase = databaseFixture.ResetDatabase;
-
-            _dbContext = databaseFixture.Context;
             _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
             _currentUtcTimeProvider = new CurrentUtcTimeProvider();
             _insertOperation = new InsertOperation<RailVehicle, RailVehicleModelBase>(_mapper, _currentUtcTimeProvider);
             _updateOperation = new UpdateOperation<RailVehicle, RailVehicleModelBase>(_mapper, _currentUtcTimeProvider);
-            _softDeleteOperation = new SoftDeleteOperation<RailVehicle>(_currentUtcTimeProvider);
-            _restoreOperation = new RestoreOperation<RailVehicle>();
-            _repository = new RailVehicleRepository(_mapper, _dbContext, _insertOperation, _updateOperation, _softDeleteOperation, _restoreOperation);
-        }
-
-        public Task InitializeAsync() => Task.CompletedTask;
-
-        public async Task DisposeAsync() => await _resetDatabase();
-
-        private async Task<RailVehicle?> FindVehicleByNameAsync(string vehicleName, string userId)
-            => await _dbContext.RailVehicles
-                .Include(v => v.TractionDiagram)
-                .FirstOrDefaultAsync(v => v.Name == vehicleName && v.UserId == userId);
-
-        private async Task<(Guid[] vehicleIds, string user1Id, string user2Id)> AddTestEntitiesToDbAsync()
-        {
-            Guid[] vehicleIds = GuidHelpers.GenerateRandomGuids(8).ToArray();
-            string user1Id = Guid.NewGuid().ToString();
-            string user2Id = Guid.NewGuid().ToString();
-
-            RailVehicle[] testVehicles = _entityProvider.GetTestVehicles(vehicleIds, user1Id, user2Id);
-            await _dbContext.Users.AddRangeAsync([new() { Id = user1Id }, new() { Id = user2Id }]);
-            await _dbContext.RailVehicles.AddRangeAsync(testVehicles);
-
-            await _dbContext.SaveChangesAsync();
-
-            return (vehicleIds, user1Id, user2Id);
+            _repository = new RailVehicleRepository(_mapper, _dbContext, _insertOperation, _updateOperation);
         }
 
         private async Task GetOneAsync_ShouldReturnVehicle<T>(T expected, int vehicleIdIndex)
@@ -245,7 +202,8 @@ namespace Infrastructure.IntegrationTests
 
             await _repository.CreateAsync(expected, user1Id);
 
-            RailVehicleListRepository vehicleListRepository = new(_mapper, _dbContext);
+            SoftDeleteOperation<RailVehicle> softDeleteOperation = new(_currentUtcTimeProvider);
+            RailVehicleListRepository vehicleListRepository = new(_mapper, _dbContext, softDeleteOperation);
             Guid createdVehicleId = (await vehicleListRepository.GetManyAsync(user1Id)).First(v => v.Name == vehicleName).Id;
             RailVehiclePulledModel? actual = await _repository.GetOneAsync(createdVehicleId, user1Id) as RailVehiclePulledModel;
 
@@ -296,34 +254,6 @@ namespace Infrastructure.IntegrationTests
             updatedEntity.Should().NotBeNull();
             updatedEntity?.UpdatedBy.Should().Be(user1Id);
             updatedEntity?.UpdatedAt.Should().BeCloseTo(DateTime.UtcNow, timeDelta);
-        }
-
-        [Fact]
-        public async Task SoftDeleteAsync_ShouldSoftDeleteVehicle()
-        {
-            (Guid[] vehicleIds, string user1Id, _) = await AddTestEntitiesToDbAsync();
-
-            await _repository.SoftDeleteAsync(vehicleIds[2], user1Id);
-
-            RailVehicle? deletedEntity = await FindVehicleByNameAsync("Test Vehicle 3", user1Id);
-            deletedEntity.Should().NotBeNull();
-            deletedEntity?.IsDeleted.Should().BeTrue();
-            deletedEntity?.DeletedBy.Should().Be(user1Id);
-            deletedEntity?.DeletedAt.Should().BeCloseTo(DateTimeOffset.UtcNow, timeDelta);
-        }
-
-        [Fact]
-        public async Task RestoreAsync_ShouldRestoreVehicle()
-        {
-            (Guid[] vehicleIds, string user1Id, _) = await AddTestEntitiesToDbAsync();
-
-            await _repository.RestoreAsync(vehicleIds[4], user1Id);
-
-            RailVehicle? restoredEntity = await FindVehicleByNameAsync("Test Vehicle 5", user1Id);
-            restoredEntity.Should().NotBeNull();
-            restoredEntity?.IsDeleted.Should().BeFalse();
-            restoredEntity?.DeletedBy.Should().Be(user1Id);
-            restoredEntity?.DeletedAt.Should().Be(new(2024, 12, 6, 16, 58, 26, offset));
         }
     }
 }

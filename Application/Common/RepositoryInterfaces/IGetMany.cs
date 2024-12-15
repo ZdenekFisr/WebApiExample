@@ -9,7 +9,7 @@
         /// <summary>
         /// Selects multiple rows from a DB table specified by <see cref="T"/>
         /// </summary>
-        /// <returns>IEnumerable collection of models.</returns>
+        /// <returns>A collection of models.</returns>
         Task<ICollection<T>> GetManyAsync();
     }
 }

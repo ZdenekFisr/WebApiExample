@@ -9,16 +9,16 @@ namespace WebApiExample.Features.RailVehicles.V1
     [ApiVersion(1)]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class RailVehiclesController(
-        IRailVehicleListRepository<RailVehicleListModel> vehicleListRepository,
+    public class RailVehiclesDeletedController(
+        IRailVehicleDeletedRepository<RailVehicleListModel> repository,
         ICurrentUserIdProvider currentUserIdProvider)
         : ControllerBase
     {
-        private readonly IRailVehicleListRepository<RailVehicleListModel> _repository = vehicleListRepository;
+        private readonly IRailVehicleDeletedRepository<RailVehicleListModel> _repository = repository;
         private readonly ICurrentUserIdProvider _currentUserIdProvider = currentUserIdProvider;
 
         [HttpGet]
-        [EndpointDescription("Gets all rail vehicles that are not deleted and belong to the current user.")]
+        [EndpointDescription("Gets all rail vehicles that are soft deleted and belong to the current user.")]
         public async Task<IActionResult> GetAllAsync()
         {
             string? currentUserId = _currentUserIdProvider.GetCurrentUserId();
@@ -28,15 +28,15 @@ namespace WebApiExample.Features.RailVehicles.V1
             return Ok(await _repository.GetManyAsync(currentUserId));
         }
 
-        [HttpDelete("{id}")]
-        [EndpointDescription("Soft deletes a rail vehicle by ID.")]
-        public async Task<IActionResult> DeleteAsync(Guid id)
+        [HttpPut("{id}")]
+        [EndpointDescription("Restores a soft deleted rail vehicle by ID.")]
+        public async Task<IActionResult> RestoreAsync(Guid id)
         {
             string? currentUserId = _currentUserIdProvider.GetCurrentUserId();
             if (currentUserId is null)
                 return Unauthorized();
 
-            await _repository.SoftDeleteAsync(id, currentUserId);
+            await _repository.RestoreAsync(id, currentUserId);
             return Ok();
         }
     }

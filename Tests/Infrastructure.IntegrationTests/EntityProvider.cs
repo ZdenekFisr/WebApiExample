@@ -1,13 +1,12 @@
 ﻿using Domain.Entities;
-using System.ComponentModel.DataAnnotations;
 
 namespace Infrastructure.IntegrationTests
 {
-    internal class EntityProvider
+    public class EntityProvider
     {
         private readonly TimeSpan offset = new(0);
 
-        public RailVehicle[] GetTestVehicles([MinLength(8)] Guid[] vehicleIds, string user1Id, string user2Id)
+        public RailVehicle[] GetTestVehicles(Guid[] vehicleIds, string user1Id, string user2Id)
             =>
         [
             new()
@@ -206,6 +205,69 @@ namespace Infrastructure.IntegrationTests
                 TractionDiagram = [],
                 CreatedAt = new(2024, 12, 6, 17, 28, 17, offset),
                 CreatedBy = user2Id
+            },
+            new()
+            {
+                Id = vehicleIds[8],
+                UserId = user2Id,
+                Name = "Test Vehicle 9",
+                Description = "Independent user 2 deleted",
+                Weight = 90,
+                Length = 20,
+                Wheelsets = 4,
+                EquivalentRotatingWeight = 25,
+                MaxSpeed = 100,
+                ResistanceConstant = 0.5,
+                ResistanceLinear = 0.1,
+                ResistanceQuadratic = 0.0002,
+                DrivingWheelsets = 4,
+                Performance = 3200,
+                MaxPullForce = 300,
+                TractionDiagram = [
+                    new() { Id = Guid.NewGuid(), Speed = 0, PullForce = 300, RailVehicleId = vehicleIds[2] },
+                    new() { Id = Guid.NewGuid(), Speed = 100, PullForce = 250, RailVehicleId = vehicleIds[2] },
+                    new() { Id = Guid.NewGuid(), Speed = 200, PullForce = 100, RailVehicleId = vehicleIds[2] },
+                ],
+                EfficiencyIndependent = 0.9,
+                CreatedAt = new(2024, 12, 6, 17, 30, 4, offset),
+                CreatedBy = user2Id,
+                UpdatedAt = new(2024, 12, 6, 17, 52, 53, offset),
+                UpdatedBy = user2Id,
+                IsDeleted = true,
+                DeletedAt = new(2024, 12, 6, 17, 56, 10, offset),
+                DeletedBy = user2Id
+            },
+            new()
+            {
+                Id = vehicleIds[9],
+                UserId = user2Id,
+                Name = "Test Vehicle 10",
+                Description = "Hybrid user 2 deleted",
+                Weight = 90,
+                Length = 20,
+                Wheelsets = 4,
+                EquivalentRotatingWeight = 25,
+                MaxSpeed = 100,
+                ResistanceConstant = 0.5,
+                ResistanceLinear = 0.1,
+                ResistanceQuadratic = 0.0002,
+                DrivingWheelsets = 4,
+                Performance = 3200,
+                MaxPullForce = 300,
+                TractionDiagram = [
+                    new() { Id = Guid.NewGuid(), Speed = 0, PullForce = 300, RailVehicleId = vehicleIds[3] },
+                    new() { Id = Guid.NewGuid(), Speed = 100, PullForce = 250, RailVehicleId = vehicleIds[3] },
+                    new() { Id = Guid.NewGuid(), Speed = 200, PullForce = 100, RailVehicleId = vehicleIds[3] },
+                ],
+                MaxSpeedHybrid = 90,
+                PerformanceHybrid = 1600,
+                EfficiencyDependent = 0.9,
+                EfficiencyIndependent = 0.8,
+                CreatedAt = new(2024, 12, 6, 17, 34, 26, offset),
+                CreatedBy = user2Id,
+                IsDeleted = true,
+                DeletedAt = new(2024, 12, 6, 18, 2, 45, offset),
+                DeletedBy = user2Id
             }
         ];
     }

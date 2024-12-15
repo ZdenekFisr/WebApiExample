@@ -1,26 +1,26 @@
 ﻿using Application.Features.RailVehicles.ListModel;
 using Application.Features.RailVehicles.Repository;
 using AutoMapper;
-using Infrastructure.DatabaseOperations.SoftDelete;
+using Infrastructure.DatabaseOperations.Restore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Features.RailVehicles.Repository
 {
     /// <summary>
-    /// Repository for listing rail vehicles.
+    /// Repository for listing and restoring deleted rail vehicles.
     /// </summary>
     /// <param name="mapper">The mapper to map between model and entity.</param>
     /// <param name="dbContext">The application's database context.</param>
-    /// <param name="softDeleteOperation">The operation to perform soft delete on an entity.</param>
-    public class RailVehicleListRepository(
+    /// <param name="restoreOperation">The operation to restore an entity.</param>
+    public class RailVehicleDeletedRepository(
         IMapper mapper,
         ApplicationDbContext dbContext,
-        ISoftDeleteOperation softDeleteOperation)
-        : IRailVehicleListRepository<RailVehicleListModel>
+        IRestoreOperation restoreOperation)
+        : IRailVehicleDeletedRepository<RailVehicleListModel>
     {
         private readonly IMapper _mapper = mapper;
         private readonly ApplicationDbContext _dbContext = dbContext;
-        private readonly ISoftDeleteOperation _softDeleteOperation = softDeleteOperation;
+        private readonly IRestoreOperation _restoreOperation = restoreOperation;
 
         /// <inheritdoc />
         public async Task<ICollection<RailVehicleListModel>> GetManyAsync(string userId)
@@ -29,12 +29,12 @@ namespace Infrastructure.Features.RailVehicles.Repository
                 await _dbContext.RailVehicles
                 .AsNoTracking()
                 .Where(v => v.UserId == userId)
-                .Where(v => !v.IsDeleted)
+                .Where(v => v.IsDeleted)
                 .ToListAsync());
         }
 
         /// <inheritdoc />
-        public async Task SoftDeleteAsync(Guid id, string userId)
-            => await _softDeleteOperation.SoftDeleteAsync(_dbContext, id, userId);
+        public async Task RestoreAsync(Guid id, string userId)
+            => await _restoreOperation.RestoreAsync(_dbContext, id, userId);
     }
 }
