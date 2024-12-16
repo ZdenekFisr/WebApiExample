@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="FeatureTests\AmountInWords\CurrencyCzechNames.csv" />
+    <EmbeddedResource Include="ServicesTests\EmbeddedCsv\TestCsvRecords.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
     <PackageReference Include="FluentAssertions" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
