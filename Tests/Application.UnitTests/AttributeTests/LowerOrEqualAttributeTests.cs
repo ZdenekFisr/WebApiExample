@@ -12,11 +12,13 @@ namespace Application.UnitTests.AttributeTests
             public int Value2 { get; set; }
         }
 
-        [Fact]
-        public void IsValid_WhenValueIsEqual_ShouldReturnSuccess()
+        [Theory]
+        [InlineData(5, 5)]
+        [InlineData(5, 10)]
+        public void IsValid_ShouldReturnSuccess(int value1, int value2)
         {
             // Arrange
-            var model = new TestModel { Value1 = 5, Value2 = 5 };
+            var model = new TestModel { Value1 = value1, Value2 = value2 };
             var attribute = new LowerOrEqualAttribute("Value2");
             var validationContext = new ValidationContext(model) { MemberName = "Value1" };
 
@@ -27,27 +29,14 @@ namespace Application.UnitTests.AttributeTests
             result.Should().Be(ValidationResult.Success);
         }
 
-        [Fact]
-        public void IsValid_WhenValueIsLower_ShouldReturnSuccess()
+        [Theory]
+        [InlineData(15, 10, "Value2", "The property Value1 must be lower than or equal to the property Value2.")]
+        [InlineData(5, 10, "Value3", "Unknown property: Value3")]
+        public void IsValid_ShouldReturnValidationError(int value1, int value2, string propertyToCompare, string expectedErrorMessage)
         {
             // Arrange
-            var model = new TestModel { Value1 = 5, Value2 = 10 };
-            var attribute = new LowerOrEqualAttribute("Value2");
-            var validationContext = new ValidationContext(model) { MemberName = "Value1" };
-
-            // Act
-            var result = attribute.GetValidationResult(model.Value1, validationContext);
-
-            // Assert
-            result.Should().Be(ValidationResult.Success);
-        }
-
-        [Fact]
-        public void IsValid_WhenValueIsGreater_ShouldReturnValidationError()
-        {
-            // Arrange
-            var model = new TestModel { Value1 = 15, Value2 = 10 };
-            var attribute = new LowerOrEqualAttribute("Value2");
+            var model = new TestModel { Value1 = value1, Value2 = value2 };
+            var attribute = new LowerOrEqualAttribute(propertyToCompare);
             var validationContext = new ValidationContext(model) { MemberName = "Value1" };
 
             // Act
@@ -55,23 +44,7 @@ namespace Application.UnitTests.AttributeTests
 
             // Assert
             result.Should().NotBe(ValidationResult.Success);
-            result?.ErrorMessage.Should().Be("The property Value1 must be lower than or equal to the property Value2.");
-        }
-
-        [Fact]
-        public void IsValid_WhenPropertyToCompareIsUnknown_ShouldReturnValidationError()
-        {
-            // Arrange
-            var model = new TestModel { Value1 = 5, Value2 = 10 };
-            var attribute = new LowerOrEqualAttribute("Value3");
-            var validationContext = new ValidationContext(model) { MemberName = "Value1" };
-
-            // Act
-            var result = attribute.GetValidationResult(model.Value1, validationContext);
-
-            // Assert
-            result.Should().NotBe(ValidationResult.Success);
-            result?.ErrorMessage.Should().Be("Unknown property: Value3");
+            result?.ErrorMessage.Should().Be(expectedErrorMessage);
         }
     }
 }

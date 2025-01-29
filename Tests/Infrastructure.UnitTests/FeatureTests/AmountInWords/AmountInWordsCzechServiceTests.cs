@@ -40,7 +40,27 @@ namespace Infrastructure.UnitTests.FeatureTests.AmountInWords
             _context.SaveChanges();
         }
 
-        private async Task PerformAmountToWordsTestAsync(
+        [Theory]
+        [InlineData("", 50, "cz", GrammaticalGender.Feminine, "padesát")] // invalid currency code
+        [InlineData("jedna koruna", 1, "czk", GrammaticalGender.Feminine, "jedna")]
+        [InlineData("dvě koruny", 2, "czk", GrammaticalGender.Feminine, "dvě")]
+        [InlineData("pět korun", 5, "czk", GrammaticalGender.Feminine, "pět")]
+        [InlineData("jedenáct korun", 11, "czk", GrammaticalGender.Feminine, "jedenáct")]
+        [InlineData("dvanáct korun", 12, "czk", GrammaticalGender.Feminine, "dvanáct")]
+        [InlineData("dvacet jedna koruna", 21, "czk", GrammaticalGender.Feminine, "dvacet jedna")]
+        [InlineData("dvacet dvě koruny", 22, "czk", GrammaticalGender.Feminine, "dvacet dvě")]
+        [InlineData("sto třicet pět korun jeden haléř", 135.01, "czk", GrammaticalGender.Feminine, "sto třicet pět", GrammaticalGender.Masculine, "jeden")]
+        [InlineData("sto třicet pět korun dva haléře", 135.02, "czk", GrammaticalGender.Feminine, "sto třicet pět", GrammaticalGender.Masculine, "dva")]
+        [InlineData("sto třicet pět korun devadesát devět haléřů", 135.99, "czk", GrammaticalGender.Feminine, "sto třicet pět", GrammaticalGender.Masculine, "devadesát devět")]
+        [InlineData("stotřicetpět korun devadesátdevět haléřů", 135.99, "czk", GrammaticalGender.Feminine, "stotřicetpět", GrammaticalGender.Masculine, "devadesátdevět")]
+        [InlineData("minus čtyřicet dvě koruny osmdesát čtyři haléře", -42.84, "czk", GrammaticalGender.Feminine, "minus čtyřicet dvě", GrammaticalGender.Masculine, "osmdesát čtyři")]
+        [InlineData("jedno euro jeden cent", 1.01, "eur", GrammaticalGender.Neuter, "jedno", GrammaticalGender.Masculine, "jeden")]
+        [InlineData("třicet dvě eura čtyřicet tři centy", 32.43, "eur", GrammaticalGender.Neuter, "třicet dvě", GrammaticalGender.Masculine, "čtyřicet tři")]
+        [InlineData("sto devadesát devět eur devadesát devět centů", 199.99, "eur", GrammaticalGender.Neuter, "sto devadesát devět", GrammaticalGender.Masculine, "devadesát devět")]
+        [InlineData("jeden dolar jeden cent", 1.01, "usd", GrammaticalGender.Masculine, "jeden", GrammaticalGender.Masculine, "jeden")]
+        [InlineData("třicet dva dolary čtyřicet tři centy", 32.43, "usd", GrammaticalGender.Masculine, "třicet dva", GrammaticalGender.Masculine, "čtyřicet tři")]
+        [InlineData("sto devadesát devět dolarů devadesát devět centů", 199.99, "usd", GrammaticalGender.Masculine, "sto devadesát devět", GrammaticalGender.Masculine, "devadesát devět")]
+        public async Task AmountToWordsAsync_ReturnsCorrectStringRepresentation(
             string expected, decimal input,
             string currencyCode,
             GrammaticalGender genderWholePart, string mockWholePart,
@@ -64,81 +84,5 @@ namespace Infrastructure.UnitTests.FeatureTests.AmountInWords
 
             _context.Database.EnsureDeleted();
         }
-
-        [Fact]
-        public async Task AmountToWords_InvalidCurrencyCode()
-            => await PerformAmountToWordsTestAsync(string.Empty, 50, "cz", GrammaticalGender.Feminine, "padesát");
-
-        [Fact]
-        public async Task AmountToWords_OneCZK()
-            => await PerformAmountToWordsTestAsync("jedna koruna", 1, "czk", GrammaticalGender.Feminine, "jedna");
-
-        [Fact]
-        public async Task AmountToWords_TwoCZK()
-            => await PerformAmountToWordsTestAsync("dvě koruny", 2, "czk", GrammaticalGender.Feminine, "dvě");
-
-        [Fact]
-        public async Task AmountToWords_FiveCZK()
-            => await PerformAmountToWordsTestAsync("pět korun", 5, "czk", GrammaticalGender.Feminine, "pět");
-
-        [Fact]
-        public async Task AmountToWords_ElevenCZK()
-            => await PerformAmountToWordsTestAsync("jedenáct korun", 11, "czk", GrammaticalGender.Feminine, "jedenáct");
-
-        [Fact]
-        public async Task AmountToWords_TwelveCZK()
-            => await PerformAmountToWordsTestAsync("dvanáct korun", 12, "czk", GrammaticalGender.Feminine, "dvanáct");
-
-        [Fact]
-        public async Task AmountToWords_TwentyOneCZK()
-            => await PerformAmountToWordsTestAsync("dvacet jedna koruna", 21, "czk", GrammaticalGender.Feminine, "dvacet jedna");
-
-        [Fact]
-        public async Task AmountToWords_TwentyTwoCZK()
-            => await PerformAmountToWordsTestAsync("dvacet dvě koruny", 22, "czk", GrammaticalGender.Feminine, "dvacet dvě");
-
-        [Fact]
-        public async Task AmountToWords_Fraction1CZK()
-            => await PerformAmountToWordsTestAsync("sto třicet pět korun jeden haléř", 135.01m, "czk", GrammaticalGender.Feminine, "sto třicet pět", GrammaticalGender.Masculine, "jeden");
-
-        [Fact]
-        public async Task AmountToWords_Fraction2CZK()
-            => await PerformAmountToWordsTestAsync("sto třicet pět korun dva haléře", 135.02m, "czk", GrammaticalGender.Feminine, "sto třicet pět", GrammaticalGender.Masculine, "dva");
-
-        [Fact]
-        public async Task AmountToWords_Fraction3CZK()
-            => await PerformAmountToWordsTestAsync("sto třicet pět korun devadesát devět haléřů", 135.99m, "czk", GrammaticalGender.Feminine, "sto třicet pět", GrammaticalGender.Masculine, "devadesát devět");
-
-        [Fact]
-        public async Task AmountToWords_Fraction3CZKNoSpaces()
-            => await PerformAmountToWordsTestAsync("stotřicetpět korun devadesátdevět haléřů", 135.99m, "czk", GrammaticalGender.Feminine, "stotřicetpět", GrammaticalGender.Masculine, "devadesátdevět");
-
-        [Fact]
-        public async Task AmountToWords_NegativeCZK()
-            => await PerformAmountToWordsTestAsync("minus čtyřicet dvě koruny osmdesát čtyři haléře", -42.84m, "czk", GrammaticalGender.Feminine, "minus čtyřicet dvě", GrammaticalGender.Masculine, "osmdesát čtyři");
-
-        [Fact]
-        public async Task AmountToWords_Fraction1EUR()
-            => await PerformAmountToWordsTestAsync("jedno euro jeden cent", 1.01m, "eur", GrammaticalGender.Neuter, "jedno", GrammaticalGender.Masculine, "jeden");
-
-        [Fact]
-        public async Task AmountToWords_Fraction2EUR()
-            => await PerformAmountToWordsTestAsync("třicet dvě eura čtyřicet tři centy", 32.43m, "eur", GrammaticalGender.Neuter, "třicet dvě", GrammaticalGender.Masculine, "čtyřicet tři");
-
-        [Fact]
-        public async Task AmountToWords_Fraction3EUR()
-            => await PerformAmountToWordsTestAsync("sto devadesát devět eur devadesát devět centů", 199.99m, "eur", GrammaticalGender.Neuter, "sto devadesát devět", GrammaticalGender.Masculine, "devadesát devět");
-
-        [Fact]
-        public async Task AmountToWords_Fraction1USD()
-            => await PerformAmountToWordsTestAsync("jeden dolar jeden cent", 1.01m, "usd", GrammaticalGender.Masculine, "jeden", GrammaticalGender.Masculine, "jeden");
-
-        [Fact]
-        public async Task AmountToWords_Fraction2USD()
-            => await PerformAmountToWordsTestAsync("třicet dva dolary čtyřicet tři centy", 32.43m, "usd", GrammaticalGender.Masculine, "třicet dva", GrammaticalGender.Masculine, "čtyřicet tři");
-
-        [Fact]
-        public async Task AmountToWords_Fraction3USD()
-            => await PerformAmountToWordsTestAsync("sto devadesát devět dolarů devadesát devět centů", 199.99m, "usd", GrammaticalGender.Masculine, "sto devadesát devět", GrammaticalGender.Masculine, "devadesát devět");
     }
 }
