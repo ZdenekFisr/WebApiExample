@@ -9,7 +9,6 @@ using Application.Features.RailVehicles.Repository;
 using Application.Features.RandomSeriesEpisode;
 using Application.Services;
 using Asp.Versioning;
-using Domain.Entities;
 using Infrastructure;
 using Infrastructure.DatabaseOperations.Insert;
 using Infrastructure.DatabaseOperations.Restore;
@@ -80,10 +79,11 @@ namespace WebApiExample
             builder.Services.AddScoped<IRandomSeriesEpisodeService, RandomSeriesEpisodeService>();
             builder.Services.AddScoped<IFilteredFilmsRepository, FilteredFilmsRepository>();
 
-            builder.Services.AddScoped<IInsertOperation<RailVehicleModelBase>, InsertOperation<RailVehicle, RailVehicleModelBase>>();
-            builder.Services.AddScoped<IUpdateOperation<RailVehicle, RailVehicleModelBase>, UpdateOperation<RailVehicle, RailVehicleModelBase>>();
-            builder.Services.AddScoped<ISoftDeleteOperation, SoftDeleteOperation<RailVehicle>>();
-            builder.Services.AddScoped<IRestoreOperation, RestoreOperation<RailVehicle>>();
+            builder.Services.AddScoped<IInsertOperation, InsertOperation>();
+            builder.Services.AddScoped<IUpdateOperation, UpdateOperation>();
+            builder.Services.AddScoped<ISoftDeleteOperation, SoftDeleteOperation>();
+            builder.Services.AddScoped<IRestoreOperation, RestoreOperation>();
+
             builder.Services.AddScoped<IRailVehicleRepository<RailVehicleModelBase>, RailVehicleRepository>();
             builder.Services.AddScoped<IRailVehicleListRepository<RailVehicleListModel>, RailVehicleListRepository>();
 

@@ -9,13 +9,13 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
     public class SoftDeleteOperationTests
     {
         private readonly Mock<ICurrentUtcTimeProvider> _currentUtcTimeProviderMock;
-        private readonly SoftDeleteOperation<TestSoftDeletableEntity> _softDeleteOperation;
+        private readonly SoftDeleteOperation _softDeleteOperation;
         private readonly TestSoftDeletableDbContext _dbContext;
 
         public SoftDeleteOperationTests()
         {
             _currentUtcTimeProviderMock = new Mock<ICurrentUtcTimeProvider>();
-            _softDeleteOperation = new SoftDeleteOperation<TestSoftDeletableEntity>(
+            _softDeleteOperation = new SoftDeleteOperation(
                 _currentUtcTimeProviderMock.Object);
 
             var options = new DbContextOptionsBuilder<TestSoftDeletableDbContext>()
@@ -44,7 +44,7 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             await _dbContext.SaveChangesAsync();
 
             // Act
-            await _softDeleteOperation.SoftDeleteAsync(_dbContext, id, userId);
+            await _softDeleteOperation.SoftDeleteAsync<TestSoftDeletableEntity>(_dbContext, id, userId);
 
             // Assert
             var actualEntity = await _dbContext.Set<TestSoftDeletableEntity>().FindAsync(entity.Id);
@@ -61,7 +61,7 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             var id = Guid.NewGuid();
 
             // Act
-            await _softDeleteOperation.SoftDeleteAsync(_dbContext, id, userId);
+            await _softDeleteOperation.SoftDeleteAsync<TestSoftDeletableEntity>(_dbContext, id, userId);
 
             // Assert
             _dbContext.ChangeTracker.Entries().Should().BeEmpty();
@@ -83,7 +83,7 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             await _dbContext.SaveChangesAsync();
 
             // Act
-            await _softDeleteOperation.SoftDeleteAsync(_dbContext, id, userId);
+            await _softDeleteOperation.SoftDeleteAsync<TestSoftDeletableEntity>(_dbContext, id, userId);
 
             // Assert
             var actualEntity = await _dbContext.Set<TestSoftDeletableEntity>().FindAsync(id);

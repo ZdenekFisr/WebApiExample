@@ -22,7 +22,7 @@ namespace Infrastructure.IntegrationTests
         {
             _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
             _timeProvider = new CurrentUtcTimeProvider();
-            _softDeleteOperation = new SoftDeleteOperation<RailVehicle>(_timeProvider);
+            _softDeleteOperation = new SoftDeleteOperation(_timeProvider);
             _repository = new RailVehicleListRepository(_mapper, _dbContext, _softDeleteOperation);
         }
 

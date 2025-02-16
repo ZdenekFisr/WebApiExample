@@ -18,14 +18,14 @@ namespace Infrastructure.Features.RailVehicles.Repository
     public class RailVehicleRepository(
         IMapper mapper,
         ApplicationDbContext dbContext,
-        IInsertOperation<RailVehicleModelBase> insertRowOperation,
-        IUpdateOperation<RailVehicle, RailVehicleModelBase> updateOperation)
+        IInsertOperation insertRowOperation,
+        IUpdateOperation updateOperation)
         : IRailVehicleRepository<RailVehicleModelBase>
     {
         private readonly IMapper _mapper = mapper;
         private readonly ApplicationDbContext _dbContext = dbContext;
-        private readonly IInsertOperation<RailVehicleModelBase> _insertRowOperation = insertRowOperation;
-        private readonly IUpdateOperation<RailVehicle, RailVehicleModelBase> _updateOperation = updateOperation;
+        private readonly IInsertOperation _insertRowOperation = insertRowOperation;
+        private readonly IUpdateOperation _updateOperation = updateOperation;
 
         /// <inheritdoc />
         public async Task<RailVehicleModelBase?> GetOneAsync(Guid id, string userId)
@@ -53,7 +53,7 @@ namespace Infrastructure.Features.RailVehicles.Repository
 
         /// <inheritdoc />
         public async Task CreateAsync(RailVehicleModelBase model, string userId)
-            => await _insertRowOperation.InsertAsync(_dbContext, model, userId);
+            => await _insertRowOperation.InsertAsync<RailVehicle, RailVehicleModelBase>(_dbContext, model, userId);
 
         /// <inheritdoc />
         public async Task UpdateAsync(Guid id, RailVehicleModelBase newmodel, string userId)

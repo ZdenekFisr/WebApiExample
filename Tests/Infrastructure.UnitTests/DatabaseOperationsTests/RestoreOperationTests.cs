@@ -6,12 +6,12 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
 {
     public class RestoreOperationTests
     {
-        private readonly RestoreOperation<TestSoftDeletableEntity> _restoreOperation;
+        private readonly RestoreOperation _restoreOperation;
         private readonly TestSoftDeletableDbContext _dbContext;
 
         public RestoreOperationTests()
         {
-            _restoreOperation = new RestoreOperation<TestSoftDeletableEntity>();
+            _restoreOperation = new RestoreOperation();
 
             var options = new DbContextOptionsBuilder<TestSoftDeletableDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
@@ -38,7 +38,7 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             await _dbContext.SaveChangesAsync();
 
             // Act
-            await _restoreOperation.RestoreAsync(_dbContext, entity.Id, userId);
+            await _restoreOperation.RestoreAsync<TestSoftDeletableEntity>(_dbContext, entity.Id, userId);
 
             // Assert
             var actualEntity = await _dbContext.Set<TestSoftDeletableEntity>().FindAsync(entity.Id);
@@ -56,7 +56,7 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             var id = Guid.NewGuid();
 
             // Act
-            await _restoreOperation.RestoreAsync(_dbContext, id, userId);
+            await _restoreOperation.RestoreAsync<TestSoftDeletableEntity>(_dbContext, id, userId);
 
             // Assert
             _dbContext.ChangeTracker.Entries().Should().BeEmpty();
@@ -81,7 +81,7 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             await _dbContext.SaveChangesAsync();
 
             // Act
-            await _restoreOperation.RestoreAsync(_dbContext, entity.Id, "another-user-id");
+            await _restoreOperation.RestoreAsync<TestSoftDeletableEntity>(_dbContext, entity.Id, "another-user-id");
 
             // Assert
             var actualEntity = await _dbContext.Set<TestSoftDeletableEntity>().FindAsync(id);

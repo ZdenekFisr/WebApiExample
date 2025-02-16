@@ -1,6 +1,7 @@
 ﻿using Application.Features.RailVehicles.ListModel;
 using Application.Features.RailVehicles.Repository;
 using AutoMapper;
+using Domain.Entities;
 using Infrastructure.DatabaseOperations.SoftDelete;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +36,6 @@ namespace Infrastructure.Features.RailVehicles.Repository
 
         /// <inheritdoc />
         public async Task SoftDeleteAsync(Guid id, string userId)
-            => await _softDeleteOperation.SoftDeleteAsync(_dbContext, id, userId);
+            => await _softDeleteOperation.SoftDeleteAsync<RailVehicle>(_dbContext, id, userId);
     }
 }

@@ -1,19 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DatabaseOperations.Restore
 {
     /// <summary>
-    /// Defines the contract for a restore operation.
+    /// Interface for performing restore operations on entities.
     /// </summary>
     public interface IRestoreOperation
     {
         /// <summary>
         /// Restores the database to a previous state identified by the specified ID.
         /// </summary>
-        /// <param name="dbContext">The application's database context.</param>
+        /// <typeparam name="TEntity">The type of the entity to be restored.</typeparam>
+        /// <param name="dbContext">The database context to be used for the restore operation.</param>
         /// <param name="id">The unique identifier of the restore point.</param>
-        /// <param name="userId">The identifier of the user performing the restore operation.</param>
+        /// <param name="userId">The ID of the user performing the operation.</param>
         /// <returns>A task that represents the asynchronous restore operation.</returns>
-        Task RestoreAsync(DbContext dbContext, Guid id, string userId);
+        Task RestoreAsync<TEntity>(DbContext dbContext, Guid id, string userId)
+            where TEntity : EntityWithUserBase;
     }
 }

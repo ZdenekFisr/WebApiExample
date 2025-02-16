@@ -7,24 +7,22 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.DatabaseOperations.Update
 {
     /// <summary>
-    /// Represents an operation to update an entity.
+    /// Service for performing update operations on entities.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// <param name="mapper">The mapper to map between model and entity.</param>
+    /// <param name="mapper">The mapper to map between DTO and entity.</param>
     /// <param name="currentUtcTimeProvider">The provider to get the current UTC time.</param>
-    public class UpdateOperation<TEntity, TModel>(
+    public class UpdateOperation(
         IMapper mapper,
         ICurrentUtcTimeProvider currentUtcTimeProvider)
-        : IUpdateOperation<TEntity, TModel>
-        where TEntity : EntityWithUserBase
-        where TModel : ModelBase
+        : IUpdateOperation
     {
         private readonly IMapper _mapper = mapper;
         private readonly ICurrentUtcTimeProvider _currentUtcTimeProvider = currentUtcTimeProvider;
 
         /// <inheritdoc />
-        public async Task UpdateAsync(DbContext dbContext, Func<Guid, string, Task<TEntity?>> findEntityMethod, Guid id, TModel newModel, string userId)
+        public async Task UpdateAsync<TEntity, TModel>(DbContext dbContext, Func<Guid, string, Task<TEntity?>> findEntityMethod, Guid id, TModel newModel, string userId)
+            where TEntity : EntityWithUserBase
+            where TModel : ModelBase
         {
             TEntity? existingEntity = await findEntityMethod(id, userId);
             if (existingEntity is null)

@@ -13,14 +13,14 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
     {
         private readonly IMapper _mapper;
         private readonly Mock<ICurrentUtcTimeProvider> _currentUtcTimeProviderMock;
-        private readonly UpdateOperation<TestUpdateEntity, TestUpdateModel> _updateOperation;
+        private readonly UpdateOperation _updateOperation;
         private readonly TestUpdateDbContext _dbContext;
 
         public UpdateOperationTests()
         {
             _mapper = new MapperConfiguration(cfg => cfg.AddProfile<TestUpdateAutoMapperProfile>()).CreateMapper();
             _currentUtcTimeProviderMock = new Mock<ICurrentUtcTimeProvider>();
-            _updateOperation = new UpdateOperation<TestUpdateEntity, TestUpdateModel>(
+            _updateOperation = new UpdateOperation(
                 _mapper,
                 _currentUtcTimeProviderMock.Object);
 

@@ -17,7 +17,7 @@ namespace Infrastructure.IntegrationTests
             : base(databaseFixture)
         {
             _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
-            _restoreOperation = new RestoreOperation<RailVehicle>();
+            _restoreOperation = new RestoreOperation();
             _repository = new RailVehicleDeletedRepository(_mapper, _dbContext, _restoreOperation);
         }
 

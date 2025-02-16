@@ -9,7 +9,7 @@ using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
-namespace Infrastructure.UnitTests.FeatureTests.AmountInWords
+namespace Infrastructure.UnitTests.FeaturesTests.AmountInWords
 {
     public class AmountInWordsCzechServiceTests
     {
@@ -34,7 +34,7 @@ namespace Infrastructure.UnitTests.FeatureTests.AmountInWords
             _amountInWordsCzechService = new(_numberInWordsCzechService.Object, currencyCzechNameRepository);
 
             var currencyCzechNames = embeddedCsvService
-                .ReadEmbeddedCsv<CurrencyCzechName>("Infrastructure.UnitTests.FeatureTests.AmountInWords.CurrencyCzechNames.csv");
+                .ReadEmbeddedCsv<CurrencyCzechName>("Infrastructure.UnitTests.FeaturesTests.AmountInWords.CurrencyCzechNames.csv");
 
             _context.CurrencyCzechNames.AddRange(currencyCzechNames);
             _context.SaveChanges();

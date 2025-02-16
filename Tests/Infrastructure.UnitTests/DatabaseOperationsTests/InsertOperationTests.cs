@@ -13,14 +13,14 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
     {
         private readonly IMapper _mapper;
         private readonly Mock<ICurrentUtcTimeProvider> _currentUtcTimeProviderMock;
-        private readonly InsertOperation<TestInsertEntity, TestInsertModel> _insertOperation;
+        private readonly InsertOperation _insertOperation;
         private readonly TestInsertDbContext _dbContext;
 
         public InsertOperationTests()
         {
             _mapper = new MapperConfiguration(cfg => cfg.AddProfile<TestInsertAutoMapperProfile>()).CreateMapper();
             _currentUtcTimeProviderMock = new Mock<ICurrentUtcTimeProvider>();
-            _insertOperation = new InsertOperation<TestInsertEntity, TestInsertModel>(
+            _insertOperation = new InsertOperation(
                 _mapper,
                 _currentUtcTimeProviderMock.Object);
 
@@ -44,7 +44,7 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             _currentUtcTimeProviderMock.Setup(p => p.GetCurrentUtcTime()).Returns(DateTimeOffset.UtcNow);
 
             // Act
-            await _insertOperation.InsertAsync(_dbContext, model, userId);
+            await _insertOperation.InsertAsync<TestInsertEntity, TestInsertModel>(_dbContext, model, userId);
 
             // Assert
             var savedEntity = await _dbContext.Set<TestInsertEntity>().FirstOrDefaultAsync(e => e.Name == model.Name);

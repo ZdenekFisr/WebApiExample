@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="FeatureTests\AmountInWords\CurrencyCzechNames.csv" />
+    <EmbeddedResource Include="FeaturesTests\AmountInWords\CurrencyCzechNames.csv" />
     <EmbeddedResource Include="ServicesTests\EmbeddedCsv\TestCsvRecords.csv" />
   </ItemGroup>
 

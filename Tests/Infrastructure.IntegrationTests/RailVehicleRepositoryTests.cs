@@ -15,8 +15,8 @@ namespace Infrastructure.IntegrationTests
     {
         private readonly IMapper _mapper;
         private readonly ICurrentUtcTimeProvider _currentUtcTimeProvider;
-        private readonly IInsertOperation<RailVehicleModelBase> _insertOperation;
-        private readonly IUpdateOperation<RailVehicle, RailVehicleModelBase> _updateOperation;
+        private readonly IInsertOperation _insertOperation;
+        private readonly IUpdateOperation _updateOperation;
         private readonly RailVehicleRepository _repository;
 
         public RailVehicleRepositoryTests(DatabaseFixture databaseFixture)
@@ -24,8 +24,8 @@ namespace Infrastructure.IntegrationTests
         {
             _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
             _currentUtcTimeProvider = new CurrentUtcTimeProvider();
-            _insertOperation = new InsertOperation<RailVehicle, RailVehicleModelBase>(_mapper, _currentUtcTimeProvider);
-            _updateOperation = new UpdateOperation<RailVehicle, RailVehicleModelBase>(_mapper, _currentUtcTimeProvider);
+            _insertOperation = new InsertOperation(_mapper, _currentUtcTimeProvider);
+            _updateOperation = new UpdateOperation(_mapper, _currentUtcTimeProvider);
             _repository = new RailVehicleRepository(_mapper, _dbContext, _insertOperation, _updateOperation);
         }
 
@@ -202,7 +202,7 @@ namespace Infrastructure.IntegrationTests
 
             await _repository.CreateAsync(expected, user1Id);
 
-            SoftDeleteOperation<RailVehicle> softDeleteOperation = new(_currentUtcTimeProvider);
+            SoftDeleteOperation softDeleteOperation = new(_currentUtcTimeProvider);
             RailVehicleListRepository vehicleListRepository = new(_mapper, _dbContext, softDeleteOperation);
             Guid createdVehicleId = (await vehicleListRepository.GetManyAsync(user1Id)).First(v => v.Name == vehicleName).Id;
             RailVehiclePulledModel? actual = await _repository.GetOneAsync(createdVehicleId, user1Id) as RailVehiclePulledModel;

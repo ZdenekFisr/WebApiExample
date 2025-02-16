@@ -5,24 +5,23 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.DatabaseOperations.Update
 {
     /// <summary>
-    /// Defines the contract for updating an entity with the provided model.
+    /// Interface for performing update operations on entities.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity to be updated, which must inherit from <see cref="EntityWithUserBase"/>.</typeparam>
-    /// <typeparam name="TModel">The type of the model, which must inherit from <see cref="ModelBase"/>.</typeparam>
-    public interface IUpdateOperation<TEntity, TModel>
-        where TEntity : EntityWithUserBase
-        where TModel : ModelBase
+    public interface IUpdateOperation
     {
-
         /// <summary>
-        /// Updates an entity asynchronously with the provided model.
+        /// Updates an entity asynchronously with the provided data transfer object (DTO).
         /// </summary>
-        /// <param name="dbContext">The application's database context.</param>
+        /// <typeparam name="TEntity">The type of the entity to be updated.</typeparam>
+        /// <typeparam name="TDto">The type of the data transfer object to be used for the update operation.</typeparam>
+        /// <param name="dbContext">The database context to be used for the update operation.</param>
         /// <param name="findEntityMethod">A method to find the entity based on the provided ID and user ID.</param>
         /// <param name="id">The unique identifier of the entity to be updated.</param>
-        /// <param name="newModel">The model containing the new values for the entity.</param>
+        /// <param name="newDto">The data transfer object containing the new values for the entity.</param>
         /// <param name="userId">The unique identifier of the user performing the update.</param>
         /// <returns>A task that represents the asynchronous update operation.</returns>
-        Task UpdateAsync(DbContext dbContext, Func<Guid, string, Task<TEntity?>> findEntityMethod, Guid id, TModel newModel, string userId);
+        Task UpdateAsync<TEntity, TDto>(DbContext dbContext, Func<Guid, string, Task<TEntity?>> findEntityMethod, Guid id, TDto newDto, string userId)
+            where TEntity : EntityWithUserBase
+            where TDto : ModelBase;
     }
 }
