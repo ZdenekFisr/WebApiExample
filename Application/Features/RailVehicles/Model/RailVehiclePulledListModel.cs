@@ -1,19 +1,24 @@
 ﻿using Application.Common;
+using Domain.Entities;
 
-namespace Application.Features.RailVehicles.ListModel
+namespace Application.Features.RailVehicles.Model
 {
     /// <summary>
-    /// Model for listing driving rail vehicles.
+    /// Represents a pulled rail vehicle.
     /// </summary>
-    public class RailVehicleListModel : ModelBase
+    public class RailVehiclePulledListModel : ModelBase
     {
         public Guid Id { get; set; }
+
         public required string Name { get; set; }
+
         public string? Description { get; set; }
-        public double MaxSpeed { get; set; }
-        public double Performance { get; set; }
-        public double MaxPullForce { get; set; }
+
+        /// <inheritdoc cref="RailVehicle.MaxSpeed"/>
+        public short MaxSpeed { get; set; }
+
         public DateTimeOffset CreatedAt { get; set; }
+
         public DateTimeOffset? UpdatedAt { get; set; }
     }
 }

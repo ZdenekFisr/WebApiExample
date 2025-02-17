@@ -1,6 +1,5 @@
 ﻿using Application.Features.AmountToWords;
 using Application.Features.FilmDatabase;
-using Application.Features.RailVehicles.ListModel;
 using Application.Features.RailVehicles.Model;
 using AutoMapper;
 using Domain;
@@ -17,22 +16,32 @@ namespace Infrastructure
             CreateMap<FilmModel, Film>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.ImageUrl.Replace(Constants.FilmImageBaseUrl, string.Empty)));
 
+            CreateMap<ElectrificationType, ElectrificationTypeModel>();
+            CreateMap<ElectrificationTypeModel, ElectrificationType>();
+            CreateMap<ElectrificationType, ElectrificationTypeListModel>();
+
             CreateMap<RailVehicle, RailVehiclePulledModel>();
-            CreateMap<RailVehicle, RailVehicleDependentModel>()
-                .ForMember(dest => dest.Efficiency, opt => opt.MapFrom(src => src.EfficiencyDependent));
-            CreateMap<RailVehicle, RailVehicleIndependentModel>()
-                .ForMember(dest => dest.Efficiency, opt => opt.MapFrom(src => src.EfficiencyIndependent));
-            CreateMap<RailVehicle, RailVehicleHybridModel>();
+            CreateMap<RailVehicle, RailVehicleDrivingModel>();
             CreateMap<RailVehiclePulledModel, RailVehicle>();
-            CreateMap<RailVehicleDependentModel, RailVehicle>()
-                .ForMember(dest => dest.EfficiencyDependent, opt => opt.MapFrom(src => src.Efficiency));
-            CreateMap<RailVehicleIndependentModel, RailVehicle>()
-                .ForMember(dest => dest.EfficiencyIndependent, opt => opt.MapFrom(src => src.Efficiency));
-            CreateMap<RailVehicleHybridModel, RailVehicle>();
+            CreateMap<RailVehicleDrivingModel, RailVehicle>();
+            CreateMap<VehicleTractionSystem, VehicleTractionSystemModel>();
+            CreateMap<VehicleTractionSystemModel, VehicleTractionSystem>();
             CreateMap<TractionDiagramPoint, TractionDiagramPointModel>();
             CreateMap<TractionDiagramPointModel, TractionDiagramPoint>();
 
-            CreateMap<RailVehicle, RailVehicleListModel>();
+            CreateMap<RailVehicle, RailVehiclePulledListModel>();
+            CreateMap<RailVehicle, RailVehicleDrivingListModel>()
+                .ForMember(dest => dest.Performance, opt => opt.MapFrom(src => src.TractionSystems.Max(vts => vts.Performance)))
+                .ForMember(dest => dest.MaxPullForce, opt => opt.MapFrom(src => src.TractionSystems.Max(vts => vts.MaxPullForce)));
+            CreateMap<RailVehicle, RailVehicleDeletedModel>();
+
+            CreateMap<Train, TrainOutputModel>();
+            CreateMap<TrainInputModel, Train>();
+            CreateMap<TrainVehicle, TrainVehicleOutputModel>();
+            CreateMap<TrainVehicleInputModel, TrainVehicle>();
+
+            CreateMap<Train, TrainListModel>();
+            CreateMap<Train, TrainDeletedModel>();
 
             CreateMap<CurrencyCzechName, CurrencyCzechNameModel>();
         }

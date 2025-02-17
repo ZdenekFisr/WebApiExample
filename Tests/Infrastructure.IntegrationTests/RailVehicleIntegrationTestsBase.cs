@@ -23,22 +23,27 @@ namespace Infrastructure.IntegrationTests
 
         protected async Task<RailVehicle?> FindVehicleByNameAsync(string vehicleName, string userId)
             => await _dbContext.RailVehicles
-                .Include(v => v.TractionDiagram)
+                .Include(v => v.TractionSystems)
+                .ThenInclude(vts => vts.TractionDiagram)
                 .FirstOrDefaultAsync(v => v.Name == vehicleName && v.UserId == userId);
 
-        protected async Task<(Guid[] vehicleIds, string user1Id, string user2Id)> AddTestEntitiesToDbAsync()
+        protected async Task<(Guid[] vehicleIds, Guid[] elTypeIds, string user1Id, string user2Id)> AddTestEntitiesToDbAsync()
         {
-            Guid[] vehicleIds = GuidHelpers.GenerateRandomGuids(10).ToArray();
+            Guid[] elTypeIds = GuidHelpers.GenerateRandomGuids(4).ToArray();
+            Guid[] vehicleIds = GuidHelpers.GenerateRandomGuids(8).ToArray();
             string user1Id = Guid.NewGuid().ToString();
             string user2Id = Guid.NewGuid().ToString();
 
-            RailVehicle[] testVehicles = _entityProvider.GetTestVehicles(vehicleIds, user1Id, user2Id);
+            ElectrificationType[] elTypes = _entityProvider.GetElectrificationTypes(elTypeIds, user1Id, user2Id);
+            RailVehicle[] testVehicles = _entityProvider.GetTestVehicles(vehicleIds, [elTypes[0].Id], user1Id, user2Id);
+
             await _dbContext.Users.AddRangeAsync([new() { Id = user1Id }, new() { Id = user2Id }]);
+            await _dbContext.ElectrificationTypes.AddRangeAsync(elTypes);
             await _dbContext.RailVehicles.AddRangeAsync(testVehicles);
 
             await _dbContext.SaveChangesAsync();
 
-            return (vehicleIds, user1Id, user2Id);
+            return (vehicleIds, elTypeIds, user1Id, user2Id);
         }
     }
 }

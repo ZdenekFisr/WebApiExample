@@ -10,18 +10,18 @@ namespace Infrastructure.DatabaseOperations.Update
     public interface IUpdateOperation
     {
         /// <summary>
-        /// Updates an entity asynchronously with the provided data transfer object (DTO).
+        /// Updates an entity asynchronously with the provided model.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity to be updated.</typeparam>
-        /// <typeparam name="TDto">The type of the data transfer object to be used for the update operation.</typeparam>
+        /// <typeparam name="TModel">The type of the model to be used for the update operation.</typeparam>
         /// <param name="dbContext">The database context to be used for the update operation.</param>
         /// <param name="findEntityMethod">A method to find the entity based on the provided ID and user ID.</param>
         /// <param name="id">The unique identifier of the entity to be updated.</param>
-        /// <param name="newDto">The data transfer object containing the new values for the entity.</param>
+        /// <param name="newModel">The model containing the new values for the entity.</param>
         /// <param name="userId">The unique identifier of the user performing the update.</param>
         /// <returns>A task that represents the asynchronous update operation.</returns>
-        Task UpdateAsync<TEntity, TDto>(DbContext dbContext, Func<Guid, string, Task<TEntity?>> findEntityMethod, Guid id, TDto newDto, string userId)
+        Task UpdateAsync<TEntity, TModel>(DbContext dbContext, Func<Guid, string, Task<TEntity?>> findEntityMethod, Guid id, TModel newModel, string userId)
             where TEntity : EntityWithUserBase
-            where TDto : ModelBase;
+            where TModel : ModelBase;
     }
 }

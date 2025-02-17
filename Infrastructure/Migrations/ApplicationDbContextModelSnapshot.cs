@@ -17,7 +17,7 @@ namespace Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -65,6 +65,63 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CurrencyCzechNames");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ElectrificationType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Voltage")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("DeletedBy");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ElectrificationTypes");
                 });
 
             modelBuilder.Entity("Domain.Entities.Film", b =>
@@ -120,16 +177,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("DrivingWheelsets")
-                        .HasColumnType("tinyint");
-
-                    b.Property<double?>("EfficiencyDependent")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("EfficiencyIndependent")
-                        .HasColumnType("float");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<double>("EquivalentRotatingWeight")
                         .HasColumnType("float");
@@ -140,25 +189,13 @@ namespace Infrastructure.Migrations
                     b.Property<double>("Length")
                         .HasColumnType("float");
 
-                    b.Property<short>("MaxPullForce")
-                        .HasColumnType("smallint");
-
                     b.Property<short>("MaxSpeed")
-                        .HasColumnType("smallint");
-
-                    b.Property<short?>("MaxSpeedHybrid")
                         .HasColumnType("smallint");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
-
-                    b.Property<short>("Performance")
-                        .HasColumnType("smallint");
-
-                    b.Property<short?>("PerformanceHybrid")
-                        .HasColumnType("smallint");
 
                     b.Property<double>("ResistanceConstant")
                         .HasColumnType("float");
@@ -207,17 +244,143 @@ namespace Infrastructure.Migrations
                     b.Property<double>("PullForce")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("RailVehicleId")
+                    b.Property<double>("Speed")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("VehicleTractionSystemId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("Speed")
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleTractionSystemId");
+
+                    b.ToTable("TractionDiagramPoints");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Train", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<short>("MaxPullForce")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("DeletedBy");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Trains");
+                });
+
+            modelBuilder.Entity("Domain.Entities.TrainVehicle", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<short>("Position")
+                        .HasColumnType("smallint");
+
+                    b.Property<Guid>("TrainId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<short>("VehicleCount")
+                        .HasColumnType("smallint");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrainId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("TrainVehicles");
+                });
+
+            modelBuilder.Entity("Domain.Entities.VehicleTractionSystem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte>("DrivingWheelsets")
+                        .HasColumnType("tinyint");
+
+                    b.Property<double>("Efficiency")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("ElectrificationTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<short>("MaxPullForce")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("MaxSpeed")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Performance")
+                        .HasColumnType("smallint");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double?>("VoltageCoefficient")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RailVehicleId");
+                    b.HasIndex("ElectrificationTypeId");
 
-                    b.ToTable("TractionDiagramPoint");
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("VehicleTractionSystems");
                 });
 
             modelBuilder.Entity("Infrastructure.Identity.ApplicationUser", b =>
@@ -418,6 +581,27 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.ElectrificationType", b =>
+                {
+                    b.HasOne("Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("DeletedBy");
+
+                    b.HasOne("Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
+                    b.HasOne("Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Entities.RailVehicle", b =>
                 {
                     b.HasOne("Infrastructure.Identity.ApplicationUser", null)
@@ -441,9 +625,59 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.TractionDiagramPoint", b =>
                 {
-                    b.HasOne("Domain.Entities.RailVehicle", null)
+                    b.HasOne("Domain.Entities.VehicleTractionSystem", null)
                         .WithMany("TractionDiagram")
-                        .HasForeignKey("RailVehicleId")
+                        .HasForeignKey("VehicleTractionSystemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.Train", b =>
+                {
+                    b.HasOne("Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("DeletedBy");
+
+                    b.HasOne("Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
+                    b.HasOne("Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.TrainVehicle", b =>
+                {
+                    b.HasOne("Domain.Entities.Train", null)
+                        .WithMany("TrainVehicles")
+                        .HasForeignKey("TrainId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.RailVehicle", null)
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.VehicleTractionSystem", b =>
+                {
+                    b.HasOne("Domain.Entities.ElectrificationType", null)
+                        .WithMany()
+                        .HasForeignKey("ElectrificationTypeId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Domain.Entities.RailVehicle", null)
+                        .WithMany("TractionSystems")
+                        .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -500,6 +734,16 @@ namespace Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Domain.Entities.RailVehicle", b =>
+                {
+                    b.Navigation("TractionSystems");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Train", b =>
+                {
+                    b.Navigation("TrainVehicles");
+                });
+
+            modelBuilder.Entity("Domain.Entities.VehicleTractionSystem", b =>
                 {
                     b.Navigation("TractionDiagram");
                 });

@@ -60,12 +60,12 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             actualEntity?.UpdatedAt.Should().BeCloseTo(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(5));
         }
 
-        internal class TestUpdateDbContext(DbContextOptions options) : DbContext(options)
+        private class TestUpdateDbContext(DbContextOptions options) : DbContext(options)
         {
             public DbSet<TestUpdateEntity> TestUpdateEntities { get; set; }
         }
 
-        internal class TestUpdateAutoMapperProfile : Profile
+        private class TestUpdateAutoMapperProfile : Profile
         {
             public TestUpdateAutoMapperProfile()
             {
@@ -73,14 +73,14 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             }
         }
 
-        internal class TestUpdateEntity : EntityWithUserBase, IUpdateHistory
+        private class TestUpdateEntity : EntityWithUserBase, IUpdateHistory
         {
             public required string Name { get; set; }
             public DateTimeOffset? UpdatedAt { get; set; }
             public string? UpdatedBy { get; set; }
         }
 
-        internal class TestUpdateModel : ModelBase
+        private class TestUpdateModel : ModelBase
         {
             public required string Name { get; set; }
         }

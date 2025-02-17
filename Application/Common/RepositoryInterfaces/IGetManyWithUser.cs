@@ -7,7 +7,7 @@
     public interface IGetManyWithUser<T> where T : ModelBase
     {
         /// <summary>
-        /// Selects multiple rows from a DB table with a given user ID specified by <see cref="T"/>
+        /// Selects multiple rows from a DB table with a given user ID.
         /// </summary>
         /// <param name="userId">ID of the user.</param>
         /// <returns>A collection of models.</returns>

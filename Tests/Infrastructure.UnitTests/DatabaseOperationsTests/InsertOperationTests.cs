@@ -38,7 +38,7 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             var userId = "test-user-id";
             var model = new TestInsertModel
             {
-                Name = "Test Rail Line"
+                Name = "Test Model"
             };
 
             _currentUtcTimeProviderMock.Setup(p => p.GetCurrentUtcTime()).Returns(DateTimeOffset.UtcNow);
@@ -54,30 +54,30 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             savedEntity?.CreatedBy.Should().Be(userId);
             savedEntity?.CreatedAt.Should().BeCloseTo(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(5));
         }
-    }
 
-    internal class TestInsertDbContext(DbContextOptions options) : DbContext(options)
-    {
-        public DbSet<TestInsertEntity> TestInsertEntities { get; set; }
-    }
-
-    internal class TestInsertAutoMapperProfile : Profile
-    {
-        public TestInsertAutoMapperProfile()
+        private class TestInsertDbContext(DbContextOptions options) : DbContext(options)
         {
-            CreateMap<TestInsertModel, TestInsertEntity>();
+            public DbSet<TestInsertEntity> TestInsertEntities { get; set; }
         }
-    }
 
-    internal class TestInsertEntity : EntityWithUserBase, ICreateHistory
-    {
-        public required string Name { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
-        public string? CreatedBy { get; set; }
-    }
+        private class TestInsertAutoMapperProfile : Profile
+        {
+            public TestInsertAutoMapperProfile()
+            {
+                CreateMap<TestInsertModel, TestInsertEntity>();
+            }
+        }
 
-    internal class TestInsertModel : ModelBase
-    {
-        public required string Name { get; set; }
+        private class TestInsertEntity : EntityWithUserBase, ICreateHistory
+        {
+            public required string Name { get; set; }
+            public DateTimeOffset CreatedAt { get; set; }
+            public string? CreatedBy { get; set; }
+        }
+
+        private class TestInsertModel : ModelBase
+        {
+            public required string Name { get; set; }
+        }
     }
 }

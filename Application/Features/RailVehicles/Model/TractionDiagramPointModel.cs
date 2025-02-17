@@ -1,20 +1,15 @@
 ﻿using Application.Common;
+using Domain.Entities;
 
 namespace Application.Features.RailVehicles.Model
 {
-    /// <summary>
-    /// Represents a point on a traction (speed-force) diagram.
-    /// </summary>
+    /// <inheritdoc cref="TractionDiagramPoint"/>
     public class TractionDiagramPointModel : ModelBase
     {
-        /// <summary>
-        /// Speed in km/h.
-        /// </summary>
+        /// <inheritdoc cref="TractionDiagramPoint.Speed"/>
         public double Speed { get; set; }
 
-        /// <summary>
-        /// Pull force in kN.
-        /// </summary>
+        /// <inheritdoc cref="TractionDiagramPoint.PullForce"/>
         public double PullForce { get; set; }
     }
 }

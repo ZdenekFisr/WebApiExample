@@ -3,13 +3,13 @@ using Application.Features.Divisors;
 using Application.Features.FilmDatabase;
 using Application.Features.NumberToWords;
 using Application.Features.PrimeNumbers;
-using Application.Features.RailVehicles.ListModel;
 using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
 using Application.Features.RandomSeriesEpisode;
 using Application.Services;
 using Asp.Versioning;
 using Infrastructure;
+using Infrastructure.DatabaseOperations.HardDelete;
 using Infrastructure.DatabaseOperations.Insert;
 using Infrastructure.DatabaseOperations.Restore;
 using Infrastructure.DatabaseOperations.SoftDelete;
@@ -83,9 +83,11 @@ namespace WebApiExample
             builder.Services.AddScoped<IUpdateOperation, UpdateOperation>();
             builder.Services.AddScoped<ISoftDeleteOperation, SoftDeleteOperation>();
             builder.Services.AddScoped<IRestoreOperation, RestoreOperation>();
+            builder.Services.AddScoped<IHardDeleteOperation, HardDeleteOperation>();
 
             builder.Services.AddScoped<IRailVehicleRepository<RailVehicleModelBase>, RailVehicleRepository>();
-            builder.Services.AddScoped<IRailVehicleListRepository<RailVehicleListModel>, RailVehicleListRepository>();
+            builder.Services.AddScoped<IRailVehicleListRepository, RailVehicleListRepository>();
+            builder.Services.AddScoped<IRailVehicleDeletedRepository<RailVehicleDeletedModel>, RailVehicleDeletedRepository>();
 
             var app = builder.Build();
 

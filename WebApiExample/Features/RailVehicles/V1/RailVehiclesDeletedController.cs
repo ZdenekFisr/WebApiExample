@@ -1,20 +1,21 @@
-﻿using Application.Features.RailVehicles.ListModel;
+﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
 using Asp.Versioning;
+using Infrastructure.Exceptions;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiExample.Features.RailVehicles.V1
 {
     [ApiVersion(1)]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/rail-vehicles-deleted")]
     [ApiController]
     public class RailVehiclesDeletedController(
-        IRailVehicleDeletedRepository<RailVehicleListModel> repository,
+        IRailVehicleDeletedRepository<RailVehicleDeletedModel> repository,
         ICurrentUserIdProvider currentUserIdProvider)
         : ControllerBase
     {
-        private readonly IRailVehicleDeletedRepository<RailVehicleListModel> _repository = repository;
+        private readonly IRailVehicleDeletedRepository<RailVehicleDeletedModel> _repository = repository;
         private readonly ICurrentUserIdProvider _currentUserIdProvider = currentUserIdProvider;
 
         [HttpGet]
@@ -37,6 +38,25 @@ namespace WebApiExample.Features.RailVehicles.V1
                 return Unauthorized();
 
             await _repository.RestoreAsync(id, currentUserId);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        [EndpointDescription("Hard deletes a rail vehicle by ID.")]
+        public async Task<IActionResult> HardDeleteAsync(Guid id)
+        {
+            string? currentUserId = _currentUserIdProvider.GetCurrentUserId();
+            if (currentUserId is null)
+                return Unauthorized();
+
+            try
+            {
+                await _repository.HardDeleteAsync(id, currentUserId);
+            }
+            catch (VehicleForeignKeyException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             return Ok();
         }
     }

@@ -29,21 +29,12 @@ namespace Infrastructure.IntegrationTests
             _repository = new RailVehicleRepository(_mapper, _dbContext, _insertOperation, _updateOperation);
         }
 
-        private async Task GetOneAsync_ShouldReturnVehicle<T>(T expected, int vehicleIdIndex)
-            where T : RailVehicleModelBase
-        {
-            (Guid[] vehicleIds, string user1Id, _) = await AddTestEntitiesToDbAsync();
-
-            T? actual = await _repository.GetOneAsync(vehicleIds[vehicleIdIndex], user1Id) as T;
-
-            actual.Should().NotBeNull();
-            actual.Should().BeEquivalentTo(expected);
-        }
-
         [Fact]
         public async Task GetOneAsync_ShouldReturnDependentVehicle()
         {
-            RailVehicleDependentModel expected = new()
+            (Guid[] vehicleIds, Guid[] elTypeIds, string user1Id, _) = await AddTestEntitiesToDbAsync();
+
+            RailVehicleDrivingModel expected = new()
             {
                 Name = "Test Vehicle 1",
                 Description = "Dependent",
@@ -55,23 +46,36 @@ namespace Infrastructure.IntegrationTests
                 ResistanceConstant = 0.5,
                 ResistanceLinear = 0.1,
                 ResistanceQuadratic = 0.0002,
-                DrivingWheelsets = 4,
-                Performance = 6400,
-                MaxPullForce = 300,
-                TractionDiagram = [
-                    new() { Speed = 0, PullForce = 300 },
-                    new() { Speed = 100, PullForce = 250 },
-                    new() { Speed = 200, PullForce = 100 },
-                ],
-                Efficiency = 0.9
+                TractionSystems = [
+                    new VehicleTractionSystemModel
+                    {
+                        ElectrificationTypeId = elTypeIds[0],
+                        VoltageCoefficient = 1,
+                        DrivingWheelsets = 4,
+                        MaxSpeed = 200,
+                        Performance = 6400,
+                        MaxPullForce = 300,
+                        Efficiency = 0.9,
+                        TractionDiagram = [
+                            new() { Speed = 0, PullForce = 300 },
+                            new() { Speed = 100, PullForce = 250 },
+                            new() { Speed = 200, PullForce = 100 }
+                        ]
+                    }
+                ]
             };
 
-            await GetOneAsync_ShouldReturnVehicle(expected, 0);
+            RailVehicleDrivingModel? actual = await _repository.GetOneAsync(vehicleIds[0], user1Id) as RailVehicleDrivingModel;
+
+            actual.Should().NotBeNull();
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
         public async Task GetOneAsync_ShouldReturnPulledVehicle()
         {
+            (Guid[] vehicleIds, _, string user1Id, _) = await AddTestEntitiesToDbAsync();
+
             RailVehiclePulledModel expected = new()
             {
                 Name = "Test Vehicle 2",
@@ -86,13 +90,18 @@ namespace Infrastructure.IntegrationTests
                 ResistanceQuadratic = 0.0002
             };
 
-            await GetOneAsync_ShouldReturnVehicle(expected, 1);
+            RailVehiclePulledModel? actual = await _repository.GetOneAsync(vehicleIds[1], user1Id) as RailVehiclePulledModel;
+
+            actual.Should().NotBeNull();
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
         public async Task GetOneAsync_ShouldReturnIndependentVehicle()
         {
-            RailVehicleIndependentModel expected = new()
+            (Guid[] vehicleIds, _, string user1Id, _) = await AddTestEntitiesToDbAsync();
+
+            RailVehicleDrivingModel expected = new()
             {
                 Name = "Test Vehicle 3",
                 Description = "Independent",
@@ -104,24 +113,37 @@ namespace Infrastructure.IntegrationTests
                 ResistanceConstant = 0.5,
                 ResistanceLinear = 0.1,
                 ResistanceQuadratic = 0.0002,
-                DrivingWheelsets = 4,
-                Performance = 3200,
-                MaxPullForce = 300,
-                TractionDiagram = [
-                    new() { Speed = 0, PullForce = 300 },
-                    new() { Speed = 100, PullForce = 250 },
-                    new() { Speed = 200, PullForce = 100 },
-                ],
-                Efficiency = 0.9
+                TractionSystems = [
+                    new VehicleTractionSystemModel
+                    {
+                        ElectrificationTypeId = null,
+                        VoltageCoefficient = null,
+                        DrivingWheelsets = 4,
+                        MaxSpeed = 100,
+                        Performance = 3200,
+                        MaxPullForce = 300,
+                        Efficiency = 0.9,
+                        TractionDiagram = [
+                            new() { Speed = 0, PullForce = 300 },
+                            new() { Speed = 100, PullForce = 250 },
+                            new() { Speed = 200, PullForce = 100 }
+                        ]
+                    }
+                ]
             };
 
-            await GetOneAsync_ShouldReturnVehicle(expected, 2);
+            RailVehicleDrivingModel? actual = await _repository.GetOneAsync(vehicleIds[2], user1Id) as RailVehicleDrivingModel;
+
+            actual.Should().NotBeNull();
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
         public async Task GetOneAsync_ShouldReturnHybridVehicle()
         {
-            RailVehicleHybridModel expected = new()
+            (Guid[] vehicleIds, Guid[] elTypeIds, string user1Id, _) = await AddTestEntitiesToDbAsync();
+
+            RailVehicleDrivingModel expected = new()
             {
                 Name = "Test Vehicle 4",
                 Description = "Hybrid",
@@ -133,29 +155,48 @@ namespace Infrastructure.IntegrationTests
                 ResistanceConstant = 0.5,
                 ResistanceLinear = 0.1,
                 ResistanceQuadratic = 0.0002,
-                DrivingWheelsets = 4,
-                Performance = 3200,
-                MaxPullForce = 300,
-                TractionDiagram = [
-                    new() { Speed = 0, PullForce = 300 },
-                    new() { Speed = 100, PullForce = 250 },
-                    new() { Speed = 200, PullForce = 100 },
-                ],
-                MaxSpeedHybrid = 90,
-                PerformanceHybrid = 1600,
-                EfficiencyDependent = 0.9,
-                EfficiencyIndependent = 0.8
+                TractionSystems = [
+                    new VehicleTractionSystemModel
+                    {
+                        ElectrificationTypeId = null,
+                        VoltageCoefficient = null,
+                        DrivingWheelsets = 4,
+                        MaxSpeed = 90,
+                        Performance = 1600,
+                        MaxPullForce = 250,
+                        Efficiency = 0.8,
+                        TractionDiagram = []
+                    },
+                    new VehicleTractionSystemModel
+                    {
+                        ElectrificationTypeId = elTypeIds[0],
+                        VoltageCoefficient = 1,
+                        DrivingWheelsets = 4,
+                        MaxSpeed = 100,
+                        Performance = 3200,
+                        MaxPullForce = 300,
+                        Efficiency = 0.9,
+                        TractionDiagram = [
+                            new() { Speed = 0, PullForce = 300 },
+                            new() { Speed = 100, PullForce = 250 },
+                            new() { Speed = 200, PullForce = 100 }
+                        ]
+                    }
+                ]
             };
 
-            await GetOneAsync_ShouldReturnVehicle(expected, 3);
+            RailVehicleDrivingModel? actual = await _repository.GetOneAsync(vehicleIds[3], user1Id) as RailVehicleDrivingModel;
+
+            actual.Should().NotBeNull();
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
         public async Task GetOneAsync_ShouldReturnNull_WhenVehicleDoesNotExist()
         {
-            (_, string user1Id, _) = await AddTestEntitiesToDbAsync();
+            (_, _, string user1Id, _) = await AddTestEntitiesToDbAsync();
 
-            RailVehicleDependentModel? actual = await _repository.GetOneAsync(Guid.NewGuid(), user1Id) as RailVehicleDependentModel;
+            RailVehicleDrivingModel? actual = await _repository.GetOneAsync(Guid.NewGuid(), user1Id) as RailVehicleDrivingModel;
 
             actual.Should().BeNull();
         }
@@ -163,9 +204,9 @@ namespace Infrastructure.IntegrationTests
         [Fact]
         public async Task GetOneAsync_ShouldReturnNull_WhenVehicleBelongsToAnotherUser()
         {
-            (Guid[] vehicleIds, _, string user2Id) = await AddTestEntitiesToDbAsync();
+            (Guid[] vehicleIds, _, _, string user2Id) = await AddTestEntitiesToDbAsync();
 
-            RailVehicleDependentModel? actual = await _repository.GetOneAsync(vehicleIds[0], user2Id) as RailVehicleDependentModel;
+            RailVehicleDrivingModel? actual = await _repository.GetOneAsync(vehicleIds[0], user2Id) as RailVehicleDrivingModel;
 
             actual.Should().BeNull();
         }
@@ -173,9 +214,9 @@ namespace Infrastructure.IntegrationTests
         [Fact]
         public async Task GetOneAsync_ShouldReturnNull_WhenVehicleIsDeleted()
         {
-            (Guid[] vehicleIds, string user1Id, _) = await AddTestEntitiesToDbAsync();
+            (Guid[] vehicleIds, _, string user1Id, _) = await AddTestEntitiesToDbAsync();
 
-            RailVehicleDependentModel? actual = await _repository.GetOneAsync(vehicleIds[4], user1Id) as RailVehicleDependentModel;
+            RailVehicleDrivingModel? actual = await _repository.GetOneAsync(vehicleIds[4], user1Id) as RailVehicleDrivingModel;
 
             actual.Should().BeNull();
         }
@@ -183,7 +224,7 @@ namespace Infrastructure.IntegrationTests
         [Fact]
         public async Task CreateAsync_ShouldInsertVehicle()
         {
-            (_, string user1Id, _) = await AddTestEntitiesToDbAsync();
+            (_, _, string user1Id, _) = await AddTestEntitiesToDbAsync();
             string vehicleName = "Test Vehicle - create";
 
             RailVehiclePulledModel expected = new()
@@ -202,9 +243,8 @@ namespace Infrastructure.IntegrationTests
 
             await _repository.CreateAsync(expected, user1Id);
 
-            SoftDeleteOperation softDeleteOperation = new(_currentUtcTimeProvider);
-            RailVehicleListRepository vehicleListRepository = new(_mapper, _dbContext, softDeleteOperation);
-            Guid createdVehicleId = (await vehicleListRepository.GetManyAsync(user1Id)).First(v => v.Name == vehicleName).Id;
+            RailVehicleListRepository vehicleListRepository = new(_mapper, _dbContext, new SoftDeleteOperation(_currentUtcTimeProvider));
+            Guid createdVehicleId = (await vehicleListRepository.GetPulledVehiclesAsync(user1Id)).First(v => v.Name == vehicleName).Id;
             RailVehiclePulledModel? actual = await _repository.GetOneAsync(createdVehicleId, user1Id) as RailVehiclePulledModel;
 
             actual.Should().NotBeNull();
@@ -219,10 +259,10 @@ namespace Infrastructure.IntegrationTests
         [Fact]
         public async Task UpdateAsync_ShouldUpdateVehicle()
         {
-            (Guid[] vehicleIds, string user1Id, _) = await AddTestEntitiesToDbAsync();
+            (Guid[] vehicleIds, Guid[] elTypeIds, string user1Id, _) = await AddTestEntitiesToDbAsync();
             string vehicleName = "Test Vehicle - update";
 
-            RailVehicleDependentModel expected = new()
+            RailVehicleDrivingModel expected = new()
             {
                 Name = vehicleName,
                 Description = "Updated Dependent vehicle",
@@ -234,18 +274,26 @@ namespace Infrastructure.IntegrationTests
                 ResistanceConstant = 0.6,
                 ResistanceLinear = 0.2,
                 ResistanceQuadratic = 0.0004,
-                DrivingWheelsets = 6,
-                Performance = 8000,
-                MaxPullForce = 400,
-                TractionDiagram = [
-                    new() { Speed = 0, PullForce = 400 },
-                    new() { Speed = 200, PullForce = 150 }
-                ],
-                Efficiency = 0.95
+                TractionSystems = [
+                    new VehicleTractionSystemModel
+                    {
+                        ElectrificationTypeId = elTypeIds[1],
+                        VoltageCoefficient = 0.8,
+                        DrivingWheelsets = 6,
+                        MaxSpeed = 250,
+                        Performance = 8000,
+                        MaxPullForce = 400,
+                        Efficiency = 0.95,
+                        TractionDiagram = [
+                            new() { Speed = 0, PullForce = 400 },
+                            new() { Speed = 200, PullForce = 150 }
+                        ]
+                    }
+                ]
             };
 
             await _repository.UpdateAsync(vehicleIds[0], expected, user1Id);
-            RailVehicleDependentModel? actual = await _repository.GetOneAsync(vehicleIds[0], user1Id) as RailVehicleDependentModel;
+            RailVehicleDrivingModel? actual = await _repository.GetOneAsync(vehicleIds[0], user1Id) as RailVehicleDrivingModel;
 
             actual.Should().NotBeNull();
             actual.Should().BeEquivalentTo(expected);

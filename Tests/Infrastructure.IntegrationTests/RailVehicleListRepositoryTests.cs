@@ -1,4 +1,4 @@
-﻿using Application.Features.RailVehicles.ListModel;
+﻿using Application.Features.RailVehicles.Model;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
@@ -9,7 +9,6 @@ using Infrastructure.Services;
 
 namespace Infrastructure.IntegrationTests
 {
-    [Collection("Database")]
     public class RailVehicleListRepositoryTests : RailVehicleIntegrationTestsBase
     {
         private readonly IMapper _mapper;
@@ -27,19 +26,33 @@ namespace Infrastructure.IntegrationTests
         }
 
         [Fact]
-        public async Task GetManyAsync_ReturnsRailVehicleListModels()
+        public async Task GetDrivingVehiclesAsync_ReturnsRailVehicleListModels()
         {
-            (Guid[] vehicleIds, string user1Id, _) = await AddTestEntitiesToDbAsync();
+            (Guid[] vehicleIds, _, string user1Id, _) = await AddTestEntitiesToDbAsync();
 
-            RailVehicleListModel[] expected =
+            RailVehicleDrivingListModel[] expected =
             [
                 new() { Id = vehicleIds[0], Name = "Test Vehicle 1", Description = "Dependent", MaxSpeed = 200, Performance = 6400, MaxPullForce = 300, CreatedAt = new(2024, 12, 6, 16, 32, 51, offset) },
-                new() { Id = vehicleIds[1], Name = "Test Vehicle 2", Description = "Pulled", MaxSpeed = 200, Performance = 0, MaxPullForce = 0, CreatedAt = new(2024, 12, 6, 16, 35, 6, offset), UpdatedAt = new(2024, 12, 6, 16, 35, 55, offset) },
                 new() { Id = vehicleIds[2], Name = "Test Vehicle 3", Description = "Independent", MaxSpeed = 100, Performance = 3200, MaxPullForce = 300, CreatedAt = new(2024, 12, 6, 16, 39, 32, offset), UpdatedAt = new(2024, 12, 6, 16, 40, 47, offset) },
                 new() { Id = vehicleIds[3], Name = "Test Vehicle 4", Description = "Hybrid", MaxSpeed = 100, Performance = 3200, MaxPullForce = 300, CreatedAt = new(2024, 12, 6, 16, 45, 2, offset) }
             ];
 
-            ICollection<RailVehicleListModel> actual = await _repository.GetManyAsync(user1Id);
+            ICollection<RailVehicleDrivingListModel> actual = await _repository.GetDrivingVehiclesAsync(user1Id);
+
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async Task GetPulledVehiclesAsync_ReturnsRailVehicleListModels()
+        {
+            (Guid[] vehicleIds, _, string user1Id, _) = await AddTestEntitiesToDbAsync();
+
+            RailVehiclePulledListModel[] expected =
+            [
+                new() { Id = vehicleIds[1], Name = "Test Vehicle 2", Description = "Pulled", MaxSpeed = 200, CreatedAt = new(2024, 12, 6, 16, 35, 6, offset), UpdatedAt = new(2024, 12, 6, 16, 35, 55, offset) },
+            ];
+
+            ICollection<RailVehiclePulledListModel> actual = await _repository.GetPulledVehiclesAsync(user1Id);
 
             actual.Should().BeEquivalentTo(expected);
         }
@@ -47,7 +60,7 @@ namespace Infrastructure.IntegrationTests
         [Fact]
         public async Task SoftDeleteAsync_ShouldSoftDeleteVehicle()
         {
-            (Guid[] vehicleIds, string user1Id, _) = await AddTestEntitiesToDbAsync();
+            (Guid[] vehicleIds, _, string user1Id, _) = await AddTestEntitiesToDbAsync();
 
             await _repository.SoftDeleteAsync(vehicleIds[2], user1Id);
 

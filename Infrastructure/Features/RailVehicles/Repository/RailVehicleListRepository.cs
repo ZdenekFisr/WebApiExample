@@ -1,4 +1,4 @@
-﻿using Application.Features.RailVehicles.ListModel;
+﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
 using AutoMapper;
 using Domain.Entities;
@@ -7,9 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Features.RailVehicles.Repository
 {
-    /// <summary>
-    /// Repository for listing rail vehicles.
-    /// </summary>
+    /// <inheritdoc cref="IRailVehicleListRepository"/>
     /// <param name="mapper">The mapper to map between model and entity.</param>
     /// <param name="dbContext">The application's database context.</param>
     /// <param name="softDeleteOperation">The operation to perform soft delete on an entity.</param>
@@ -17,20 +15,35 @@ namespace Infrastructure.Features.RailVehicles.Repository
         IMapper mapper,
         ApplicationDbContext dbContext,
         ISoftDeleteOperation softDeleteOperation)
-        : IRailVehicleListRepository<RailVehicleListModel>
+        : IRailVehicleListRepository
     {
         private readonly IMapper _mapper = mapper;
         private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly ISoftDeleteOperation _softDeleteOperation = softDeleteOperation;
 
         /// <inheritdoc />
-        public async Task<ICollection<RailVehicleListModel>> GetManyAsync(string userId)
+        public async Task<ICollection<RailVehicleDrivingListModel>> GetDrivingVehiclesAsync(string userId)
         {
-            return _mapper.Map<ICollection<RailVehicleListModel>>(
+            return _mapper.Map<ICollection<RailVehicleDrivingListModel>>(
                 await _dbContext.RailVehicles
                 .AsNoTracking()
+                .Include(v => v.TractionSystems)
                 .Where(v => v.UserId == userId)
                 .Where(v => !v.IsDeleted)
+                .Where(v => v.TractionSystems.Count != 0)
+                .ToListAsync());
+        }
+
+        /// <inheritdoc />
+        public async Task<ICollection<RailVehiclePulledListModel>> GetPulledVehiclesAsync(string userId)
+        {
+            return _mapper.Map<ICollection<RailVehiclePulledListModel>>(
+                await _dbContext.RailVehicles
+                .AsNoTracking()
+                .Include(v => v.TractionSystems)
+                .Where(v => v.UserId == userId)
+                .Where(v => !v.IsDeleted)
+                .Where(v => v.TractionSystems.Count == 0)
                 .ToListAsync());
         }
 

@@ -9,7 +9,7 @@ namespace Infrastructure.DatabaseOperations.Insert
     /// <summary>
     /// Service for performing insert operations on entities.
     /// </summary>
-    /// <param name="mapper">The mapper to map between DTO and entity.</param>
+    /// <param name="mapper">The mapper to map between model and entity.</param>
     /// <param name="currentUtcTimeProvider">The provider to get the current UTC time.</param>
     public class InsertOperation(
         IMapper mapper,
