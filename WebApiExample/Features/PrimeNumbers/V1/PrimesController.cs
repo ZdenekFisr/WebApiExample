@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApiExample.Features.PrimeNumbers.V1
 {
     [ApiVersion(1)]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/primes")]
     [ApiController]
     public class PrimesController(IPrimeNumbersService coreService) : ControllerBase
     {

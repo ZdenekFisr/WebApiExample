@@ -6,7 +6,7 @@ using Infrastructure.DatabaseOperations.HardDelete;
 using Infrastructure.DatabaseOperations.Restore;
 using Infrastructure.Features.RailVehicles.Repository;
 
-namespace Infrastructure.IntegrationTests
+namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
 {
     public class TrainDeletedRepositoryTests : TrainIntegrationTestsBase
     {

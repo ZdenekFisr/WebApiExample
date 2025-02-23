@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApiExample.Features.RandomSeriesEpisode.V1
 {
     [ApiVersion(1)]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/random-series-episode")]
     [ApiController]
     public class RandomSeriesEpisodeController(IRandomSeriesEpisodeService coreService) : ControllerBase
     {

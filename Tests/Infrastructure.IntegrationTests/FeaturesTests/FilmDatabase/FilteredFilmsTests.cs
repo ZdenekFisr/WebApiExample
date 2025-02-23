@@ -5,7 +5,7 @@ using FluentAssertions;
 using Infrastructure.Features.FilmDatabase.Repository;
 using Infrastructure.Services;
 
-namespace Infrastructure.IntegrationTests
+namespace Infrastructure.IntegrationTests.FeaturesTests.FilmDatabase
 {
     [Collection("Database")]
     public class FilteredFilmsTests : IAsyncLifetime

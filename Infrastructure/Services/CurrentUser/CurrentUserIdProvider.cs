@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace Infrastructure.Identity
+namespace Infrastructure.Services.CurrentUser
 {
     /// <summary>
     /// Provides the ID of the current user.
@@ -14,10 +15,13 @@ namespace Infrastructure.Identity
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         /// <inheritdoc />
-        public string? GetCurrentUserId()
+        public async Task<string?> GetCurrentUserIdAsync()
         {
-            ClaimsPrincipal? user = _httpContextAccessor.HttpContext?.User;
-            return user?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (_httpContextAccessor.HttpContext == null)
+                return null;
+
+            ClaimsPrincipal? principal = (await _httpContextAccessor.HttpContext.AuthenticateAsync()).Principal;
+            return principal?.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }

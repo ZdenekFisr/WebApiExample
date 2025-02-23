@@ -11,7 +11,7 @@ using Infrastructure.Features.RailVehicles.Repository;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.IntegrationTests
+namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
 {
     [Collection("Database")]
     public class ElectrificationTypeRepositoryTests : IAsyncLifetime
@@ -58,7 +58,7 @@ namespace Infrastructure.IntegrationTests
             string user2Id = Guid.NewGuid().ToString();
 
             ElectrificationType[] testElectrificationTypes = _entityProvider.GetElectrificationTypes(ids, user1Id, user2Id);
-            await _dbContext.Users.AddRangeAsync([new() { Id = user1Id }, new() { Id = user2Id }]);
+            await _dbContext.Users.AddRangeAsync(_entityProvider.GetUsers(user1Id, user2Id));
             await _dbContext.ElectrificationTypes.AddRangeAsync(testElectrificationTypes);
 
             await _dbContext.SaveChangesAsync();

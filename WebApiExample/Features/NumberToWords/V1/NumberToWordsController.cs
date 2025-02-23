@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApiExample.Features.NumberToWords.V1
 {
     [ApiVersion(1)]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/number-to-words")]
     [ApiController]
     public class NumberToWordsController(
         INumberToWordsCzechService numberToWordsCzechService) : ControllerBase

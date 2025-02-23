@@ -2,7 +2,7 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.IntegrationTests
+namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
 {
     [Collection("Database")]
     public class TrainIntegrationTestsBase(
@@ -37,7 +37,7 @@ namespace Infrastructure.IntegrationTests
             ElectrificationType elType = _entityProvider.GetElectrificationTypes(elTypeIds, user1Id, user2Id).First();
             (RailVehicle[] testVehicles, Train[] testTrains) = _entityProvider.GetTestVehiclesAndTrains(vehicleIds, [elType.Id], trainIds, user1Id, user2Id);
 
-            await _dbContext.Users.AddRangeAsync([new() { Id = user1Id }, new() { Id = user2Id }]);
+            await _dbContext.Users.AddRangeAsync(_entityProvider.GetUsers(user1Id, user2Id));
             await _dbContext.ElectrificationTypes.AddAsync(elType);
             await _dbContext.RailVehicles.AddRangeAsync(testVehicles);
             await _dbContext.Trains.AddRangeAsync(testTrains);

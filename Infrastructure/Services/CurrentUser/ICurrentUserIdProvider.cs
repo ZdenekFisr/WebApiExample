@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Identity
+﻿namespace Infrastructure.Services.CurrentUser
 {
     /// <summary>
     /// Provides the ID of the current user.
@@ -9,6 +9,6 @@
         /// Gets the ID of the current user.
         /// </summary>
         /// <returns>The ID of the current user if found; otherwise, null.</returns>
-        string? GetCurrentUserId();
+        Task<string?> GetCurrentUserIdAsync();
     }
 }

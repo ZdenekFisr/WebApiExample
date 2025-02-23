@@ -8,7 +8,7 @@ using Infrastructure.DatabaseOperations.SoftDelete;
 using Infrastructure.Features.RailVehicles.Repository;
 using Infrastructure.Services;
 
-namespace Infrastructure.IntegrationTests
+namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
 {
     public class TrainListRepositoryTests : TrainIntegrationTestsBase
     {

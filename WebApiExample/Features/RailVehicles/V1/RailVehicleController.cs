@@ -1,7 +1,8 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
 using Asp.Versioning;
-using Infrastructure.Identity;
+using Infrastructure.Services.CurrentUser;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiExample.Features.RailVehicles.V1
@@ -9,6 +10,7 @@ namespace WebApiExample.Features.RailVehicles.V1
     [ApiVersion(1)]
     [Route("api/v{version:apiVersion}/rail-vehicle")]
     [ApiController]
+    [Authorize]
     public class RailVehicleController(
         IRailVehicleRepository<RailVehicleModelBase> repository,
         ICurrentUserIdProvider currentUserIdProvider)
@@ -21,7 +23,7 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Gets a rail vehicle by ID.")]
         public async Task<IActionResult> GetOneAsync(Guid id)
         {
-            string? currentUserId = _currentUserIdProvider.GetCurrentUserId();
+            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
             if (currentUserId is null)
                 return Unauthorized();
 
@@ -44,7 +46,7 @@ namespace WebApiExample.Features.RailVehicles.V1
 
         private async Task<IActionResult> CreateAsync(RailVehicleModelBase model)
         {
-            string? currentUserId = _currentUserIdProvider.GetCurrentUserId();
+            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
             if (currentUserId is null)
                 return Unauthorized();
 
@@ -64,7 +66,7 @@ namespace WebApiExample.Features.RailVehicles.V1
 
         private async Task<IActionResult> UpdateAsync(Guid id, RailVehicleModelBase model)
         {
-            string? currentUserId = _currentUserIdProvider.GetCurrentUserId();
+            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
             if (currentUserId is null)
                 return Unauthorized();
 

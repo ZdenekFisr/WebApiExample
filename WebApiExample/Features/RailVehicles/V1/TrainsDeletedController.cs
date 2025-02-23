@@ -1,7 +1,8 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
 using Asp.Versioning;
-using Infrastructure.Identity;
+using Infrastructure.Services.CurrentUser;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiExample.Features.RailVehicles.V1
@@ -9,6 +10,7 @@ namespace WebApiExample.Features.RailVehicles.V1
     [ApiVersion(1)]
     [Route("api/v{version:apiVersion}/trains-deleted")]
     [ApiController]
+    [Authorize]
     public class TrainsDeletedController(
         ITrainDeletedRepository<TrainDeletedModel> repository,
         ICurrentUserIdProvider currentUserIdProvider)
@@ -21,7 +23,7 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Gets all trains that are soft deleted and belong to the current user.")]
         public async Task<IActionResult> GetAllAsync()
         {
-            string? currentUserId = _currentUserIdProvider.GetCurrentUserId();
+            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
             if (currentUserId is null)
                 return Unauthorized();
 
@@ -32,7 +34,7 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Restores a soft deleted train by ID.")]
         public async Task<IActionResult> RestoreAsync(Guid id)
         {
-            string? currentUserId = _currentUserIdProvider.GetCurrentUserId();
+            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
             if (currentUserId is null)
                 return Unauthorized();
 
@@ -44,7 +46,7 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Hard deletes a train by ID.")]
         public async Task<IActionResult> HardDeleteAsync(Guid id)
         {
-            string? currentUserId = _currentUserIdProvider.GetCurrentUserId();
+            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
             if (currentUserId is null)
                 return Unauthorized();
 

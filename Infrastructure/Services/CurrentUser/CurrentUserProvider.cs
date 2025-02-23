@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Domain.Entities;
 
-namespace Infrastructure.Identity
+namespace Infrastructure.Services.CurrentUser
 {
     /// <summary>
     /// Provides the current user.
@@ -8,21 +8,21 @@ namespace Infrastructure.Identity
     /// <param name="currentUserIdProvider">Provider of the current user ID.</param>
     /// <param name="userManager">Manager to handle user-related operations.</param>
     public class CurrentUserProvider(
-        ICurrentUserIdProvider currentUserIdProvider,
-        UserManager<ApplicationUser> userManager)
+        ApplicationDbContext dbContext,
+        ICurrentUserIdProvider currentUserIdProvider)
         : ICurrentUserProvider
     {
+        private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly ICurrentUserIdProvider _currentUserIdProvider = currentUserIdProvider;
-        private readonly UserManager<ApplicationUser> _userManager = userManager;
 
         /// <inheritdoc />
-        public async Task<ApplicationUser?> GetCurrentUserAsync()
+        public async Task<User?> GetCurrentUserAsync()
         {
-            string? userId = _currentUserIdProvider.GetCurrentUserId();
+            string? userId = await _currentUserIdProvider.GetCurrentUserIdAsync();
             if (userId == null)
                 return null;
 
-            return await _userManager.FindByIdAsync(userId);
+            return await _dbContext.Users.FindAsync(userId);
         }
     }
 }

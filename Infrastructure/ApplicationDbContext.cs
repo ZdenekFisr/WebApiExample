@@ -1,12 +1,12 @@
 ﻿using Domain.Entities;
-using Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
+    public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
     {
+        public DbSet<User> Users { get; set; }
+
         public DbSet<CurrencyCzechName> CurrencyCzechNames { get; set; }
 
         public DbSet<Film> Films { get; set; }
@@ -22,19 +22,19 @@ namespace Infrastructure
             base.OnModelCreating(builder);
 
             builder.Entity<RailVehicle>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.UserId);
             builder.Entity<RailVehicle>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.CreatedBy);
             builder.Entity<RailVehicle>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.UpdatedBy);
             builder.Entity<RailVehicle>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.DeletedBy);
             builder.Entity<RailVehicle>()
@@ -54,19 +54,19 @@ namespace Infrastructure
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Train>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.UserId);
             builder.Entity<Train>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.CreatedBy);
             builder.Entity<Train>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.UpdatedBy);
             builder.Entity<Train>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.DeletedBy);
             builder.Entity<Train>()
@@ -81,19 +81,19 @@ namespace Infrastructure
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<ElectrificationType>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.UserId);
             builder.Entity<ElectrificationType>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.CreatedBy);
             builder.Entity<ElectrificationType>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.UpdatedBy);
             builder.Entity<ElectrificationType>()
-                .HasOne<ApplicationUser>()
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(e => e.DeletedBy);
         }

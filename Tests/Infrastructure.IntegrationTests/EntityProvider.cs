@@ -8,6 +8,13 @@ namespace Infrastructure.IntegrationTests
     {
         private readonly TimeSpan offset = new(0);
 
+        public User[] GetUsers(string user1Id, string user2Id)
+            =>
+        [
+            new() { Id = user1Id, UserName = "User 1", Email="user1@gmail.com", PasswordHash = "abc" },
+            new() { Id = user2Id, UserName = "User 2", Email="user2@gmail.com", PasswordHash = "def" }
+        ];
+
         public (RailVehicle[], Train[]) GetTestVehiclesAndTrains([MinLength(8)] Guid[] vehicleIds, [MinLength(1)] Guid[] elTypeIds, [MinLength(6)] Guid[] trainIds, string user1Id, string user2Id)
         {
             RailVehicle[] vehicles = GetTestVehicles(vehicleIds, elTypeIds, user1Id, user2Id);

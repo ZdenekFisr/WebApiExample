@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApiExample.Features.Divisors.V1
 {
     [ApiVersion(1)]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/divisors")]
     [ApiController]
     public class DivisorsController(IDivisorsService coreService) : ControllerBase
     {
