@@ -3,7 +3,6 @@ using Application.Features.RailVehicles.Repository;
 using Asp.Versioning;
 using Infrastructure.Exceptions;
 using Infrastructure.Services.CurrentUser;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiExample.Features.RailVehicles.V1
@@ -11,7 +10,6 @@ namespace WebApiExample.Features.RailVehicles.V1
     [ApiVersion(1)]
     [Route("api/v{version:apiVersion}/electrification-types")]
     [ApiController]
-    [Authorize]
     public class ElectrificationTypesController(
         IElectrificationTypeRepository<ElectrificationTypeModel, ElectrificationTypeListModel> repository,
         ICurrentUserIdProvider currentUserIdProvider)
@@ -24,9 +22,23 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Gets all electrification types that belong to the current user.")]
         public async Task<IActionResult> GetAllAsync()
         {
-            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
-            if (currentUserId is null)
+            string currentUserId;
+            try
+            {
+                currentUserId = _currentUserIdProvider.GetCurrentUserId(Constants.AllPayingRoles);
+            }
+            catch (UnauthorizedException)
+            {
                 return Unauthorized();
+            }
+            catch (ForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             var electrificationTypes = await _repository.GetManyAsync(currentUserId);
             return Ok(electrificationTypes);
@@ -36,9 +48,23 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Creates a new electrification type.")]
         public async Task<IActionResult> CreateAsync(ElectrificationTypeModel model)
         {
-            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
-            if (currentUserId is null)
+            string currentUserId;
+            try
+            {
+                currentUserId = _currentUserIdProvider.GetCurrentUserId(Constants.AllPayingRoles);
+            }
+            catch (UnauthorizedException)
+            {
                 return Unauthorized();
+            }
+            catch (ForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             await _repository.CreateAsync(model, currentUserId);
             return Ok();
@@ -48,9 +74,23 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Updates an existing electrification type by ID.")]
         public async Task<IActionResult> UpdateAsync(Guid id, ElectrificationTypeModel model)
         {
-            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
-            if (currentUserId is null)
+            string currentUserId;
+            try
+            {
+                currentUserId = _currentUserIdProvider.GetCurrentUserId(Constants.AllPayingRoles);
+            }
+            catch (UnauthorizedException)
+            {
                 return Unauthorized();
+            }
+            catch (ForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             await _repository.UpdateAsync(id, model, currentUserId);
             return Ok();
@@ -60,9 +100,23 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Hard deletes an electrification type by ID.")]
         public async Task<IActionResult> HardDeleteAsync(Guid id)
         {
-            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
-            if (currentUserId is null)
+            string currentUserId;
+            try
+            {
+                currentUserId = _currentUserIdProvider.GetCurrentUserId(Constants.AllPayingRoles);
+            }
+            catch (UnauthorizedException)
+            {
                 return Unauthorized();
+            }
+            catch (ForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             try
             {

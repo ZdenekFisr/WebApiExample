@@ -1,8 +1,8 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
 using Asp.Versioning;
+using Infrastructure.Exceptions;
 using Infrastructure.Services.CurrentUser;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiExample.Features.RailVehicles.V1
@@ -10,7 +10,6 @@ namespace WebApiExample.Features.RailVehicles.V1
     [ApiVersion(1)]
     [Route("api/v{version:apiVersion}/rail-vehicle")]
     [ApiController]
-    [Authorize]
     public class RailVehicleController(
         IRailVehicleRepository<RailVehicleModelBase> repository,
         ICurrentUserIdProvider currentUserIdProvider)
@@ -23,9 +22,23 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Gets a rail vehicle by ID.")]
         public async Task<IActionResult> GetOneAsync(Guid id)
         {
-            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
-            if (currentUserId is null)
+            string currentUserId;
+            try
+            {
+                currentUserId = _currentUserIdProvider.GetCurrentUserId(Constants.AllPayingRoles);
+            }
+            catch (UnauthorizedException)
+            {
                 return Unauthorized();
+            }
+            catch (ForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             var vehicle = await _repository.GetOneAsync(id, currentUserId);
             if (vehicle is null)
@@ -46,9 +59,23 @@ namespace WebApiExample.Features.RailVehicles.V1
 
         private async Task<IActionResult> CreateAsync(RailVehicleModelBase model)
         {
-            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
-            if (currentUserId is null)
+            string currentUserId;
+            try
+            {
+                currentUserId = _currentUserIdProvider.GetCurrentUserId(Constants.AllPayingRoles);
+            }
+            catch (UnauthorizedException)
+            {
                 return Unauthorized();
+            }
+            catch (ForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             await _repository.CreateAsync(model, currentUserId);
             return Ok();
@@ -66,9 +93,23 @@ namespace WebApiExample.Features.RailVehicles.V1
 
         private async Task<IActionResult> UpdateAsync(Guid id, RailVehicleModelBase model)
         {
-            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
-            if (currentUserId is null)
+            string currentUserId;
+            try
+            {
+                currentUserId = _currentUserIdProvider.GetCurrentUserId(Constants.AllPayingRoles);
+            }
+            catch (UnauthorizedException)
+            {
                 return Unauthorized();
+            }
+            catch (ForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             await _repository.UpdateAsync(id, model, currentUserId);
             return Ok();

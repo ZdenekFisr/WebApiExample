@@ -3,7 +3,6 @@ using Application.Features.RailVehicles.Repository;
 using Asp.Versioning;
 using Infrastructure.Exceptions;
 using Infrastructure.Services.CurrentUser;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiExample.Features.RailVehicles.V1
@@ -11,7 +10,6 @@ namespace WebApiExample.Features.RailVehicles.V1
     [ApiVersion(1)]
     [Route("api/v{version:apiVersion}/train")]
     [ApiController]
-    [Authorize]
     public class TrainController(
         ITrainRepository<TrainInputModel, TrainOutputModel> repository,
         ICurrentUserIdProvider currentUserIdProvider)
@@ -24,9 +22,23 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Gets a train by ID.")]
         public async Task<IActionResult> GetOneAsync(Guid id)
         {
-            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
-            if (currentUserId is null)
+            string currentUserId;
+            try
+            {
+                currentUserId = _currentUserIdProvider.GetCurrentUserId(Constants.AllPayingRoles);
+            }
+            catch (UnauthorizedException)
+            {
                 return Unauthorized();
+            }
+            catch (ForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             var train = await _repository.GetOneAsync(id, currentUserId);
             if (train is null)
@@ -39,9 +51,23 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Creates a new train.")]
         public async Task<IActionResult> CreateAsync(TrainInputModel model)
         {
-            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
-            if (currentUserId is null)
+            string currentUserId;
+            try
+            {
+                currentUserId = _currentUserIdProvider.GetCurrentUserId(Constants.AllPayingRoles);
+            }
+            catch (UnauthorizedException)
+            {
                 return Unauthorized();
+            }
+            catch (ForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             try
             {
@@ -58,9 +84,23 @@ namespace WebApiExample.Features.RailVehicles.V1
         [EndpointDescription("Updates an existing train by ID.")]
         public async Task<IActionResult> UpdateAsync(Guid id, TrainInputModel model)
         {
-            string? currentUserId = await _currentUserIdProvider.GetCurrentUserIdAsync();
-            if (currentUserId is null)
+            string currentUserId;
+            try
+            {
+                currentUserId = _currentUserIdProvider.GetCurrentUserId(Constants.AllPayingRoles);
+            }
+            catch (UnauthorizedException)
+            {
                 return Unauthorized();
+            }
+            catch (ForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             try
             {

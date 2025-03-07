@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using Domain.Enums;
+
+namespace Domain.Entities
 {
     /// <summary>
     /// Represents an application user.
@@ -16,5 +18,7 @@
         public string? RefreshToken { get; set; }
 
         public DateTimeOffset? RefreshTokenExpiryTime { get; set; }
+
+        public UserRole Roles { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace Infrastructure.Services.CurrentUser
         /// <summary>
         /// Asynchronously gets the current user.
         /// </summary>
-        /// <returns>A task that represents the asynchronous operation. The task result contains the current <see cref="User"/> if found; otherwise, null.</returns>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the current <see cref="User"/>.</returns>
         Task<User?> GetCurrentUserAsync();
     }
 }

@@ -86,6 +86,7 @@ namespace WebApiExample
             builder.Services.AddSingleton<IJwtService, JwtService>();
             builder.Services.AddScoped<Random>();
             builder.Services.AddScoped<IRandomNumberService, RandomNumberService>();
+            builder.Services.AddScoped<IUserRolesProvider, UserRolesProvider>();
 
             builder.Services.AddScoped<IInsertOperation, InsertOperation>();
             builder.Services.AddScoped<IUpdateOperation, UpdateOperation>();

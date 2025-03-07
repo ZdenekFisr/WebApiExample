@@ -8,7 +8,7 @@
         /// <summary>
         /// Gets the ID of the current user.
         /// </summary>
-        /// <returns>The ID of the current user if found; otherwise, null.</returns>
-        Task<string?> GetCurrentUserIdAsync();
+        /// <returns>The ID of the current user.</returns>
+        string GetCurrentUserId(string[]? allowedRoles = null);
     }
 }
