@@ -36,7 +36,7 @@ namespace Infrastructure.Services.CurrentUser
 
             var token = authHeader.Trim();
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["AppSettings:Token"]
+            var key = Encoding.ASCII.GetBytes(_configuration["Token"]
                 ?? throw new KeyNotFoundException("Token not found."));
 
             ClaimsPrincipal? principal;

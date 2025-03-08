@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Services
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ICurrentUtcTimeProvider"/>
     public class CurrentUtcTimeProvider : ICurrentUtcTimeProvider
     {
         /// <inheritdoc />
