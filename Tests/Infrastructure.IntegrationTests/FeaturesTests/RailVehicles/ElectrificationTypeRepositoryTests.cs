@@ -1,7 +1,6 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Helpers;
 using Application.Services;
-using AutoMapper;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.DatabaseOperations.HardDelete;
@@ -19,7 +18,6 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
         private readonly ApplicationDbContext _dbContext;
         private readonly Func<Task> _resetDatabase;
 
-        private readonly IMapper _mapper;
         private readonly ICurrentUtcTimeProvider _currentUtcTimeProvider;
         private readonly IInsertOperation _insertOperation;
         private readonly IUpdateOperation _updateOperation;
@@ -36,12 +34,11 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
             _resetDatabase = databaseFixture.ResetDatabase;
 
             _dbContext = databaseFixture.Context;
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
             _currentUtcTimeProvider = new CurrentUtcTimeProvider();
-            _insertOperation = new InsertOperation(_mapper, _currentUtcTimeProvider);
-            _updateOperation = new UpdateOperation(_mapper, _currentUtcTimeProvider);
+            _insertOperation = new InsertOperation(_currentUtcTimeProvider);
+            _updateOperation = new UpdateOperation(_currentUtcTimeProvider);
             _hardDeleteOperation = new HardDeleteOperation();
-            _repository = new ElectrificationTypeRepository(_mapper, _dbContext, _insertOperation, _updateOperation, _hardDeleteOperation);
+            _repository = new ElectrificationTypeRepository(_dbContext, _insertOperation, _updateOperation, _hardDeleteOperation);
         }
         public Task InitializeAsync() => Task.CompletedTask;
 

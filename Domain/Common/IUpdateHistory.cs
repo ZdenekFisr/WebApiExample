@@ -8,11 +8,11 @@
         /// <summary>
         /// Time as UTC when the item (entity) was last updated.
         /// </summary>
-        public DateTimeOffset? UpdatedAt { get; set; }
+        DateTimeOffset? UpdatedAt { get; set; }
 
         /// <summary>
         /// ID of the user who last updated the row. Warning: add foreign key to the user table.
         /// </summary>
-        public string? UpdatedBy { get; set; }
+        string? UpdatedBy { get; set; }
     }
 }

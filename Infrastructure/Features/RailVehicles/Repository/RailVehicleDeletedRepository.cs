@@ -1,6 +1,5 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
-using AutoMapper;
 using Domain.Entities;
 using Infrastructure.DatabaseOperations.HardDelete;
 using Infrastructure.DatabaseOperations.Restore;
@@ -11,32 +10,27 @@ using System.Text;
 namespace Infrastructure.Features.RailVehicles.Repository
 {
     /// <inheritdoc cref="IRailVehicleDeletedRepository{TModel}"/>
-    /// <param name="mapper">The AutoMapper instance for mapping entities and models.</param>
     /// <param name="dbContext">The application database context.</param>
     /// <param name="restoreOperation">The operation for restoring an entity.</param>
     /// <param name="hardDeleteOperation">The operation for hard deleting an entity.</param>
     public class RailVehicleDeletedRepository(
-        IMapper mapper,
         ApplicationDbContext dbContext,
         IRestoreOperation restoreOperation,
         IHardDeleteOperation hardDeleteOperation)
         : IRailVehicleDeletedRepository<RailVehicleDeletedModel>
     {
-        private readonly IMapper _mapper = mapper;
         private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly IRestoreOperation _restoreOperation = restoreOperation;
         private readonly IHardDeleteOperation _hardDeleteOperation = hardDeleteOperation;
 
         /// <inheritdoc />
         public async Task<ICollection<RailVehicleDeletedModel>> GetManyAsync(string userId)
-        {
-            return _mapper.Map<ICollection<RailVehicleDeletedModel>>(
-                await _dbContext.RailVehicles
+            => await _dbContext.RailVehicles
                 .AsNoTracking()
                 .Where(v => v.UserId == userId)
                 .Where(v => v.IsDeleted)
-                .ToListAsync());
-        }
+                .Select(v => RailVehicleDeletedModel.FromEntity(v))
+                .ToListAsync();
 
         /// <inheritdoc />
         public async Task RestoreAsync(Guid id, string userId)

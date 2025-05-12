@@ -54,8 +54,6 @@ namespace WebApiExample
                     options.SubstituteApiVersionInUrl = true;
                 });
 
-            builder.Services.AddAutoMapper(typeof(Program), typeof(AutoMapperProfile));
-
             string env = builder.Environment.EnvironmentName;
             string connectionStringName = $"{env}Database";
             string connectionString = builder.Configuration.GetConnectionString(connectionStringName) ?? throw new InvalidOperationException($"Connection string '{connectionStringName}' not found.");

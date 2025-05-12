@@ -1,6 +1,5 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Services;
-using AutoMapper;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.DatabaseOperations.SoftDelete;
@@ -11,7 +10,6 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
 {
     public class RailVehicleListRepositoryTests : RailVehicleIntegrationTestsBase
     {
-        private readonly IMapper _mapper;
         private readonly ICurrentUtcTimeProvider _timeProvider = new CurrentUtcTimeProvider();
         private readonly ISoftDeleteOperation _softDeleteOperation;
         private readonly RailVehicleListRepository _repository;
@@ -19,10 +17,9 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
         public RailVehicleListRepositoryTests(DatabaseFixture databaseFixture)
             : base(databaseFixture)
         {
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
             _timeProvider = new CurrentUtcTimeProvider();
             _softDeleteOperation = new SoftDeleteOperation(_timeProvider);
-            _repository = new RailVehicleListRepository(_mapper, _dbContext, _softDeleteOperation);
+            _repository = new RailVehicleListRepository(_dbContext, _softDeleteOperation);
         }
 
         [Fact]

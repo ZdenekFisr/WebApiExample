@@ -1,11 +1,9 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Services;
-using AutoMapper;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.DatabaseOperations.Insert;
 using Infrastructure.DatabaseOperations.SoftDelete;
-using Infrastructure.DatabaseOperations.Update;
 using Infrastructure.Features.RailVehicles.Repository;
 using Infrastructure.Services;
 
@@ -13,20 +11,16 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
 {
     public class RailVehicleRepositoryTests : RailVehicleIntegrationTestsBase
     {
-        private readonly IMapper _mapper;
         private readonly ICurrentUtcTimeProvider _currentUtcTimeProvider;
         private readonly IInsertOperation _insertOperation;
-        private readonly IUpdateOperation _updateOperation;
         private readonly RailVehicleRepository _repository;
 
         public RailVehicleRepositoryTests(DatabaseFixture databaseFixture)
             : base(databaseFixture)
         {
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
             _currentUtcTimeProvider = new CurrentUtcTimeProvider();
-            _insertOperation = new InsertOperation(_mapper, _currentUtcTimeProvider);
-            _updateOperation = new UpdateOperation(_mapper, _currentUtcTimeProvider);
-            _repository = new RailVehicleRepository(_mapper, _dbContext, _insertOperation, _updateOperation);
+            _insertOperation = new InsertOperation(_currentUtcTimeProvider);
+            _repository = new RailVehicleRepository(_dbContext, _insertOperation, _currentUtcTimeProvider);
         }
 
         [Fact]
@@ -243,7 +237,7 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
 
             await _repository.CreateAsync(expected, user1Id);
 
-            RailVehicleListRepository vehicleListRepository = new(_mapper, _dbContext, new SoftDeleteOperation(_currentUtcTimeProvider));
+            RailVehicleListRepository vehicleListRepository = new(_dbContext, new SoftDeleteOperation(_currentUtcTimeProvider));
             Guid createdVehicleId = (await vehicleListRepository.GetPulledVehiclesAsync(user1Id)).First(v => v.Name == vehicleName).Id;
             RailVehiclePulledModel? actual = await _repository.GetOneAsync(createdVehicleId, user1Id) as RailVehiclePulledModel;
 

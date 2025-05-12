@@ -1,12 +1,10 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
 using Application.Services;
-using AutoMapper;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.DatabaseOperations.Insert;
 using Infrastructure.DatabaseOperations.SoftDelete;
-using Infrastructure.DatabaseOperations.Update;
 using Infrastructure.Features.RailVehicles.Repository;
 using Infrastructure.Services;
 
@@ -14,22 +12,18 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
 {
     public class TrainRepositoryTests : TrainIntegrationTestsBase
     {
-        private readonly IMapper _mapper;
         private readonly ICurrentUtcTimeProvider _currentUtcTimeProvider;
         private readonly IRailVehicleNameRepository _vehicleNameRepository;
         private readonly IInsertOperation _insertOperation;
-        private readonly IUpdateOperation _updateOperation;
         private readonly TrainRepository _repository;
 
         public TrainRepositoryTests(DatabaseFixture databaseFixture)
             : base(databaseFixture)
         {
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
             _currentUtcTimeProvider = new CurrentUtcTimeProvider();
             _vehicleNameRepository = new RailVehicleNameRepository(_dbContext);
-            _insertOperation = new InsertOperation(_mapper, _currentUtcTimeProvider);
-            _updateOperation = new UpdateOperation(_mapper, _currentUtcTimeProvider);
-            _repository = new TrainRepository(_mapper, _dbContext, _vehicleNameRepository, _insertOperation, _updateOperation);
+            _insertOperation = new InsertOperation(_currentUtcTimeProvider);
+            _repository = new TrainRepository(_dbContext, _vehicleNameRepository, _insertOperation, _currentUtcTimeProvider);
         }
 
         [Fact]
@@ -144,7 +138,7 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
             };
             await _repository.CreateAsync(newModel, user1Id);
 
-            TrainListRepository trainListRepository = new(_mapper, _dbContext, _vehicleNameRepository, new SoftDeleteOperation(_currentUtcTimeProvider));
+            TrainListRepository trainListRepository = new(_dbContext, _vehicleNameRepository, new SoftDeleteOperation(_currentUtcTimeProvider));
             Guid createdTrainId = (await trainListRepository.GetManyAsync(user1Id)).First(t => t.Name == trainName).Id;
             TrainOutputModel? actual = await _repository.GetOneAsync(createdTrainId, user1Id);
 

@@ -1,6 +1,4 @@
 ﻿using Application.Features.FilmDatabase;
-using AutoMapper;
-using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.Features.FilmDatabase.Repository;
 using Infrastructure.Services;
@@ -12,7 +10,6 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.FilmDatabase
     {
         private readonly Func<Task> _resetDatabase;
 
-        private readonly IMapper _mapper;
         private readonly ApplicationDbContext _context;
         private readonly EmbeddedCsvService _csvService;
         private readonly FilteredFilmsRepository _repository;
@@ -21,7 +18,6 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.FilmDatabase
         {
             _resetDatabase = databaseFixture.ResetDatabase;
 
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
             _context = databaseFixture.Context;
             _csvService = new();
             _repository = new(_context);
@@ -34,7 +30,7 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.FilmDatabase
         private async Task PerformFilmFilterTest(IEnumerable<string> expected, string? nameContains = null, short? minYearOfRelease = null, short? maxYearOfRelease = null, short? minLength = null, short? maxLength = null, byte? minRating = null, byte? maxRating = null)
         {
             List<FilmModel> films = _csvService.ReadEmbeddedCsv<FilmModel>("Infrastructure.IntegrationTests.Films.csv");
-            await _context.Films.AddRangeAsync(_mapper.Map<List<Film>>(films));
+            await _context.Films.AddRangeAsync(films.Select(f => f.ToEntity()));
             await _context.SaveChangesAsync();
 
             string[] actual = (await _repository

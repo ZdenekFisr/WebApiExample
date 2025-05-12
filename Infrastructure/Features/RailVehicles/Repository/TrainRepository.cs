@@ -1,57 +1,56 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
-using AutoMapper;
+using Application.Services;
 using Domain.Entities;
 using Infrastructure.DatabaseOperations.Insert;
-using Infrastructure.DatabaseOperations.Update;
 using Infrastructure.Exceptions;
+using Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Features.RailVehicles.Repository
 {
     /// <inheritdoc cref="ITrainRepository{TInputModel, TOutputModel}"/>
-    /// <param name="mapper">The mapper instance for object-object mapping.</param>
     /// <param name="dbContext">The application's database context.</param>
     /// <param name="vehicleNameRepository">The repository for vehicle names.</param>
     /// <param name="insertRowOperation">The operation for inserting a row into the database.</param>
     /// <param name="updateOperation">The operation for updating entity information.</param>
     public class TrainRepository(
-        IMapper mapper,
         ApplicationDbContext dbContext,
         IRailVehicleNameRepository vehicleNameRepository,
         IInsertOperation insertRowOperation,
-        IUpdateOperation updateOperation)
+        ICurrentUtcTimeProvider timeProvider)
         : ITrainRepository<TrainInputModel, TrainOutputModel>
     {
-        private readonly IMapper _mapper = mapper;
         private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly IRailVehicleNameRepository _vehicleNameRepository = vehicleNameRepository;
         private readonly IInsertOperation _insertRowOperation = insertRowOperation;
-        private readonly IUpdateOperation _updateOperation = updateOperation;
+        private readonly ICurrentUtcTimeProvider _timeProvider = timeProvider;
 
         /// <inheritdoc />
         public async Task<TrainOutputModel?> GetOneAsync(Guid id, string userId)
         {
-            TrainOutputModel? train = _mapper.Map<TrainOutputModel?>(await _dbContext.Trains
+            Train? entity = await _dbContext.Trains
                 .AsNoTracking()
                 .Include(t => t.TrainVehicles
                     .Where(tv => _dbContext.RailVehicles.Any(v => v.Id == tv.VehicleId && v.UserId == userId && !v.IsDeleted))
                     .OrderBy(tv => tv.Position))
-                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId && !t.IsDeleted));
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId && !t.IsDeleted);
 
-            if (train is null)
+            if (entity is null)
                 return null;
 
+            TrainOutputModel model = TrainOutputModel.FromEntity(entity);
+
             Dictionary<Guid, string> vehicleNames = await _vehicleNameRepository.GetVehicleNames(userId);
-            if (train.TrainVehicles is not null)
+            if (model.TrainVehicles is not null)
             {
-                foreach (TrainVehicleOutputModel trainVehicle in train.TrainVehicles)
+                foreach (TrainVehicleOutputModel trainVehicle in model.TrainVehicles)
                 {
                     trainVehicle.VehicleName = vehicleNames[trainVehicle.VehicleId];
                 }
             }
 
-            return train;
+            return model;
         }
 
         /// <inheritdoc />
@@ -60,11 +59,14 @@ namespace Infrastructure.Features.RailVehicles.Repository
         {
             try
             {
-                await _insertRowOperation.InsertAsync<Train, TrainInputModel>(_dbContext, model, userId);
+                await _insertRowOperation.InsertAsync(_dbContext, userId, model.ToEntity);
             }
             catch (DbUpdateException ex)
             {
-                throw new VehicleForeignKeyException(ex, await FindMissingVehicleIds(model, userId));
+                if (ex.IsForeignKeyViolation())
+                    throw new VehicleForeignKeyException(ex, await FindMissingVehicleIds(model, userId));
+                else
+                    throw;
             }
         }
 
@@ -72,13 +74,33 @@ namespace Infrastructure.Features.RailVehicles.Repository
         /// <exception cref="VehicleForeignKeyException">Thrown when some rail vehicle IDs are not present in the database.</exception>
         public async Task UpdateAsync(Guid id, TrainInputModel newModel, string userId)
         {
+            Train? entity = await FindEntityByIdAsync(id, userId);
+            if (entity is null)
+                return;
+
+            entity.Name = newModel.Name;
+            entity.Description = newModel.Description;
+            entity.MaxPullForce = newModel.MaxPullForce;
+
+            entity.TrainVehicles.Clear();
+            foreach (TrainVehicleInputModel trainVehicle in newModel.TrainVehicles)
+            {
+                entity.TrainVehicles.Add(trainVehicle.ToEntity());
+            }
+
+            entity.UpdatedAt = _timeProvider.GetCurrentUtcTime();
+            entity.UpdatedBy = userId;
+
             try
             {
-                await _updateOperation.UpdateAsync(_dbContext, FindEntityByIdAsync, id, newModel, userId);
+                await _dbContext.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
-                throw new VehicleForeignKeyException(ex, await FindMissingVehicleIds(newModel, userId));
+                if (ex.IsForeignKeyViolation())
+                    throw new VehicleForeignKeyException(ex, await FindMissingVehicleIds(newModel, userId));
+                else
+                    throw;
             }
         }
 
@@ -107,10 +129,9 @@ namespace Infrastructure.Features.RailVehicles.Repository
                 .Select(v => v.Id)
                 .ToListAsync();
 
-            string[] missingVehicleIds = vehicleIdsInModel
+            string[] missingVehicleIds = [.. vehicleIdsInModel
                 .Except(vehicleIdsInDb)
-                .Select(id => id.ToString())
-                .ToArray();
+                .Select(id => id.ToString())];
 
             return missingVehicleIds;
         }

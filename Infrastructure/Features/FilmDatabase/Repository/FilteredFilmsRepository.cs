@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Features.FilmDatabase.Repository
 {
     /// <inheritdoc cref="IFilteredFilmsRepository"/>
-    public class FilteredFilmsRepository(ApplicationDbContext dbContext) : IFilteredFilmsRepository
+    public class FilteredFilmsRepository(
+        ApplicationDbContext dbContext)
+        : IFilteredFilmsRepository
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
 
@@ -28,6 +30,5 @@ namespace Infrastructure.Features.FilmDatabase.Repository
                 .Where(f => maxRating == null || f.Rating <= maxRating)
                 .ToListAsync();
         }
-
     }
 }

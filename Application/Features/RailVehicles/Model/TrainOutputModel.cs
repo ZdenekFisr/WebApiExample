@@ -17,5 +17,21 @@ namespace Application.Features.RailVehicles.Model
 
         /// <inheritdoc cref="Train.TrainVehicles"/>
         public required ICollection<TrainVehicleOutputModel> TrainVehicles { get; set; }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="TrainOutputModel"/> from a <see cref="Train"/> entity.
+        /// </summary>
+        /// <param name="entity">The <see cref="Train"/> entity to convert.</param>
+        /// <returns>A new instance of <see cref="TrainOutputModel"/>.</returns>
+        public static TrainOutputModel FromEntity(Train entity)
+        {
+            return new TrainOutputModel
+            {
+                Name = entity.Name,
+                Description = entity.Description,
+                MaxPullForce = entity.MaxPullForce,
+                TrainVehicles = [.. entity.TrainVehicles.Select(TrainVehicleOutputModel.FromEntity)]
+            };
+        }
     }
 }

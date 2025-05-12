@@ -1,6 +1,5 @@
 ﻿using Application.Common;
 using Application.Services;
-using AutoMapper;
 using Domain.Common;
 using FluentAssertions;
 using Infrastructure.DatabaseOperations.Update;
@@ -11,18 +10,14 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
 {
     public class UpdateOperationTests
     {
-        private readonly IMapper _mapper;
         private readonly Mock<ICurrentUtcTimeProvider> _currentUtcTimeProviderMock;
         private readonly UpdateOperation _updateOperation;
         private readonly TestUpdateDbContext _dbContext;
 
         public UpdateOperationTests()
         {
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<TestUpdateAutoMapperProfile>()).CreateMapper();
             _currentUtcTimeProviderMock = new Mock<ICurrentUtcTimeProvider>();
-            _updateOperation = new UpdateOperation(
-                _mapper,
-                _currentUtcTimeProviderMock.Object);
+            _updateOperation = new UpdateOperation(_currentUtcTimeProviderMock.Object);
 
             var options = new DbContextOptionsBuilder<TestUpdateDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
@@ -63,14 +58,6 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
         private class TestUpdateDbContext(DbContextOptions options) : DbContext(options)
         {
             public DbSet<TestUpdateEntity> TestUpdateEntities { get; set; }
-        }
-
-        private class TestUpdateAutoMapperProfile : Profile
-        {
-            public TestUpdateAutoMapperProfile()
-            {
-                CreateMap<TestUpdateModel, TestUpdateEntity>();
-            }
         }
 
         private class TestUpdateEntity : EntityWithUserBase, IUpdateHistory

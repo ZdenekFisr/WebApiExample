@@ -1,6 +1,5 @@
 ﻿using Application.Features.AmountToWords;
 using Application.Features.NumberToWords;
-using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using FluentAssertions;
@@ -13,7 +12,6 @@ namespace Infrastructure.UnitTests.FeaturesTests.AmountInWords
 {
     public class AmountInWordsCzechServiceTests
     {
-        private readonly IMapper _mapper;
         private readonly ApplicationDbContext _context;
         private readonly Mock<INumberToWordsCzechService> _numberInWordsCzechService;
         private readonly AmountInWordsCzechService _amountInWordsCzechService;
@@ -24,13 +22,12 @@ namespace Infrastructure.UnitTests.FeaturesTests.AmountInWords
                 .UseInMemoryDatabase("TestDb")
                 .Options;
 
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
             _context = new ApplicationDbContext(options);
 
             _numberInWordsCzechService = new Mock<INumberToWordsCzechService>();
 
             var embeddedCsvService = new EmbeddedCsvService();
-            var currencyCzechNameRepository = new CurrencyCzechNameRepository(_context, _mapper);
+            var currencyCzechNameRepository = new CurrencyCzechNameRepository(_context);
             _amountInWordsCzechService = new(_numberInWordsCzechService.Object, currencyCzechNameRepository);
 
             var currencyCzechNames = embeddedCsvService

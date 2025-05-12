@@ -1,7 +1,6 @@
 ﻿using Application.Features.RailVehicles.Extensions;
 using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
-using AutoMapper;
 using Domain.Entities;
 using Infrastructure.DatabaseOperations.SoftDelete;
 using Microsoft.EntityFrameworkCore;
@@ -9,18 +8,15 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Features.RailVehicles.Repository
 {
     /// <inheritdoc cref="ITrainListRepository{TModel}"/>
-    /// <param name="mapper">The mapper for converting entities to models.</param>
     /// <param name="dbContext">The application's database context.</param>
     /// <param name="vehicleNameRepository">The repository for getting vehicle names.</param>
     /// <param name="softDeleteOperation">The operation for soft deleting an entity.</param>
     public class TrainListRepository(
-        IMapper mapper,
         ApplicationDbContext dbContext,
         IRailVehicleNameRepository vehicleNameRepository,
         ISoftDeleteOperation softDeleteOperation)
         : ITrainListRepository<TrainListModel>
     {
-        private readonly IMapper _mapper = mapper;
         private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly IRailVehicleNameRepository _vehicleNameRepository = vehicleNameRepository;
         private readonly ISoftDeleteOperation _softDeleteOperation = softDeleteOperation;
@@ -28,7 +24,7 @@ namespace Infrastructure.Features.RailVehicles.Repository
         /// <inheritdoc />
         public async Task<ICollection<TrainListModel>> GetManyAsync(string userId)
         {
-            TrainListModel[] trains = _mapper.Map<TrainListModel[]>(await _dbContext.Trains
+            TrainListModel[] trains = await _dbContext.Trains
                 .AsNoTracking()
                 .Where(t => t.UserId == userId)
                 .Where(t => !t.IsDeleted)
@@ -36,7 +32,8 @@ namespace Infrastructure.Features.RailVehicles.Repository
                     .Where(tv => _dbContext.RailVehicles.Any(v => v.Id == tv.VehicleId && v.UserId == userId && !v.IsDeleted))
                     .OrderBy(tv => tv.Position))
                 .OrderBy(t => t.Name)
-                .ToListAsync());
+                .Select(t => TrainListModel.FromEntity(t))
+                .ToArrayAsync();
 
             if (trains.Length == 0)
                 return trains;

@@ -14,6 +14,6 @@ namespace Application.Features.NumberToWords
         /// <param name="gender">Czech grammatical gender.</param>
         /// <param name="insertSpaces">Insert spaces into the result string.</param>
         /// <returns>String representation in Czech.</returns>
-        public string NumberToWords(long number, GrammaticalGender gender, bool insertSpaces = true);
+        string NumberToWords(long number, GrammaticalGender gender, bool insertSpaces = true);
     }
 }

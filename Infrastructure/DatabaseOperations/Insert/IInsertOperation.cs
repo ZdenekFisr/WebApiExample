@@ -1,5 +1,4 @@
-﻿using Application.Common;
-using Domain.Common;
+﻿using Domain.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DatabaseOperations.Insert
@@ -13,13 +12,11 @@ namespace Infrastructure.DatabaseOperations.Insert
         /// Asynchronously inserts a row into the database.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity to be inserted.</typeparam>
-        /// <typeparam name="TModel">The type of the data transfer object to be inserted.</typeparam>
         /// <param name="dbContext">The database context to be used for the insert operation.</param>
-        /// <param name="model">The model containing the data to insert.</param>
         /// <param name="userId">The ID of the user performing the operation.</param>
+        /// <param name="mappingMethod">The method used to map the entity.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        Task InsertAsync<TEntity, TModel>(DbContext dbContext, TModel model, string userId)
-            where TEntity : EntityWithUserBase
-            where TModel : ModelBase;
+        Task InsertAsync<TEntity>(DbContext dbContext, string userId, Func<TEntity> mappingMethod)
+            where TEntity : EntityWithUserBase;
     }
 }

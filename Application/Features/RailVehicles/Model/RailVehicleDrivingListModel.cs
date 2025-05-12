@@ -30,5 +30,25 @@ namespace Application.Features.RailVehicles.Model
         public DateTimeOffset CreatedAt { get; set; }
 
         public DateTimeOffset? UpdatedAt { get; set; }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="RailVehicleDrivingListModel"/> from a <see cref="RailVehicle"/> entity.
+        /// </summary>
+        /// <param name="entity">The <see cref="RailVehicle"/> entity to convert.</param>
+        /// <returns>A new instance of <see cref="RailVehicleDrivingListModel"/>.</returns>
+        public static RailVehicleDrivingListModel FromEntity(RailVehicle entity)
+        {
+            return new RailVehicleDrivingListModel
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Description = entity.Description,
+                MaxSpeed = entity.MaxSpeed,
+                Performance = entity.TractionSystems.Max(vts => vts.Performance),
+                MaxPullForce = entity.TractionSystems.Max(vts => vts.MaxPullForce),
+                CreatedAt = entity.CreatedAt,
+                UpdatedAt = entity.UpdatedAt
+            };
+        }
     }
 }

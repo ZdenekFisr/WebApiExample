@@ -173,7 +173,8 @@ namespace Application.Features.NumberToWords
                     units.AddOrReplaceValue<byte, string>(1, "jedno");
                     units.AddOrReplaceValue<byte, string>(2, "dvě");
                     break;
-            };
+            }
+            ;
 
             if (oneToHundred <= 19)
             {

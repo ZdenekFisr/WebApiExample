@@ -1,6 +1,5 @@
 ﻿using Application.Common;
 using Application.Services;
-using AutoMapper;
 using Domain.Common;
 using FluentAssertions;
 using Infrastructure.DatabaseOperations.Insert;
@@ -11,18 +10,14 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
 {
     public class InsertOperationTests
     {
-        private readonly IMapper _mapper;
         private readonly Mock<ICurrentUtcTimeProvider> _currentUtcTimeProviderMock;
         private readonly InsertOperation _insertOperation;
         private readonly TestInsertDbContext _dbContext;
 
         public InsertOperationTests()
         {
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<TestInsertAutoMapperProfile>()).CreateMapper();
             _currentUtcTimeProviderMock = new Mock<ICurrentUtcTimeProvider>();
-            _insertOperation = new InsertOperation(
-                _mapper,
-                _currentUtcTimeProviderMock.Object);
+            _insertOperation = new InsertOperation(_currentUtcTimeProviderMock.Object);
 
             var options = new DbContextOptionsBuilder<TestInsertDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
@@ -44,7 +39,7 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             _currentUtcTimeProviderMock.Setup(p => p.GetCurrentUtcTime()).Returns(DateTimeOffset.UtcNow);
 
             // Act
-            await _insertOperation.InsertAsync<TestInsertEntity, TestInsertModel>(_dbContext, model, userId);
+            await _insertOperation.InsertAsync(_dbContext, userId, model.ToEntity);
 
             // Assert
             var savedEntity = await _dbContext.Set<TestInsertEntity>().FirstOrDefaultAsync(e => e.Name == model.Name);
@@ -60,14 +55,6 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
             public DbSet<TestInsertEntity> TestInsertEntities { get; set; }
         }
 
-        private class TestInsertAutoMapperProfile : Profile
-        {
-            public TestInsertAutoMapperProfile()
-            {
-                CreateMap<TestInsertModel, TestInsertEntity>();
-            }
-        }
-
         private class TestInsertEntity : EntityWithUserBase, ICreateHistory
         {
             public required string Name { get; set; }
@@ -78,6 +65,15 @@ namespace Infrastructure.UnitTests.DatabaseOperationsTests
         private class TestInsertModel : ModelBase
         {
             public required string Name { get; set; }
+
+            public TestInsertEntity ToEntity()
+            {
+                return new TestInsertEntity
+                {
+                    UserId = string.Empty,
+                    Name = Name
+                };
+            }
         }
     }
 }

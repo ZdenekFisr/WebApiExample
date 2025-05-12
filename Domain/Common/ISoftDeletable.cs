@@ -8,16 +8,16 @@
         /// <summary>
         /// True if the row is deleted; otherwise, false.
         /// </summary>
-        public bool IsDeleted { get; set; }
+        bool IsDeleted { get; set; }
 
         /// <summary>
         /// Time as UTC when the row was last soft-deleted.
         /// </summary>
-        public DateTimeOffset? DeletedAt { get; set; }
+        DateTimeOffset? DeletedAt { get; set; }
 
         /// <summary>
         /// ID of the user who last soft-deleted the row. Warning: add foreign key to the user table.
         /// </summary>
-        public string? DeletedBy { get; set; }
+        string? DeletedBy { get; set; }
     }
 }

@@ -13,11 +13,9 @@ namespace Infrastructure.Features.RailVehicles.Repository
 
         /// <inheritdoc />
         public async Task<Dictionary<Guid, string>> GetVehicleNames(string userId)
-        {
-            return await _dbContext.RailVehicles
+            => await _dbContext.RailVehicles
                 .Where(v => v.UserId == userId)
                 .Where(v => !v.IsDeleted)
                 .ToDictionaryAsync(v => v.Id, v => v.Name);
-        }
     }
 }

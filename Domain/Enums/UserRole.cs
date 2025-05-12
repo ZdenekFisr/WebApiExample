@@ -1,5 +1,8 @@
 ﻿namespace Domain.Enums
 {
+    /// <summary>
+    /// Represents the user roles in the system.
+    /// </summary>
     [Flags]
     public enum UserRole
     {

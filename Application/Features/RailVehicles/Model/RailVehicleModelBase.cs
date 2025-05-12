@@ -14,7 +14,7 @@ namespace Application.Features.RailVehicles.Model
         public required string Name { get; set; }
 
         [StringLength(Constants.VehicleDescriptionMaxLength)]
-        public string? Description { get; set; }
+        public required string Description { get; set; }
 
         /// <inheritdoc cref="RailVehicle.Weight"/>
         [Range(0, double.MaxValue, MinimumIsExclusive = true)]
@@ -47,5 +47,7 @@ namespace Application.Features.RailVehicles.Model
         /// <inheritdoc cref="RailVehicle.ResistanceQuadratic"/>
         [Range(0, double.MaxValue)]
         public double ResistanceQuadratic { get; set; }
+
+        public abstract RailVehicle ToEntity();
     }
 }

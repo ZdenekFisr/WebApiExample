@@ -1,5 +1,4 @@
 ﻿using Application.Features.RailVehicles.Model;
-using AutoMapper;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.DatabaseOperations.HardDelete;
@@ -10,7 +9,6 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
 {
     public class TrainDeletedRepositoryTests : TrainIntegrationTestsBase
     {
-        private readonly IMapper _mapper;
         private readonly IRestoreOperation _restoreOperation;
         private readonly IHardDeleteOperation _hardDeleteOperation;
         private readonly TrainDeletedRepository _repository;
@@ -18,10 +16,9 @@ namespace Infrastructure.IntegrationTests.FeaturesTests.RailVehicles
         public TrainDeletedRepositoryTests(DatabaseFixture databaseFixture)
             : base(databaseFixture)
         {
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>()).CreateMapper();
             _restoreOperation = new RestoreOperation();
             _hardDeleteOperation = new HardDeleteOperation();
-            _repository = new TrainDeletedRepository(_mapper, _dbContext, _restoreOperation, _hardDeleteOperation);
+            _repository = new TrainDeletedRepository(_dbContext, _restoreOperation, _hardDeleteOperation);
         }
 
         [Fact]

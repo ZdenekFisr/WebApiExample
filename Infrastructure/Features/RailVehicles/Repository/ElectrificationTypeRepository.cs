@@ -1,6 +1,5 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
-using AutoMapper;
 using Domain.Entities;
 using Infrastructure.DatabaseOperations.HardDelete;
 using Infrastructure.DatabaseOperations.Insert;
@@ -12,20 +11,17 @@ using System.Text;
 namespace Infrastructure.Features.RailVehicles.Repository
 {
     /// <inheritdoc cref="IElectrificationTypeRepository{TModel, TListModel}"/>
-    /// <param name="mapper">The mapper to map between model and entity.</param>
     /// <param name="dbContext">The application's database context.</param>
     /// <param name="insertOperation">The operation to insert a row into the database.</param>
     /// <param name="updateOperation">The operation to update a row in the database.</param>
     /// <param name="hardDeleteOperation">The operation to delete a row from the database.</param>
     public class ElectrificationTypeRepository(
-        IMapper mapper,
         ApplicationDbContext dbContext,
         IInsertOperation insertOperation,
         IUpdateOperation updateOperation,
         IHardDeleteOperation hardDeleteOperation)
         : IElectrificationTypeRepository<ElectrificationTypeModel, ElectrificationTypeListModel>
     {
-        private readonly IMapper _mapper = mapper;
         private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly IInsertOperation _insertOperation = insertOperation;
         private readonly IUpdateOperation _updateOperation = updateOperation;
@@ -33,15 +29,16 @@ namespace Infrastructure.Features.RailVehicles.Repository
 
         /// <inheritdoc />
         public async Task<ICollection<ElectrificationTypeListModel>> GetManyAsync(string userId)
-            => _mapper.Map<ICollection<ElectrificationTypeListModel>>(await _dbContext.ElectrificationTypes
+            => await _dbContext.ElectrificationTypes
                 .AsNoTracking()
                 .Where(e => e.UserId == userId)
                 .Where(e => !e.IsDeleted)
-                .ToArrayAsync());
+                .Select(e => ElectrificationTypeListModel.FromEntity(e))
+                .ToArrayAsync();
 
         /// <inheritdoc />
         public async Task CreateAsync(ElectrificationTypeModel model, string userId)
-            => await _insertOperation.InsertAsync<ElectrificationType, ElectrificationTypeModel>(_dbContext, model, userId);
+            => await _insertOperation.InsertAsync(_dbContext, userId, model.ToEntity);
 
         /// <inheritdoc />
         public async Task UpdateAsync(Guid id, ElectrificationTypeModel newModel, string userId)

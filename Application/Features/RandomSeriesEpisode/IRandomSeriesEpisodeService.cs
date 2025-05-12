@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="numbersOfEpisodes">Numbers of episodes for each season.</param>
         /// <returns>Season number and episode number.</returns>
-        public Episode Generate(IEnumerable<int> numbersOfEpisodes);
+        Episode Generate(IEnumerable<int> numbersOfEpisodes);
     }
 }

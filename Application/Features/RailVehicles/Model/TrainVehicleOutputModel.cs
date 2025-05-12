@@ -23,5 +23,22 @@ namespace Application.Features.RailVehicles.Model
 
         /// <inheritdoc cref="TrainVehicle.IsActive"/>
         public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="TrainVehicleOutputModel"/> from a <see cref="TrainVehicle"/> entity.
+        /// </summary>
+        /// <param name="entity">The <see cref="TrainVehicle"/> entity to convert.</param>
+        /// <returns>A new instance of <see cref="TrainVehicleOutputModel"/>.</returns>
+        public static TrainVehicleOutputModel FromEntity(TrainVehicle entity)
+        {
+            return new TrainVehicleOutputModel
+            {
+                VehicleId = entity.VehicleId,
+                VehicleName = string.Empty,
+                VehicleCount = entity.VehicleCount,
+                Position = entity.Position,
+                IsActive = entity.IsActive
+            };
+        }
     }
 }

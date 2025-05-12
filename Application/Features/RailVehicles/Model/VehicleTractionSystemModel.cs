@@ -36,5 +36,44 @@ namespace Application.Features.RailVehicles.Model
 
         /// <inheritdoc cref="VehicleTractionSystem.TractionDiagram"/>
         public required ICollection<TractionDiagramPointModel> TractionDiagram { get; set; }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="VehicleTractionSystemModel"/> from a <see cref="VehicleTractionSystem"/> entity.
+        /// </summary>
+        /// <param name="entity">The <see cref="VehicleTractionSystem"/> entity to convert.</param>
+        /// <returns>A new instance of <see cref="VehicleTractionSystemModel"/>.</returns>
+        public static VehicleTractionSystemModel FromEntity(VehicleTractionSystem entity)
+        {
+            return new VehicleTractionSystemModel
+            {
+                ElectrificationTypeId = entity.ElectrificationTypeId,
+                VoltageCoefficient = entity.VoltageCoefficient,
+                DrivingWheelsets = entity.DrivingWheelsets,
+                MaxSpeed = entity.MaxSpeed,
+                Performance = entity.Performance,
+                MaxPullForce = entity.MaxPullForce,
+                Efficiency = entity.Efficiency,
+                TractionDiagram = [.. entity.TractionDiagram.Select(TractionDiagramPointModel.FromEntity)]
+            };
+        }
+
+        /// <summary>
+        /// Converts the current <see cref="VehicleTractionSystemModel"/> instance to a <see cref="VehicleTractionSystem"/> entity.
+        /// </summary>
+        /// <returns>A new instance of <see cref="VehicleTractionSystem"/>.</returns>
+        public VehicleTractionSystem ToEntity()
+        {
+            return new VehicleTractionSystem
+            {
+                ElectrificationTypeId = ElectrificationTypeId,
+                VoltageCoefficient = VoltageCoefficient,
+                DrivingWheelsets = DrivingWheelsets,
+                MaxSpeed = MaxSpeed,
+                Performance = Performance,
+                MaxPullForce = MaxPullForce,
+                Efficiency = Efficiency,
+                TractionDiagram = [.. TractionDiagram.Select(x => x.ToEntity())]
+            };
+        }
     }
 }

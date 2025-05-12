@@ -1,9 +1,8 @@
 ﻿using Application.Features.RailVehicles.Model;
 using Application.Features.RailVehicles.Repository;
-using AutoMapper;
+using Application.Services;
 using Domain.Entities;
 using Infrastructure.DatabaseOperations.Insert;
-using Infrastructure.DatabaseOperations.Update;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Features.RailVehicles.Repository
@@ -14,16 +13,14 @@ namespace Infrastructure.Features.RailVehicles.Repository
     /// <param name="insertOperation">The operation to insert a row into the database.</param>
     /// <param name="updateOperation">The operation to update a row in the database.</param>
     public class RailVehicleRepository(
-        IMapper mapper,
         ApplicationDbContext dbContext,
         IInsertOperation insertOperation,
-        IUpdateOperation updateOperation)
+        ICurrentUtcTimeProvider timeProvider)
         : IRailVehicleRepository<RailVehicleModelBase>
     {
-        private readonly IMapper _mapper = mapper;
         private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly IInsertOperation _insertOperation = insertOperation;
-        private readonly IUpdateOperation _updateOperation = updateOperation;
+        private readonly ICurrentUtcTimeProvider _timeProvider = timeProvider;
 
         /// <inheritdoc />
         public async Task<RailVehicleModelBase?> GetOneAsync(Guid id, string userId)
@@ -37,18 +34,47 @@ namespace Infrastructure.Features.RailVehicles.Repository
                 return null;
 
             if (entity.TractionSystems.Count == 0)
-                return _mapper.Map<RailVehiclePulledModel>(entity);
+                return RailVehiclePulledModel.FromEntity(entity);
 
-            return _mapper.Map<RailVehicleDrivingModel>(entity);
+            return RailVehicleDrivingModel.FromEntity(entity);
         }
 
         /// <inheritdoc />
         public async Task CreateAsync(RailVehicleModelBase model, string userId)
-            => await _insertOperation.InsertAsync<RailVehicle, RailVehicleModelBase>(_dbContext, model, userId);
+            => await _insertOperation.InsertAsync(_dbContext, userId, model.ToEntity);
 
         /// <inheritdoc />
-        public async Task UpdateAsync(Guid id, RailVehicleModelBase newmodel, string userId)
-            => await _updateOperation.UpdateAsync(_dbContext, FindEntityByIdAsync, id, newmodel, userId);
+        public async Task UpdateAsync(Guid id, RailVehicleModelBase newModel, string userId)
+        {
+            RailVehicle? entity = await FindEntityByIdAsync(id, userId);
+            if (entity is null)
+                return;
+
+            entity.Name = newModel.Name;
+            entity.Description = newModel.Description;
+            entity.Weight = newModel.Weight;
+            entity.Length = newModel.Length;
+            entity.Wheelsets = newModel.Wheelsets;
+            entity.EquivalentRotatingWeight = newModel.EquivalentRotatingWeight;
+            entity.MaxSpeed = newModel.MaxSpeed;
+            entity.ResistanceConstant = newModel.ResistanceConstant;
+            entity.ResistanceLinear = newModel.ResistanceLinear;
+            entity.ResistanceQuadratic = newModel.ResistanceQuadratic;
+
+            entity.TractionSystems.Clear();
+            if (newModel is RailVehicleDrivingModel drivingModel)
+            {
+                foreach (var tractionSystem in drivingModel.TractionSystems)
+                {
+                    entity.TractionSystems.Add(tractionSystem.ToEntity());
+                }
+            }
+
+            entity.UpdatedAt = _timeProvider.GetCurrentUtcTime();
+            entity.UpdatedBy = userId;
+
+            await _dbContext.SaveChangesAsync();
+        }
 
         /// <summary>
         /// Asynchronously finds a rail vehicle entity by its identifier and user ID.

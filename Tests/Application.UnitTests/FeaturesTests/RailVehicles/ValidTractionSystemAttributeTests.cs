@@ -14,6 +14,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
             RailVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
+                Description = string.Empty,
                 Wheelsets = 8,
                 MaxSpeed = 160,
                 TractionSystems = [
@@ -37,6 +38,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
             RailVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
+                Description = string.Empty,
                 Wheelsets = 8,
                 MaxSpeed = 160,
                 TractionSystems = [
@@ -61,6 +63,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
             RailVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
+                Description = string.Empty,
                 Wheelsets = 8,
                 MaxSpeed = 160,
                 TractionSystems = [
@@ -84,6 +87,7 @@ namespace Application.UnitTests.FeaturesTests.RailVehicles
             RailVehicleDrivingModel vehicle = new()
             {
                 Name = "Test",
+                Description = string.Empty,
                 Wheelsets = 8,
                 MaxSpeed = 160,
                 TractionSystems = [
