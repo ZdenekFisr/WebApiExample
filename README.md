@@ -3,7 +3,7 @@ This API serves as an example of Clean Architecture (CA) that is feature-driven.
 
 **Entity:** Corresponds to one or more database tables and is used by the implemented ORM. It inherits from the `Entity` (or `EntityWithUser`) class.
 
-**Model:** Can correspond to an entity. In that case, it is mapped to it with `AutoMapper`. If not, there is no relation to DB. It inherits from the `Model` class. It is used by the controller.
+**Model:** Can correspond to an entity. If not, there is no relation to DB. It inherits from the `Model` class. It is used by the controller.
 
 **Service:** Contains specific algorithms and is registered in the DI container using its corresponding interface.
 
@@ -24,7 +24,7 @@ Important folders:
 - `Services`: Abstractions of services that are not used as standalone features.
 - `Helpers`: Static helper classes and methods. These cannot be mocked in tests.
 ## Infrastructure
-It uses external libraries to implement abstractions defined in the `Application` project, which it references, and interacts with the SQL Server database using Entity Framework (code first). It also handles authentication (ASP<i></i>.NET Core Identity) and mapping using `AutoMapper`.
+It uses external libraries to implement abstractions defined in the `Application` project, which it references, and interacts with the SQL Server database using Entity Framework (code first). It also handles authentication (ASP<i></i>.NET Core Identity).
 
 Important folders:
 - `DatabaseOperations`: Generic classes and interfaces with an entity and optionally a model as type parameter(s). They contain queries such as `INSERT` OR `UPDATE`, written using Entity Framework.
